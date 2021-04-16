@@ -4,7 +4,7 @@ import Security from './Security';
 import { MenuBar } from '../features/menu/Menu';
 
 import { Dashboard } from '../features/dashboard/Dashboard';
-import { Reports } from '../features/reports/Reports';
+import Reports from '../features/reports/Reports';
 import { Admin } from '../features/admin/Admin';
 
 export const ComponentRoutes = (props) => {

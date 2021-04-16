@@ -69,6 +69,7 @@ const LoginForm = () => {
               icon="user"
               iconPosition="left"
               placeholder="E-mail address"
+              type="email"
               onBlur={(e) => handleEmail(e)}
             />
             <Form.Input

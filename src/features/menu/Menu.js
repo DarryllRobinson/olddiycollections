@@ -3,13 +3,20 @@ import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import history from '../../history';
+import Security from '../../services/Security';
 
 export const MenuBar = () => {
+  const security = new Security();
   const [activeItem, setActiveItem] = useState(null);
 
   const handleItemClick = (e, { name }) => {
     setActiveItem(name);
     history.push(`/${name}`);
+  };
+
+  const handleLogout = () => {
+    security.terminateSession();
+    history.push('/');
   };
 
   return (
@@ -51,6 +58,13 @@ export const MenuBar = () => {
           onClick={handleItemClick}
         >
           Login
+        </Menu.Item>
+        <Menu.Item
+          name="logout"
+          active={activeItem === 'logout'}
+          onClick={handleLogout}
+        >
+          Logout
         </Menu.Item>
       </Menu.Menu>
     </Menu>

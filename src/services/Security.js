@@ -11,6 +11,8 @@ export default class Security {
 
     if (token && token !== undefined) {
       let decodedToken = jwtDecode(token);
+      console.log(token);
+      console.log(decodedToken);
 
       if (d > decodedToken.expiry) {
         this.terminateSession();
