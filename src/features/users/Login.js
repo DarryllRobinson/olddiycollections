@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import history from '../../history';
+
+import { loginUser } from './usersSlice';
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
+
+  const userStatus = useSelector((state) => state.users.status);
+  const error = useSelector((state) => state.users.error);
+  const isLoggedIn = useSelector((state) => state.users.isLoggedIn);
+
+  // Checking if isLoggedIn = true to push to Dashboard
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push('/dashboard');
+    }
+  }, [isLoggedIn]);
+
   // Email methods
   const [email, setEmail] = useState('');
   const handleEmail = (e) => {
@@ -19,13 +35,24 @@ const LoginForm = () => {
   // Form methods
   const handleSubmit = (e) => {
     e.preventDefault();
-    const loginDatetime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
     const user = {
       email: email,
       password: password,
-      loginDate: loginDatetime,
     };
+
+    dispatch(loginUser(user));
+
+    let content;
+
+    if (userStatus === 'loading') {
+      content = <div>Loading...</div>;
+    } else if (userStatus === 'succeeded') {
+      console.log('yay');
+    } else if (userStatus === 'error') {
+      content = <div>{error}</div>;
+      console.log(content.props.children);
+    }
   };
 
   return (

@@ -111,6 +111,9 @@ class DesktopContainer extends Component {
                   <Button as={Link} to="/login" inverted={!fixed}>
                     Log in
                   </Button>
+                  <Button as={Link} to="/dashboard" inverted={!fixed}>
+                    Dashboard
+                  </Button>
                   <Button
                     as={Link}
                     to="/signup"
@@ -184,6 +187,9 @@ class MobileContainer extends Component {
                   <Menu.Item position="right">
                     <Button as={Link} to="/login" inverted>
                       Log in
+                    </Button>
+                    <Button as={Link} to="/dashboard" inverted>
+                      Dashboard
                     </Button>
                     <Button
                       as={Link}

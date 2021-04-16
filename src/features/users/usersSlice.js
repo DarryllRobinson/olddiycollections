@@ -5,15 +5,17 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+import Security from '../../services/Security';
 
-const usersAdapter = createEntityAdapter({
-  sortComparer: (a, b) => b.email.localeCompare(a.email),
-});
+import { client } from '../../api/client';
+const security = new Security();
+
+const usersAdapter = createEntityAdapter();
 
 const initialState = usersAdapter.getInitialState({
   status: 'idle',
   error: null,
+  jwtToken: null,
 });
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
@@ -34,12 +36,17 @@ export const addNewUser = createAsyncThunk(
   }
 );
 
+export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
+  const response = await client.post('/users/login', user);
+  return response;
+});
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    userUpdated(state, action) {
-      const { id, firstName, surname, email } = action.payload;
+    userUpdated(state, { payload }) {
+      const { id, firstName, surname, email } = payload;
       const existingUser = state.entities[id];
       if (existingUser) {
         existingUser.firstName = firstName;
@@ -47,40 +54,75 @@ const usersSlice = createSlice({
         existingUser.email = email;
       }
     },
+    checkToken(state, { payload }) {
+      console.log('checkToken', state);
+    },
+    checkIsLoggedIn(state, { payload }) {
+      console.log('checkIsLoggedIn', state.isLoggedIn);
+      return state.isLoggedIn;
+    },
   },
   extraReducers: {
     // Fetch users
-    [fetchUsers.pending]: (state, action) => {
+    [fetchUsers.pending]: (state, { payload }) => {
       state.status = 'loading';
     },
-    [fetchUsers.fulfilled]: (state, action) => {
+    [fetchUsers.fulfilled]: (state, { payload }) => {
       state.status = 'succeeded';
       // Add any fetched users to the array
-      usersAdapter.upsertMany(state, action.payload);
+      usersAdapter.upsertMany(state, payload);
     },
-    [fetchUsers.rejected]: (state, action) => {
+    [fetchUsers.rejected]: (state, { payload }) => {
       state.status = 'failed';
-      state.error = action.payload;
+      state.error = payload;
     },
 
     // Fetch single user
-    [fetchUser.pending]: (state, action) => {
+    [fetchUser.pending]: (state, { payload }) => {
       state.status = 'loading';
     },
-    [fetchUser.fulfilled]: (state, action) => {
+    [fetchUser.fulfilled]: (state, { payload }) => {
       state.status = 'succeeded';
       // Return any user found
-      usersAdapter.upsertMany(state, action.payload);
+      usersAdapter.upsertMany(state, payload);
     },
-    [fetchUser.rejected]: (state, action) => {
+    [fetchUser.rejected]: (state, { payload }) => {
       state.status = 'failed';
-      state.error = action.payload;
+      state.error = payload;
     },
+
+    // Login user
+    [loginUser.pending]: (state, { payload }) => {
+      state.status = 'loading';
+    },
+    [loginUser.fulfilled]: (state, { payload }) => {
+      if (payload.ok) {
+        state.status = 'succeeded';
+        state.isLoggedIn = true;
+        security.writeLoginSession(payload.user[0]);
+
+        // Return user array
+        usersAdapter.upsertMany(state, payload.user);
+      } else {
+        console.log('not logged in');
+      }
+    },
+    [loginUser.rejected]: (state, { payload }) => {
+      console.log('problem: ', payload);
+      state.status = 'failed';
+      state.error = payload;
+    },
+
     [addNewUser.fulfilled]: usersAdapter.addOne,
   },
 });
 
-export const { userAdded, userUpdated } = usersSlice.actions;
+export const {
+  checkIsLoggedIn,
+  checkToken,
+  userAdded,
+  userUpdated,
+} = usersSlice.actions;
 
 export default usersSlice.reducer;
 
