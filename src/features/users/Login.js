@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import history from '../../history';
 
 import { loginUser } from './usersSlice';
 
@@ -11,14 +10,6 @@ const LoginForm = () => {
 
   const userStatus = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
-  const isLoggedIn = useSelector((state) => state.users.isLoggedIn);
-
-  // Checking if isLoggedIn = true to push to Dashboard
-  useEffect(() => {
-    if (isLoggedIn) {
-      history.push('/dashboard');
-    }
-  }, [isLoggedIn]);
 
   // Email methods
   const [email, setEmail] = useState('');
@@ -70,7 +61,7 @@ const LoginForm = () => {
               iconPosition="left"
               placeholder="E-mail address"
               type="email"
-              onBlur={(e) => handleEmail(e)}
+              onChange={(e) => handleEmail(e)}
             />
             <Form.Input
               fluid
@@ -78,7 +69,7 @@ const LoginForm = () => {
               iconPosition="left"
               placeholder="Password"
               type="password"
-              onBlur={(e) => handlePassword(e)}
+              onChange={(e) => handlePassword(e)}
             />
 
             <Button color="teal" fluid size="large">

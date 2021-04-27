@@ -4,6 +4,7 @@ import {
   //createSelector,
   createEntityAdapter,
 } from '@reduxjs/toolkit';
+import history from '../../history';
 
 import Security from '../../services/Security';
 
@@ -15,7 +16,6 @@ const usersAdapter = createEntityAdapter();
 const initialState = usersAdapter.getInitialState({
   status: 'idle',
   error: null,
-  jwtToken: null,
 });
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
@@ -38,6 +38,9 @@ export const addNewUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
   const response = await client.post('/users/login', user);
+  security.writeLoginSession(response.user[0]);
+
+  history.push('/dashboard');
   return response;
 });
 
@@ -53,13 +56,6 @@ const usersSlice = createSlice({
         existingUser.surname = surname;
         existingUser.email = email;
       }
-    },
-    checkToken(state, { payload }) {
-      console.log('checkToken', state);
-    },
-    checkIsLoggedIn(state, { payload }) {
-      console.log('checkIsLoggedIn', state.isLoggedIn);
-      return state.isLoggedIn;
     },
   },
   extraReducers: {
@@ -98,9 +94,6 @@ const usersSlice = createSlice({
     [loginUser.fulfilled]: (state, { payload }) => {
       if (payload.ok) {
         state.status = 'succeeded';
-        state.isLoggedIn = true;
-        security.writeLoginSession(payload.user[0]);
-
         // Return user array
         usersAdapter.upsertMany(state, payload.user);
       } else {
@@ -117,12 +110,7 @@ const usersSlice = createSlice({
   },
 });
 
-export const {
-  checkIsLoggedIn,
-  checkToken,
-  userAdded,
-  userUpdated,
-} = usersSlice.actions;
+export const { userAdded, userUpdated } = usersSlice.actions;
 
 export default usersSlice.reducer;
 
