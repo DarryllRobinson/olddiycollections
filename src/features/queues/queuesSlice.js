@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
 
@@ -15,7 +16,7 @@ const initialState = queuesAdapter.getInitialState({
 
 export const fetchQueues = createAsyncThunk('queues/fetchQueues', async () => {
   const response = await client.get('/queues');
-  console.log(response);
+  //console.log(response);
   return response;
 });
 
@@ -40,7 +41,11 @@ const queuesSlice = createSlice({
 
 export default queuesSlice.reducer;
 
-export const {
-  selectAll: selectAllQueues,
-  selectAllById: selectAllQueuesByUser,
-} = queuesAdapter.getSelectors((state) => state.queues);
+export const { selectAll: selectAllQueues } = queuesAdapter.getSelectors(
+  (state) => state.queues
+);
+
+/*export const selectQueuesByUser = createSelector(
+  [selectAllQueues, (state, email) => email],
+  (posts, userId) => posts.filter((post) => post.user === userId)
+);*/

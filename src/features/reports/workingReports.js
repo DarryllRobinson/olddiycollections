@@ -1,6 +1,4 @@
 import React from 'react';
-import { Container, Grid } from 'semantic-ui-react';
-
 import CustomBar from './CustomBar';
 import { client } from '../../api/client';
 
@@ -91,7 +89,7 @@ class Reports extends React.Component {
     const reportsDisplay = reports.ids.map((report, idx) => {
       return (
         <div key={idx}>
-          <Grid.Column width={4} style={{ padding: 0 }}>
+          <div className="ui segment" style={{ padding: 0 }}>
             {reports.entities[report].data && (
               <CustomBar
                 chartNumber={idx}
@@ -103,15 +101,15 @@ class Reports extends React.Component {
             )}
             {!reports.entities[report].data && (
               <div key={idx}>
-                <Grid.Column width={4} style={{ padding: 0 }}>
+                <div className="ui segment">
                   <div className="ui active inverted dimmer">
                     <div className="ui text loader">Loading</div>
                   </div>
                   <p></p>
-                </Grid.Column>
+                </div>
               </div>
             )}
-          </Grid.Column>
+          </div>
         </div>
       );
     });
@@ -137,11 +135,13 @@ class Reports extends React.Component {
 
   render() {
     return (
-      <Container fluid>
-        <Grid stackable textAlign="center">
-          <Grid.Row>{this.customBarRender()}</Grid.Row>
-        </Grid>
-      </Container>
+      <>
+        <div className="row" style={{ marginLeft: '0' }}>
+          {/* Overriding bootstrap styles */}
+
+          {this.customBarRender()}
+        </div>
+      </>
     );
   }
 }

@@ -18,7 +18,7 @@ class CustomBar extends React.Component {
         background: '#0F5A99',
         boxSizing: 'border-box',
         display: 'inline',
-        height: '400',
+        height: '350',
         padding: 0,
         fontFamily: "'Fira Sans', sans-serif",
       },
