@@ -1,14 +1,17 @@
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
-import { client } from '../api/client';
-//import moment from 'moment';
 
-export default class Security {
-  writeLoginSession(refreshToken) {
-    //sessionStorage.setItem('token', response.token);
+import { refreshToken } from '../features/users/usersSlice';
+
+const Security = () => {
+  const dispatch = useDispatch();
+
+  const WriteLoginSession = (refreshToken) => {
     sessionStorage.setItem('refreshToken', refreshToken);
-  }
+  };
 
-  validateSession(component) {
+  const ValidateSession = (component) => {
     console.log(component + ' is calling validateSession');
     let refreshToken = sessionStorage.getItem('refreshToken');
 
@@ -17,14 +20,14 @@ export default class Security {
 
       if (decodedToken.exp < new Date().getTime() / 1000) {
         console.log('refreshToken expired');
-        this.terminateSession();
+        TerminateSession();
         return false;
       } else if (
-        decodedToken.exp - 100 <
+        decodedToken.exp - 892 <
         Math.floor(new Date().getTime() / 1000)
       ) {
         console.log('Need to extend session');
-        this.extendSession();
+        ExtendSession();
       } else {
         console.log(
           'refreshToken still valid: ',
@@ -35,13 +38,13 @@ export default class Security {
       return true;
     } else {
       // There is no token so session is automatically invalid
-      this.terminateSession();
+      TerminateSession();
       return false;
     }
-  }
+  };
 
-  async extendSession() {
-    //const dispatch = useDispatch();
+  const ExtendSession = () => {
+    const dispatch = useDispatch();
     let token = sessionStorage.getItem('refreshToken');
     let decodedToken = jwtDecode(token);
 
@@ -53,14 +56,15 @@ export default class Security {
       role: decodedToken.role,
       refreshToken: token,
     };
-    //console.log('extendSession: ', user);
+    console.log('extendSession: ', user);
 
-    const response = await client.post('/users/refresh', user);
-    //console.log('extendSession response: ', response.user[0].refreshToken);
-    sessionStorage.setItem('refreshToken', response.user[0].refreshToken);
-  }
+    dispatch(refreshToken(user));
+    //return <div></div>;
+  };
 
-  terminateSession() {
+  const TerminateSession = () => {
     sessionStorage.removeItem('refreshToken');
-  }
-}
+  };
+};
+
+export default Security;

@@ -12,7 +12,7 @@ export const MenuBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   useEffect(() => {
-    setIsLoggedIn(security.validateSession());
+    setIsLoggedIn(security.validateSession('Menu'));
   }, []);
 
   const handleItemClick = (e, { name }) => {

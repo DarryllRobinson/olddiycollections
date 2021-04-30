@@ -3,17 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { Label, List, Segment } from 'semantic-ui-react';
 
-import {
-  fetchQueues,
-  selectAllQueues,
-  selectAllQueuesByUser,
-} from './queuesSlice';
+import { fetchQueues, selectAllQueues } from './queuesSlice';
 
 export const Queues = () => {
   const dispatch = useDispatch();
   const queues = useSelector(selectAllQueues);
   //let token = sessionStorage.getItem('unikey');
-  let decodedToken = jwtDecode(sessionStorage.getItem('unikey'));
+  let decodedToken = jwtDecode(sessionStorage.getItem('refreshToken'));
   const user = decodedToken.email;
   //console.log(user);
   const queuesStatus = useSelector((state) => state.queues.status);

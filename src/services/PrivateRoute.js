@@ -2,25 +2,37 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import Security from '../services/Security';
+import Security from './Security';
 
-export const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) => {
-      PrivateRoute.propTypes = {
-        component: PropTypes.any,
-      };
+export const PrivateRoute = ({ component: Component, ...rest }) => {
+  const [safe, setSafe] = React.useState(true);
 
+  React.useEffect(() => {
+    //console.log('refreshTime: ', refreshTime);
+    const interval = setInterval(() => {
       const security = new Security();
-      const safe = security.validateSession();
+      // Checking it is still safe
+      setSafe(security.validateSession('PrivateRoute'));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
-      if (!safe) {
-        //security.terminateSession();
-        return <Redirect to={{ pathname: '/' }} />;
-      }
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        PrivateRoute.propTypes = {
+          component: PropTypes.any,
+        };
 
-      return <Component {...props} />;
-    }}
-  />
-);
+        if (!safe) {
+          //console.log('not safe');
+          //security.terminateSession();
+          return <Redirect to={{ pathname: '/' }} />;
+        }
+
+        return <Component {...props} />;
+      }}
+    />
+  );
+};

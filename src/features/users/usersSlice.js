@@ -9,8 +9,8 @@ import history from '../../history';
 import Security from '../../services/Security';
 
 import { client } from '../../api/client';
-const security = new Security();
 
+const security = new Security();
 const usersAdapter = createEntityAdapter();
 
 const initialState = usersAdapter.getInitialState({
@@ -38,9 +38,10 @@ export const addNewUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
   const response = await client.post('/users/login', user);
-  security.writeLoginSession(response.user[0]);
-
+  //console.log(response);
+  security.writeLoginSession(response.user[0].refreshToken);
   history.push('/dashboard');
+  //console.log(response);
   return response;
 });
 
@@ -56,6 +57,10 @@ const usersSlice = createSlice({
         existingUser.surname = surname;
         existingUser.email = email;
       }
+    },
+    refreshToken(state, { payload }) {
+      const { token } = payload;
+      security.writeLoginSession(token);
     },
   },
   extraReducers: {
@@ -94,14 +99,16 @@ const usersSlice = createSlice({
     [loginUser.fulfilled]: (state, { payload }) => {
       if (payload.ok) {
         state.status = 'succeeded';
+        state.refreshTime = payload.refreshTime;
         // Return user array
+        console.log('usersSlice payload: ', payload);
         usersAdapter.upsertMany(state, payload.user);
       } else {
         console.log('not logged in');
       }
     },
     [loginUser.rejected]: (state, { payload }) => {
-      console.log('problem: ', payload);
+      console.log('problem loginUser.rejected: ', payload);
       state.status = 'failed';
       state.error = payload;
     },
