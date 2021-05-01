@@ -21,7 +21,7 @@ export default class Security {
         this.terminateSession();
         return false;
       } else if (
-        decodedToken.exp - 100 <
+        decodedToken.exp - 300000 <
         Math.floor(new Date().getTime() / 1000)
       ) {
         //console.log('Need to extend session');

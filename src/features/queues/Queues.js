@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { Label, List, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 import { fetchQueues, selectAllQueues } from './queuesSlice';
 
@@ -28,7 +29,7 @@ export const Queues = () => {
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item key={idx}>
+      <List.Item key={idx} as={Link} to="/workspace">
         <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>
@@ -51,7 +52,7 @@ export const Queues = () => {
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item key={idx}>
+      <List.Item key={idx} as={Link} to="/workspace">
         <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>
@@ -122,7 +123,7 @@ export const Queues = () => {
   }
   return (
     <Segment inverted color="grey">
-      <List selection divided inverted relaxed>
+      <List selection divided inverted relaxed link>
         <Label attached="top" color="grey" size="large">
           Queues
         </Label>

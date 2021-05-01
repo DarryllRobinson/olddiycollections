@@ -101,7 +101,7 @@ const usersSlice = createSlice({
         state.status = 'succeeded';
         state.refreshTime = payload.refreshTime;
         // Return user array
-        console.log('usersSlice payload: ', payload);
+        //console.log('usersSlice payload: ', payload);
         usersAdapter.upsertMany(state, payload.user);
       } else {
         console.log('not logged in');
