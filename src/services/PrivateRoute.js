@@ -6,6 +6,7 @@ import Security from './Security';
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
   const [safe, setSafe] = React.useState(true);
+  const [timer, setTimer] = React.useState(100); // setting to 100 so it doesn't show on the Dashboard
 
   React.useEffect(() => {
     //console.log('refreshTime: ', refreshTime);
@@ -13,6 +14,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
       const security = new Security();
       // Checking it is still safe
       setSafe(security.validateSession('PrivateRoute'));
+      setTimer(security.refreshTime());
     }, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -31,7 +33,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
           return <Redirect to={{ pathname: '/' }} />;
         }
 
-        return <Component {...props} />;
+        return <Component timer={timer} {...props} />;
       }}
     />
   );

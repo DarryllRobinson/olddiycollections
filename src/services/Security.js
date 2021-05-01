@@ -9,10 +9,11 @@ export default class Security {
   }
 
   validateSession(component) {
-    console.log(component + ' is calling validateSession');
+    //console.log(component + ' is calling validateSession');
     let refreshToken = sessionStorage.getItem('refreshToken');
+    //console.log('refreshToken for validateSession: ', refreshToken);
 
-    if (refreshToken && refreshToken !== undefined) {
+    if (refreshToken) {
       let decodedToken = jwtDecode(refreshToken);
 
       if (decodedToken.exp < new Date().getTime() / 1000) {
@@ -23,14 +24,14 @@ export default class Security {
         decodedToken.exp - 100 <
         Math.floor(new Date().getTime() / 1000)
       ) {
-        console.log('Need to extend session');
+        //console.log('Need to extend session');
         this.extendSession();
-      } else {
+      } /*else {
         console.log(
           'refreshToken still valid: ',
           decodedToken.exp - new Date().getTime() / 1000
         );
-      }
+      }*/
 
       return true;
     } else {
@@ -62,5 +63,12 @@ export default class Security {
 
   terminateSession() {
     sessionStorage.removeItem('refreshToken');
+  }
+
+  refreshTime() {
+    let token = sessionStorage.getItem('refreshToken');
+    //console.log('token for refreshTime: ', token);
+    let decodedToken = token ? jwtDecode(token) : 0;
+    return decodedToken.exp - 100 - Math.floor(new Date().getTime() / 1000);
   }
 }

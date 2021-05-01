@@ -8,9 +8,10 @@ import { fetchQueues, selectAllQueues } from './queuesSlice';
 export const Queues = () => {
   const dispatch = useDispatch();
   const queues = useSelector(selectAllQueues);
-  //let token = sessionStorage.getItem('unikey');
-  let decodedToken = jwtDecode(sessionStorage.getItem('refreshToken'));
-  const user = decodedToken.email;
+  let token = sessionStorage.getItem('refreshToken');
+  let decodedToken = token ? jwtDecode(token) : null;
+  //const user = decodedToken ? decodedToken.email : null;
+  const user = decodedToken ? decodedToken.email : null;
   //console.log(user);
   const queuesStatus = useSelector((state) => state.queues.status);
   const error = useSelector((state) => state.queues.error);
@@ -24,6 +25,29 @@ export const Queues = () => {
   function PrepareQueues(queues) {
     const statusList = GetStatus(queues);
     const listWithCount = StatusCount(queues, statusList);
+
+    // Must remember to convert to Links list/#types-link
+    const item = listWithCount.map((item, idx) => (
+      <List.Item key={idx}>
+        <List.Content floated="left">{item.item}</List.Content>
+        <List.Content floated="right">
+          <Label circular>{item.count}</Label>
+        </List.Content>
+      </List.Item>
+    ));
+
+    return item;
+  }
+
+  function PrepareUserQueues(queues, currentAssignment) {
+    //currentAssignment = 'mickeymouse';
+    //console.log('currentAssignment: ', currentAssignment);
+    const statusList = GetStatus(queues);
+    const listWithCount = UserStatusCount(
+      queues,
+      statusList,
+      currentAssignment
+    );
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
@@ -52,6 +76,24 @@ export const Queues = () => {
     return items;
   }
 
+  function UserStatusCount(queues, statusList, currentAssignment) {
+    let items = [];
+
+    statusList.forEach((status) => {
+      let count = 0;
+      queues.forEach((record) => {
+        if (
+          record.currentStatus === status &&
+          record.currentAssignment === currentAssignment
+        )
+          ++count;
+      });
+
+      items.push({ item: status, count: count });
+    });
+    return items;
+  }
+
   function GetStatus(queues) {
     let allStatusList = [];
     queues.forEach((queue) => {
@@ -67,14 +109,16 @@ export const Queues = () => {
     return self.indexOf(value) === index;
   }
 
-  let content;
+  let mainQueues;
+  let userQueues;
 
   if (queuesStatus === 'loading') {
-    content = <div className="loading">Loading...</div>;
+    mainQueues = <div className="loading">Loading...</div>;
   } else if (queuesStatus === 'failed') {
-    content = <div>{error}</div>;
+    mainQueues = <div>{error}</div>;
   } else if (queuesStatus === 'succeeded') {
-    content = PrepareQueues(queues);
+    mainQueues = PrepareQueues(queues);
+    userQueues = PrepareUserQueues(queues, user);
   }
   return (
     <Segment inverted color="grey">
@@ -82,7 +126,8 @@ export const Queues = () => {
         <Label attached="top" color="grey" size="large">
           Queues
         </Label>
-        {content}
+        {mainQueues}
+        {userQueues}
       </List>
     </Segment>
   );
