@@ -3,23 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'semantic-ui-react';
 import moment from 'moment';
 
-import { fetchWorkspace, selectAllWorkspace } from './workspaceSlice';
+import { fetchCollections, selectAllCollections } from './collectionsSlice';
 
-export const Workspace = () => {
+export const Collections = () => {
   const dispatch = useDispatch();
-  const workspace = useSelector(selectAllWorkspace);
-  const workspaceStatus = useSelector((state) => state.workspace.status);
-  const error = useSelector((state) => state.workspace.error);
+  const collections = useSelector(selectAllCollections);
+  const collectionsStatus = useSelector((state) => state.collections.status);
+  const error = useSelector((state) => state.collections.error);
 
   useEffect(() => {
-    if (workspaceStatus === 'idle') {
-      dispatch(fetchWorkspace());
+    if (collectionsStatus === 'idle') {
+      dispatch(fetchCollections());
     }
-  }, [dispatch, workspaceStatus]);
+  }, [dispatch, collectionsStatus]);
 
   let content;
 
-  if (workspaceStatus === 'loading') {
+  if (collectionsStatus === 'loading') {
     content = (
       <Table.Row>
         <Table.Cell>
@@ -27,35 +27,42 @@ export const Workspace = () => {
         </Table.Cell>
       </Table.Row>
     );
-  } else if (workspaceStatus === 'failed') {
+  } else if (collectionsStatus === 'failed') {
     content = (
       <Table.Row>
         <Table.Cell>{error}</Table.Cell>
       </Table.Row>
     );
-  } else if (workspaceStatus === 'succeeded') {
-    content = workspace.map((workspace) => {
+  } else if (collectionsStatus === 'succeeded') {
+    content = collections.map((collections) => {
+      const hlink = `/collection/${collections.id}`;
       return (
-        <Table.Row key={workspace.id}>
-          <Table.Cell>{workspace.caseNumber}</Table.Cell>
-          <Table.Cell>{workspace.accountNumber}</Table.Cell>
-          <Table.Cell>{workspace.customerName}</Table.Cell>
-          <Table.Cell>{workspace.regIdNumber}</Table.Cell>
-          <Table.Cell textAlign="right">{workspace.debtorAge}</Table.Cell>
-          <Table.Cell>{workspace.caseNotes}</Table.Cell>
-          <Table.Cell textAlign="right">R {workspace.totalBalance}</Table.Cell>
-          <Table.Cell textAlign="right">R {workspace.amountDue}</Table.Cell>
+        <Table.Row key={collections.id}>
+          <Table.Cell>
+            <a href={hlink} style={{ color: 'white' }}>
+              Open: {collections.caseNumber}
+            </a>
+          </Table.Cell>
+          <Table.Cell>{collections.accountNumber}</Table.Cell>
+          <Table.Cell>{collections.customerName}</Table.Cell>
+          <Table.Cell>{collections.regIdNumber}</Table.Cell>
+          <Table.Cell textAlign="right">{collections.debtorAge}</Table.Cell>
+          <Table.Cell>{collections.caseNotes}</Table.Cell>
           <Table.Cell textAlign="right">
-            R {workspace.currentBalance}
+            R {collections.totalBalance}
           </Table.Cell>
-          <Table.Cell>{workspace.resolution}</Table.Cell>
-          <Table.Cell>
-            {moment(workspace.nextVisitDateTime).format('YYYY-MM-DD HH:mm')}
+          <Table.Cell textAlign="right">R {collections.amountDue}</Table.Cell>
+          <Table.Cell textAlign="right">
+            R {collections.currentBalance}
           </Table.Cell>
-          <Table.Cell>{workspace.currentAssignment}</Table.Cell>
-          <Table.Cell>{workspace.updatedBy}</Table.Cell>
+          <Table.Cell>{collections.resolution}</Table.Cell>
           <Table.Cell>
-            {moment(workspace.updatedDate).format('YYYY-MM-DD HH:mm')}
+            {moment(collections.nextVisitDateTime).format('YYYY-MM-DD HH:mm')}
+          </Table.Cell>
+          <Table.Cell>{collections.currentAssignment}</Table.Cell>
+          <Table.Cell>{collections.updatedBy}</Table.Cell>
+          <Table.Cell>
+            {moment(collections.updatedDate).format('YYYY-MM-DD HH:mm')}
           </Table.Cell>
         </Table.Row>
       );

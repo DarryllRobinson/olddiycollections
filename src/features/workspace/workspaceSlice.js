@@ -17,7 +17,7 @@ export const fetchWorkspace = createAsyncThunk(
   'workspace/fetchWorkspace',
   async () => {
     const response = await client.get('/workspace');
-    console.log(response);
+    //console.log(response);
     return response;
   }
 );

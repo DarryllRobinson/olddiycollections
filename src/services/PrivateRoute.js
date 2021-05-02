@@ -10,13 +10,13 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
 
   React.useEffect(() => {
     //console.log('refreshTime: ', refreshTime);
-    const interval = setInterval(() => {
-      const security = new Security();
-      // Checking it is still safe
-      setSafe(security.validateSession('PrivateRoute'));
-      setTimer(security.refreshTime());
-    }, 600000);
-    return () => clearInterval(interval);
+    //const interval = setInterval(() => {
+    const security = new Security();
+    // Checking it is still safe
+    setSafe(security.validateSession('PrivateRoute'));
+    setTimer(security.refreshTime());
+    //}, 600000);
+    //return () => clearInterval(interval);
   }, []);
 
   return (

@@ -2,6 +2,8 @@ import jwtDecode from 'jwt-decode';
 import { client } from '../api/client';
 //import moment from 'moment';
 
+import history from '../history';
+
 export default class Security {
   writeLoginSession(refreshToken) {
     //sessionStorage.setItem('token', response.token);
@@ -9,7 +11,7 @@ export default class Security {
   }
 
   validateSession(component) {
-    //console.log(component + ' is calling validateSession');
+    console.log(component + ' is calling validateSession');
     let refreshToken = sessionStorage.getItem('refreshToken');
     //console.log('refreshToken for validateSession: ', refreshToken);
 
@@ -63,6 +65,7 @@ export default class Security {
 
   terminateSession() {
     sessionStorage.removeItem('refreshToken');
+    history.push('/');
   }
 
   refreshTime() {

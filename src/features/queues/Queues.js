@@ -29,7 +29,7 @@ export const Queues = () => {
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item key={idx} as={Link} to="/workspace">
+      <List.Item key={idx} as={Link} to="/collections">
         <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>
@@ -52,7 +52,7 @@ export const Queues = () => {
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item key={idx} as={Link} to="/workspace">
+      <List.Item key={idx} as={Link} to="/collections">
         <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>

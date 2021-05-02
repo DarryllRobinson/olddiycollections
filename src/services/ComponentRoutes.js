@@ -10,6 +10,8 @@ import { Workzone } from '../features/workzone/Workzone';
 import Reports from '../features/reports/Reports';
 import { Admin } from '../features/admin/Admin';
 import { Workspace } from '../features/workspace/Workspace';
+import { Collections } from '../features/collections/Collections';
+import { Collection } from '../features/collections/Collection';
 
 export const ComponentRoutes = (props) => {
   const security = new Security();
@@ -23,6 +25,8 @@ export const ComponentRoutes = (props) => {
       <PrivateRoute exact path="/admin" component={Admin} />
       <PrivateRoute exact path="/workzone" component={Workzone} />
       <PrivateRoute exact path="/workspace" component={Workspace} />
+      <PrivateRoute exact path="/collections" component={Collections} />
+      <PrivateRoute exact path="/collection/:id" component={Collection} />
     </>
   );
 };
