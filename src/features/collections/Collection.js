@@ -20,6 +20,7 @@ export const Collection = (props) => {
     }
   }, [dispatch, collectionStatus]);
 
+  // Preparing variables for rendering
   const regIdNumberRender = () => {
     if (collection.customerEntity === 'Enterprise') {
       return (
@@ -50,6 +51,14 @@ export const Collection = (props) => {
     } else if (collection.customerEntity === 'Consumer') {
       return <Form.Input label="IDV Status" defaultValue="idv" />;
     }
+  };
+
+  const currencyFormatter = (currency) => {
+    return 'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  };
+
+  const repNumber = (num) => {
+    return num ? `tel:${num}` : '';
   };
 
   let content;
@@ -117,14 +126,14 @@ export const Collection = (props) => {
             label="Credit Limit"
             id="form-input-control-creditLimit"
             readOnly
-            defaultValue={collection.creditLimit}
+            defaultValue={currencyFormatter(collection.creditLimit)}
           />
           <Form.Input
             fluid
             label="Total Balance"
             id="form-input-control-totalBalance"
             readOnly
-            defaultValue={collection.totalBalance}
+            defaultValue={currencyFormatter(collection.totalBalance)}
           />
         </Form.Group>
         <Form.Group widths="equal">
@@ -133,14 +142,14 @@ export const Collection = (props) => {
             label="Amount Due"
             id="form-input-control-amountDue"
             readOnly
-            defaultValue={collection.amountDue}
+            defaultValue={currencyFormatter(collection.amountDue)}
           />
           <Form.Input
             fluid
             label="Current Balance"
             id="form-input-control-currentBalance"
             readOnly
-            defaultValue={collection.currentBalance}
+            defaultValue={currencyFormatter(collection.currentBalance)}
           />
           <Form.Input
             fluid
@@ -156,21 +165,21 @@ export const Collection = (props) => {
             label="30 Days"
             id="form-input-control-days30"
             readOnly
-            defaultValue={collection.days30}
+            defaultValue={currencyFormatter(collection.days30)}
           />
           <Form.Input
             fluid
             label="60 Days"
             id="form-input-control-days60"
             readOnly
-            defaultValue={collection.days60}
+            defaultValue={currencyFormatter(collection.days60)}
           />
           <Form.Input
             fluid
             label="90 Days"
             id="form-input-control-days90"
             readOnly
-            defaultValue={collection.days90}
+            defaultValue={currencyFormatter(collection.days90)}
           />
         </Form.Group>
         <Form.Group widths="equal">
@@ -179,28 +188,28 @@ export const Collection = (props) => {
             label="120 Days"
             id="form-input-control-days120"
             readOnly
-            defaultValue={collection.days120}
+            defaultValue={currencyFormatter(collection.days120)}
           />
           <Form.Input
             fluid
             label="150 Days"
             id="form-input-control-days150"
             readOnly
-            defaultValue={collection.days150}
+            defaultValue={currencyFormatter(collection.days150)}
           />
           <Form.Input
             fluid
             label="180 Days"
             id="form-input-control-days180"
             readOnly
-            defaultValue={collection.days180}
+            defaultValue={currencyFormatter(collection.days180)}
           />
           <Form.Input
             fluid
             label="+180 Days"
             id="form-input-control-days180Over"
             readOnly
-            defaultValue={collection.days180Over}
+            defaultValue={currencyFormatter(collection.days180Over)}
           />
         </Form.Group>
         <Form.Group widths="equal">
@@ -225,14 +234,16 @@ export const Collection = (props) => {
             label="Last Payment Date"
             id="form-input-control-lastPaymentDate"
             readOnly
-            defaultValue={collection.lastPaymentDate}
+            defaultValue={moment(collection.lastPaymentDate).format(
+              'YYYY-MM-DD'
+            )}
           />
           <Form.Input
             fluid
             label="Last Payment Amount"
             id="form-input-control-lastPaymentAmount"
             readOnly
-            defaultValue={collection.lastPaymentAmount}
+            defaultValue={currencyFormatter(collection.lastPaymentAmount)}
           />
         </Form.Group>
         <Form.Group widths="equal">
@@ -241,21 +252,25 @@ export const Collection = (props) => {
             label="Last PTP Date"
             id="form-input-control-ptpDate"
             readOnly
-            defaultValue={collection.ptpDate}
+            defaultValue={moment(collection.ptpDate).format('YYYY-MM-DD')}
           />
           <Form.Input
             fluid
             label="Last PTP Amount"
             id="form-input-control-ptpAmount"
             readOnly
-            defaultValue={collection.lastPTPAmount}
+            defaultValue={currencyFormatter(collection.lastPTPAmount)}
           />
+        </Form.Group>
+        <Form.Group widths="equal">
           <Form.Input
             fluid
             label="Next Visit Date and Time"
             id="form-input-control-nextVisitDateTime"
             readOnly
-            defaultValue={collection.nextVisitDateTime}
+            defaultValue={moment(collection.nextVisitDateTime).format(
+              'YYYY-MM-DD HH:mm'
+            )}
           />
           <Form.Input
             fluid
@@ -264,10 +279,132 @@ export const Collection = (props) => {
             readOnly
             defaultValue={collection.representativeName}
           />
+          <Form.Input
+            fluid
+            label="Representative Number"
+            id="form-input-control-representativeNumber"
+            readOnly
+            defaultValue={repNumber(collection.representativeNumber)}
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="Contacts to go here"
+            id="form-input-control-representativeName"
+            readOnly
+            defaultValue="Contacts to go here"
+          />
+        </Form.Group>
+
+        {/* --------------------------------------------- Outcome History section ------------------------------------------------------- */}
+
+        <Form.Group widths="equal">
+          <Form.TextArea
+            label="Outcome History"
+            id="form-input-control-outcomes"
+            readOnly
+            defaultValue={collection.outcomes}
+          />
+        </Form.Group>
+
+        {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
+
+        <Form.Group widths="equal">
+          <Form.TextArea
+            label="Transaction Type"
+            id="form-input-control-outcomes"
+            readOnly
+            defaultValue="transaction type list"
+          />
+          <Form.Input
+            fluid
+            label="Number Called"
+            id="form-input-control-numberCalled"
+            readOnly
+            defaultValue={collection.numberCalled}
+          />
+          <Form.Input
+            fluid
+            label="Email Used"
+            id="form-input-control-emailUsed"
+            readOnly
+            defaultValue={collection.emailUsed}
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="PTP Date"
+            id="form-input-control-emailUsed"
+            defaultValue="handlePTPDate"
+          />
+          <Form.Input
+            fluid
+            label="PTP Amount"
+            id="form-input-control-ptpAmount"
+            defaultValue="onValueChanged ptpAmount"
+          />
+          <Form.Input
+            fluid
+            label="Outcome Resolution"
+            id="form-input-control-resolution"
+            defaultValue="resolution change selection list"
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="Debit Resubmission Date"
+            id="form-input-control-debitResubmissionDate"
+            defaultValue="handleDebitDate"
+          />
+          <Form.Input
+            fluid
+            label="Debit Resubmission Amount"
+            id="form-input-control-debitResubmissionAmount"
+            defaultValue="onValueChanged debitResubmissionAmount"
+          />
+          <Form.Input
+            fluid
+            label="Pend Reason"
+            id="form-input-control-pendReason"
+            defaultValue="pendReason change selection list"
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="KAM Case Notes or Outcome Notes"
+            id="form-input-control-outcomeNotes"
+            defaultValue="handleoutcomeNotes"
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="Next Visit Date and Time"
+            id="form-input-control-nextVisitDateTime"
+            defaultValue="handlenextVisitDateTime"
+          />
+          <Form.Input
+            fluid
+            label="Assignment"
+            id="form-input-control-currentAssignment"
+            defaultValue="onValueChanged currentAssignment userList"
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            fluid
+            label="Next Steps"
+            id="form-input-control-nextSteps"
+            defaultValue="handlenextSteps"
+          />
         </Form.Group>
       </Form>
     );
   }
 
-  return <Container fluid>{content}</Container>;
+  return <Container>{content}</Container>;
 };

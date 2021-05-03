@@ -8,6 +8,8 @@ import { fetchCollections, selectAllCollections } from './collectionsSlice';
 export const Collections = () => {
   const dispatch = useDispatch();
   const collections = useSelector(selectAllCollections);
+  console.log('collections: ', collections);
+
   const collectionsStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
 
