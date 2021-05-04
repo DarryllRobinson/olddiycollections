@@ -93,7 +93,19 @@ export const Outcomes = (props) => {
   if (outcomesStatus === 'succeeded') {
     content = (
       <Form.Group widths="equal">
-        <Form.TextArea>{outcomesBundle}</Form.TextArea>
+        <Form.TextArea
+          label="Outcomes History"
+          id="form-input-control-outcomesHistory"
+          rows="10"
+          readOnly
+          defaultValue={outcomesBundle}
+        />
+      </Form.Group>
+    );
+  } else if (outcomesStatus === 'error') {
+    content = (
+      <Form.Group widths="equal">
+        <Form.TextArea>{error}</Form.TextArea>
       </Form.Group>
     );
   }
