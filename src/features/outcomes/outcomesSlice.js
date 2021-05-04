@@ -1,7 +1,6 @@
 import {
   createAsyncThunk,
   createEntityAdapter,
-  createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
 
@@ -23,10 +22,10 @@ export const fetchOutcomes = createAsyncThunk(
   }
 );
 
-export const fetchOutcome = createAsyncThunk(
+export const fetchOutcomesByCase = createAsyncThunk(
   'outcomes/fetchOutcome',
   async (outcome_id) => {
-    const response = await client.get(`/outcome/${outcome_id}`);
+    const response = await client.get(`/outcomes/${outcome_id}`);
     console.log(response);
     return response;
   }
@@ -48,14 +47,15 @@ const outcomesSlice = createSlice({
       state.status = 'failed';
       state.error = payload;
     },
-    [fetchOutcome.pending]: (state, { payload }) => {
+    [fetchOutcomesByCase.pending]: (state, { payload }) => {
+      console.log('trying fetchOutcomeByCase');
       state.status = 'loading';
     },
-    [fetchOutcome.fulfilled]: (state, { payload }) => {
+    [fetchOutcomesByCase.fulfilled]: (state, { payload }) => {
       state.status = 'succeeded';
       outcomesAdapter.upsertMany(state, payload);
     },
-    [fetchOutcome.rejected]: (state, { payload }) => {
+    [fetchOutcomesByCase.rejected]: (state, { payload }) => {
       state.status = 'failed';
       state.error = payload;
     },
@@ -65,12 +65,6 @@ const outcomesSlice = createSlice({
 export default outcomesSlice.reducer;
 
 export const {
-  selectAll: selectAllOutcomes,
+  selectAll: selectAllOutcomesByCase,
   selectById: selectOutcomeById,
 } = outcomesAdapter.getSelectors((state) => state.outcomes);
-
-export const selectOutcomesByCase = createSelector(
-  [selectAllOutcomes, (state, caseId) => caseId],
-  (outcomes, caseId) =>
-    outcomes.filter((outcome) => outcome.f_caseId === caseId)
-);

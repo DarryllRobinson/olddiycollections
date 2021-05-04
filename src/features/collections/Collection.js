@@ -4,7 +4,7 @@ import { Card, Container, Form, Input } from 'semantic-ui-react';
 import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
-import { selectOutcomesByCase } from '../outcomes/outcomesSlice';
+import { Outcomes } from '../outcomes/Outcomes';
 
 export const Collection = (props) => {
   const { id } = props.match.params;
@@ -17,9 +17,9 @@ export const Collection = (props) => {
 
   useEffect(() => {
     if (collectionStatus === 'idle') {
-      dispatch(fetchCollection());
+      dispatch(fetchCollection(id));
     }
-  }, [dispatch, collectionStatus]);
+  }, [dispatch, collectionStatus, id]);
 
   // Preparing variables for rendering
   const regIdNumberRender = () => {
@@ -67,11 +67,6 @@ export const Collection = (props) => {
     return 'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
   };
 
-  const outcomesForCase = useSelector((state) =>
-    selectOutcomesByCase(state, id)
-  );
-  console.log('outcomesForCase: ', outcomesForCase);
-
   let content;
 
   if (collectionStatus === 'loading') {
@@ -82,6 +77,7 @@ export const Collection = (props) => {
     content = (
       <Card fluid>
         <Card.Header>Case Number {collection.caseNumber}</Card.Header>
+        <Outcomes id={id} />
         <Form>
           <Form.Group widths="equal">
             <Form.TextArea
