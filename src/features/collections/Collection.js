@@ -4,6 +4,7 @@ import { Card, Container, Form, Input } from 'semantic-ui-react';
 import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
+import { selectOutcomesByCase } from '../outcomes/outcomesSlice';
 
 export const Collection = (props) => {
   const { id } = props.match.params;
@@ -65,6 +66,11 @@ export const Collection = (props) => {
   const currencyFormatter = (currency) => {
     return 'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
   };
+
+  const outcomesForCase = useSelector((state) =>
+    selectOutcomesByCase(state, id)
+  );
+  console.log('outcomesForCase: ', outcomesForCase);
 
   let content;
 
