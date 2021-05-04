@@ -77,7 +77,6 @@ export const Collection = (props) => {
     content = (
       <Card fluid>
         <Card.Header>Case Number {collection.caseNumber}</Card.Header>
-        <Outcomes id={id} />
         <Form>
           <Form.Group widths="equal">
             <Form.TextArea
@@ -327,14 +326,7 @@ export const Collection = (props) => {
 
           {/* --------------------------------------------- Outcome History section ------------------------------------------------------- */}
 
-          <Form.Group widths="equal">
-            <Form.TextArea
-              label="Outcome History"
-              id="form-input-control-outcomes"
-              readOnly
-              defaultValue={collection.outcomes}
-            />
-          </Form.Group>
+          <Outcomes id={id} />
 
           {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
 

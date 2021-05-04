@@ -48,7 +48,6 @@ const outcomesSlice = createSlice({
       state.error = payload;
     },
     [fetchOutcomesByCase.pending]: (state, { payload }) => {
-      console.log('trying fetchOutcomeByCase');
       state.status = 'loading';
     },
     [fetchOutcomesByCase.fulfilled]: (state, { payload }) => {
