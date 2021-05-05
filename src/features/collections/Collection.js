@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Container, Form, Input } from 'semantic-ui-react';
+import { Card, Container, Divider, Form, Input } from 'semantic-ui-react';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
@@ -8,7 +8,7 @@ import { fetchCollection, selectCollectionById } from './collectionsSlice';
 import { Outcomes } from '../outcomes/Outcomes';
 
 export const Collection = (props) => {
-  console.log('props', props);
+  //console.log('props', props);
   const [state, setState] = React.useState({
     currentAssignment: '',
     debitResubmissionAmount: '',
@@ -28,6 +28,7 @@ export const Collection = (props) => {
   });
 
   const { id } = props.match.params;
+  const { role } = props;
   //console.log('Collection id: ', id);
   const dispatch = useDispatch();
   const collection = useSelector((state) => selectCollectionById(state, id));
@@ -155,6 +156,28 @@ export const Collection = (props) => {
     { key: '3', text: 'Pend Reason 3', value: '3' },
   ];
 
+  const notesRender = () => {
+    if (role !== 'kam') {
+      return (
+        <Form.TextArea
+          id="form-input-control-outcomeNotes"
+          defaultValue={state.outcomeNotes}
+          label="Outcome Notes"
+          required
+        />
+      );
+    } else {
+      return (
+        <Form.TextArea
+          id="form-input-control-kamNotes"
+          defaultValue={state.kamNotes}
+          label="KAM Notes"
+          required
+        />
+      );
+    }
+  };
+
   // Handlers
   const handleChange = (evt) => {
     const value = evt.target.value;
@@ -263,6 +286,11 @@ export const Collection = (props) => {
                 {regIdNumberRender()}
                 {cipcIdvStatus()}
               </Form.Group>
+
+              <br />
+              <Divider horizontal>Account Information</Divider>
+              <br />
+
               <Form.Group widths="equal">
                 <Form.Input
                   fluid
@@ -311,22 +339,12 @@ export const Collection = (props) => {
                   options={accountStatusList}
                   value={state.accountStatus}
                 />
-
-                <Form.Select
-                  fluid
-                  id="form-input-control-transaction-type-select"
-                  label="Transaction Type"
-                  name="transactionType"
-                  onChange={handleSelect}
-                  options={transactionTypeOptions}
-                  placeholder="Transaction Type"
-                  required
-                  value={state.transactionType}
-                />
               </Form.Group>
 
               <br />
+              <Divider horizontal>Days on book</Divider>
               <br />
+
               <Form.Group widths="equal">
                 <Form.Input
                   fluid
@@ -382,7 +400,9 @@ export const Collection = (props) => {
               </Form.Group>
 
               <br />
+              <Divider horizontal>Payment Information</Divider>
               <br />
+
               <Form.Group widths="equal">
                 <Form.Input
                   fluid
@@ -435,7 +455,9 @@ export const Collection = (props) => {
               </Form.Group>
 
               <br />
+              <Divider horizontal>Follow-up Information</Divider>
               <br />
+
               <Form.Group widths="equal">
                 <Form.Input
                   fluid
@@ -592,20 +614,7 @@ export const Collection = (props) => {
                 required
               />
             </Form.Group>
-            <Form.Group widths="equal">
-              <Form.TextArea
-                rows="3"
-                label="KAM Case Notes or Outcome Notes"
-                id="form-input-control-outcomeNotes"
-                defaultValue="handleoutcomeNotes"
-              />
-              <Form.Input
-                fluid
-                label="KAM Case Notes or Outcome Notes"
-                id="form-input-control-outcomeNotes"
-                defaultValue="handleoutcomeNotes"
-              />
-            </Form.Group>
+            <Form.Group widths="equal">{notesRender()}</Form.Group>
             <Form.Group widths="equal">
               <Form.Field
                 control={Input}
