@@ -35,11 +35,11 @@ export default class Security {
         );
       }*/
 
-      return true;
+      return { safe: true, role: decodedToken.role };
     } else {
       // There is no token so session is automatically invalid
       this.terminateSession();
-      return false;
+      return { safe: false, role: '' };
     }
   }
 
