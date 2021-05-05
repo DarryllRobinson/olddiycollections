@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Form } from 'semantic-ui-react';
+
 import { fetchUsers, selectAllUsers } from './usersSlice';
 
-export const UsersList = () => {
+export const UsersList = (props) => {
+  const { handleSelect } = props;
   const dispatch = useDispatch();
   const users = useSelector(selectAllUsers);
 
@@ -21,20 +23,43 @@ export const UsersList = () => {
   if (userStatus === 'loading') {
     content = <div className="loader">Loading...</div>;
   } else if (userStatus === 'succeeded') {
-    content = users.map((user) => (
-      <li key={user.id}>
-        <Link to={`/users/${user.id}`}>{user.firstName}</Link>
-      </li>
-    ));
+    let options = [];
+    users.map((user) =>
+      options.push({
+        key: user.id,
+        text: user.firstName,
+        value: user.firstName,
+      })
+    );
+
+    /*serviceList[0].map((service, i) =>
+                        options_customers.push({
+                            key: service.Id,
+                            text: service.Name,
+                            value: service.Name
+                         }))
+
+    content = users.map((user) => [
+      {
+        key: `${user.id}`,
+        text: `${user.firstName}`,
+        value: `${user.firstName}`,
+      },
+    ]);*/
+    content = options;
+    console.log('options: ', options);
   } else if (userStatus === 'error') {
     content = <div>{error}</div>;
   }
 
   return (
-    <section>
-      <h2>Users</h2>
-
-      <ul>{content}</ul>
-    </section>
+    <Form.Select
+      fluid
+      label="Assignment"
+      name="currentAssignment"
+      id="form-input-control-userlist"
+      onChange={handleSelect}
+      required
+    />
   );
 };

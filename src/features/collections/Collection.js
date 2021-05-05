@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
 import { Outcomes } from '../outcomes/Outcomes';
+import { UsersList } from '../users/UsersList';
 
 export const Collection = (props) => {
   //console.log('props', props);
@@ -636,6 +637,7 @@ export const Collection = (props) => {
                 value={state.currentAssignment}
                 required
               />
+              <UsersList handleSelect={handleSelect} />
             </Form.Group>
             <Form.Group widths="equal">
               <Form.TextArea
