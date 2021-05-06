@@ -29,7 +29,7 @@ export const Collection = (props) => {
   });
 
   const { id } = props.match.params;
-  const { role } = props;
+  const { role, user } = props;
   //console.log('Collection id: ', id);
   const dispatch = useDispatch();
   const collection = useSelector((state) => selectCollectionById(state, id));
@@ -628,16 +628,7 @@ export const Collection = (props) => {
                   value={state.nextVisitDateTime}
                 />
               </Form.Field>
-              <Form.Input
-                fluid
-                label="Assignment"
-                name="currentAssignment"
-                id="form-input-control-currentAssignment"
-                onChange={handleChange}
-                value={state.currentAssignment}
-                required
-              />
-              <UsersList handleSelect={handleSelect} />
+              <UsersList handleSelect={handleSelect} user={user} />
             </Form.Group>
             <Form.Group widths="equal">
               <Form.TextArea

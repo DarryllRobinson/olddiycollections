@@ -5,7 +5,7 @@ import { Form } from 'semantic-ui-react';
 import { fetchUsers, selectAllUsers } from './usersSlice';
 
 export const UsersList = (props) => {
-  const { handleSelect } = props;
+  const { handleSelect, user } = props;
   const dispatch = useDispatch();
   const users = useSelector(selectAllUsers);
 
@@ -19,47 +19,33 @@ export const UsersList = (props) => {
   }, [userStatus, dispatch]);
 
   let content;
+  let options = [];
 
   if (userStatus === 'loading') {
     content = <div className="loader">Loading...</div>;
   } else if (userStatus === 'succeeded') {
-    let options = [];
     users.map((user) =>
       options.push({
         key: user.id,
         text: user.firstName,
-        value: user.firstName,
+        value: user.email,
       })
     );
-
-    /*serviceList[0].map((service, i) =>
-                        options_customers.push({
-                            key: service.Id,
-                            text: service.Name,
-                            value: service.Name
-                         }))
-
-    content = users.map((user) => [
-      {
-        key: `${user.id}`,
-        text: `${user.firstName}`,
-        value: `${user.firstName}`,
-      },
-    ]);*/
-    content = options;
-    console.log('options: ', options);
+    content = (
+      <Form.Select
+        defaultValue={user}
+        fluid
+        id="form-input-control-userlist"
+        label="Assignment"
+        name="currentAssignment"
+        onChange={handleSelect}
+        options={options}
+        required
+      />
+    );
   } else if (userStatus === 'error') {
     content = <div>{error}</div>;
   }
 
-  return (
-    <Form.Select
-      fluid
-      label="Assignment"
-      name="currentAssignment"
-      id="form-input-control-userlist"
-      onChange={handleSelect}
-      required
-    />
-  );
+  return <>{content}</>;
 };
