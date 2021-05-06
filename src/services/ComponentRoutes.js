@@ -12,6 +12,7 @@ import { Admin } from '../features/admin/Admin';
 import { Workspace } from '../features/workspace/Workspace';
 import { Collections } from '../features/collections/Collections';
 import { Collection } from '../features/collections/Collection';
+import { Contacts } from '../features/contacts/Contacts';
 
 export const ComponentRoutes = (props) => {
   const security = new Security();
@@ -27,6 +28,7 @@ export const ComponentRoutes = (props) => {
       <PrivateRoute exact path="/workspace" component={Workspace} />
       <PrivateRoute exact path="/collections" component={Collections} />
       <PrivateRoute exact path="/collection/:id" component={Collection} />
+      <PrivateRoute exact path="/contacts/:id" component={Contacts} />
     </>
   );
 };

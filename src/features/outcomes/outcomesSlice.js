@@ -26,7 +26,7 @@ export const fetchOutcomesByCase = createAsyncThunk(
   'outcomes/fetchOutcome',
   async (outcome_id) => {
     const response = await client.get(`/outcomes/${outcome_id}`);
-    console.log(response);
+    //console.log(response);
     return response;
   }
 );

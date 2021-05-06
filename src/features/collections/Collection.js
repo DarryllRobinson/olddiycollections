@@ -7,6 +7,7 @@ import moment from 'moment';
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
 import { Outcomes } from '../outcomes/Outcomes';
 import { UsersList } from '../users/UsersList';
+import { Contacts } from '../contacts/Contacts';
 
 export const Collection = (props) => {
   //console.log('props', props);
@@ -503,13 +504,7 @@ export const Collection = (props) => {
                 </Form.Field>
               </Form.Group>
               <Form.Group widths="equal">
-                <Form.Input
-                  fluid
-                  label="Contacts to go here"
-                  id="form-input-control-representativeName"
-                  readOnly
-                  defaultValue="Contacts to go here"
-                />
+                <Contacts id={collection.accountNumber} />
               </Form.Group>
             </Form>
           </Card.Content>

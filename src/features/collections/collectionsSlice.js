@@ -27,7 +27,7 @@ export const fetchCollection = createAsyncThunk(
   async (collection_id) => {
     console.log('collection_id: ', collection_id);
     const response = await client.get(`/collection/${collection_id}`);
-    console.log('fetchCollection response: ', response);
+    //console.log('fetchCollection response: ', response);
     return response;
   }
 );
