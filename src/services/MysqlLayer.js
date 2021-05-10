@@ -260,7 +260,7 @@ export default class MysqlLayer {
     msgObject.subject = 'ALERT! Error picked up!';
 
     await axios
-      .post(`${AppSettings.serverEndpoint}/admin/error_email`, msgObject)
+      .post(`${AppSettings.serverEndpoint}/error_email`, msgObject)
       .then((response) => {
         console.log('response: ', response);
       });

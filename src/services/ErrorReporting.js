@@ -20,6 +20,6 @@ export default class ErrorReporting {
     msgObject.to = 'darryll@thesystem.co.za';
     msgObject.subject = 'ALERT! Error picked up!';
 
-    this.mysqlLayer.Post(`/admin/error_email`, msgObject);
+    this.mysqlLayer.Post(`/error_email`, msgObject);
   }
 }

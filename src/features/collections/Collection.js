@@ -7,6 +7,8 @@ import {
   Divider,
   Form,
   Input,
+  Select,
+  TextArea,
 } from 'semantic-ui-react';
 import DateTime from 'react-datetime';
 import moment from 'moment';
@@ -56,10 +58,6 @@ export const Collection = (props) => {
       dispatch(fetchCollection(id));
     }
   }, [dispatch, collectionStatus, id]);
-
-  function handleSubmit() {
-    console.log('Current state: ', state);
-  }
 
   // Preparing variables for rendering
   const regIdNumberRender = () => {
@@ -243,12 +241,17 @@ export const Collection = (props) => {
   const cancelUpdate = () => {
     const newStatus =
       collection.currentStatus === 'Locked' ? 'Open' : collection.currentStatus;
-    console.log('newStatus', newStatus);
+    //console.log('newStatus', newStatus);
     const update = { id: id, currentStatus: newStatus, lockedDateTime: null };
 
     mysqlLayer.Put('/cases/case', update);
     history.push('/collections');
   };
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log('Current state: ', state);
+  }
 
   // Setting dates earlier than today as disabled for Next Date and Time
   const yesterday = DateTime.moment().subtract(1, 'day');
@@ -560,7 +563,8 @@ export const Collection = (props) => {
         <Card fluid>
           <Form>
             <Form.Group widths="equal">
-              <Form.Select
+              <Form.Field
+                control={Select}
                 fluid
                 id="form-input-control-transaction-type-select"
                 label="Transaction Type"
@@ -675,7 +679,17 @@ export const Collection = (props) => {
           </Form>
         </Card>
         <Card>
-          <Button content="Submit" onClick={handleSubmit} />
+          <Button
+            content="Submit"
+            disabled={
+              !state.currentAssignment ||
+              !state.nextSteps ||
+              !state.nextVisitDateTime ||
+              !state.resolution ||
+              !state.transactionType
+            }
+            onClick={handleSubmit}
+          />
           <Button content="Pend" onClick={handleSubmit} />
           <Button content="Cancel" onClick={cancelUpdate} />
           <Button content="Close" onClick={handleSubmit} />
