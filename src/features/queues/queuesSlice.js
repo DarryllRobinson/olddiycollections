@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const queuesAdapter = createEntityAdapter();
 
@@ -15,7 +16,7 @@ const initialState = queuesAdapter.getInitialState({
 });
 
 export const fetchQueues = createAsyncThunk('queues/fetchQueues', async () => {
-  const response = await this.mysqlLayer.Get('/queues');
+  const response = await mysqlLayer.Get('/queues');
   //console.log(response);
   return response;
 });

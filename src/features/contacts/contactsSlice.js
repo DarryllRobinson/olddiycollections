@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const contactsAdapter = createEntityAdapter();
 
@@ -17,7 +18,7 @@ const initialState = contactsAdapter.getInitialState({
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchContacts',
   async (id) => {
-    const response = await this.mysqlLayer.Get(`/contacts/${id}`);
+    const response = await mysqlLayer.Get(`/contacts/${id}`);
     //console.log(response);
     return response;
   }
@@ -26,7 +27,7 @@ export const fetchContacts = createAsyncThunk(
 export const editContact = createAsyncThunk(
   '/contacts/editContact',
   async (contact) => {
-    const response = await this.mysqlLayer.Put(`/contacts/contact`, {
+    const response = await mysqlLayer.Put(`/contacts/contact`, {
       contact: contact,
     });
     console.log('editContact: ', response);

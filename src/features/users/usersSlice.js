@@ -8,6 +8,7 @@ import history from '../../history';
 
 import Security from '../../services/Security';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 //import { client } from '../../api/client';
 
@@ -20,19 +21,19 @@ const initialState = usersAdapter.getInitialState({
 });
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  const response = await this.mysqlLayer.Get('/users');
+  const response = await mysqlLayer.Get('/users');
   return response;
 });
 
 export const fetchUser = createAsyncThunk('users/fetchUser', async (userId) => {
-  const response = await this.mysqlLayer.Get(`/users/${userId}`);
+  const response = await mysqlLayer.Get(`/users/${userId}`);
   return response;
 });
 
 export const addNewUser = createAsyncThunk(
   'users/addNewUser',
   async (initialUser) => {
-    const response = await this.mysqlLayer.Post('/users', {
+    const response = await mysqlLayer.Post('/users', {
       user: initialUser,
     });
     return response.user;
@@ -40,7 +41,7 @@ export const addNewUser = createAsyncThunk(
 );
 
 export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
-  const response = await this.mysqlLayer.Post('/users/login', user);
+  const response = await mysqlLayer.PostLogin('/users/login', user);
   //console.log(response);
   security.writeLoginSession(response.user[0].refreshToken);
   history.push('/dashboard');

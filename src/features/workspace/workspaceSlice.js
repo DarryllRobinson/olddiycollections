@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const workspaceAdapter = createEntityAdapter();
 
@@ -17,7 +18,7 @@ const initialState = workspaceAdapter.getInitialState({
 export const fetchWorkspace = createAsyncThunk(
   'workspace/fetchWorkspace',
   async () => {
-    const response = await this.mysqlLayer.Get('/workspace');
+    const response = await mysqlLayer.Get('/workspace');
     //console.log(response);
     return response;
   }

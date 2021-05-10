@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AppSettings from './appSettings';
-import Authentication from './authentication.service';
+import Authentication from './Authentication';
 import moment from 'moment';
 
 export default class MysqlLayer {
@@ -18,7 +18,7 @@ export default class MysqlLayer {
 
   // Get route
   async Get(path) {
-    this.security.validateSession();
+    //this.security.validateSession();
 
     try {
       //console.log(`Getting from ${AppSettings.serverEndpoint}${path}`);
@@ -50,7 +50,7 @@ export default class MysqlLayer {
 
   // Post route
   async Post(path, object) {
-    this.security.validateSession();
+    //this.security.validateSession();
 
     try {
       //console.log(`Posting to ${AppSettings.serverEndpoint}${path}`);
@@ -60,7 +60,7 @@ export default class MysqlLayer {
         this.setHeaders()
       );
       //console.log('response: ', response);
-      return response;
+      return response.data;
     } catch (e) {
       console.log('e: ', e);
       this.sendMessage({
@@ -94,8 +94,8 @@ export default class MysqlLayer {
         `${AppSettings.serverEndpoint}${path}`,
         object
       );
-      //console.log('user: ', user);
-      return user;
+      console.log('user: ', user);
+      return user.data;
     } catch (e) {
       console.log('e: ', e);
       this.sendMessage({
@@ -130,7 +130,7 @@ export default class MysqlLayer {
         this.setHeaders()
       );
       console.log('response: ', response);
-      return response;
+      return response.data;
     } catch (e) {
       console.log('e: ', e);
       this.sendMessage({
@@ -155,7 +155,7 @@ export default class MysqlLayer {
 
   // Put route
   async Put(path, object) {
-    this.security.validateSession();
+    //this.security.validateSession();
 
     try {
       //console.log(`Putting into ${AppSettings.serverEndpoint}${path}`);
@@ -189,7 +189,7 @@ export default class MysqlLayer {
 
   // Delete route
   async Delete(path) {
-    this.security.validateSession();
+    //this.security.validateSession();
 
     try {
       //console.log(`Deleting from ${AppSettings.serverEndpoint}${path}`);
@@ -223,7 +223,7 @@ export default class MysqlLayer {
     const https = require('https');
     // return authorization header with jwt token
     const currentUser = this.authentication.retrieveUser();
-    console.log('currentUser: ', currentUser);
+    //console.log('currentUser: ', currentUser);
     let token = currentUser ? currentUser : null;
     //console.log('token: ', token);
     let user = sessionStorage.getItem('cwsUser');

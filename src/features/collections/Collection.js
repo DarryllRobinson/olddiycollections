@@ -16,6 +16,9 @@ import { Outcomes } from '../outcomes/Outcomes';
 import { UsersList } from '../users/UsersList';
 import { Contacts } from '../contacts/Contacts';
 
+import MysqlLayer from '../../services/MysqlLayer';
+import history from '../../history';
+
 export const Collection = (props) => {
   //console.log('props', props);
   const [state, setState] = React.useState({
@@ -35,6 +38,9 @@ export const Collection = (props) => {
     resolution: '',
     transactionType: '',
   });
+
+  //const [prevStatus, setPrevStatus] = React.useState('Open');
+  const mysqlLayer = new MysqlLayer();
 
   const { id } = props.match.params;
   const { role, user } = props;
@@ -234,6 +240,16 @@ export const Collection = (props) => {
     setState({ ...state, [name]: value });
   };
 
+  const cancelUpdate = () => {
+    const newStatus =
+      collection.currentStatus === 'Locked' ? 'Open' : collection.currentStatus;
+    console.log('newStatus', newStatus);
+    const update = { id: id, currentStatus: newStatus, lockedDateTime: null };
+
+    mysqlLayer.Put('/cases/case', update);
+    history.push('/collections');
+  };
+
   // Setting dates earlier than today as disabled for Next Date and Time
   const yesterday = DateTime.moment().subtract(1, 'day');
   const valid = function (current) {
@@ -247,15 +263,20 @@ export const Collection = (props) => {
   } else if (collectionStatus === 'failed') {
     content = <Form>{error}</Form>;
   } else if (collectionStatus === 'succeeded') {
-    const prevStatus =
-      collection.currentStatus !== undefined ? collection.currentStatus : 'Opn';
+    /*const prevStatus =
+      collection.currentStatus !== undefined
+        ? collection.currentStatus
+        : 'Open';
+    setPrevStatus(prevStatus);*/
 
     // lock the record so no other agent accidentally opens it
     const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     const update = {
+      id: id,
       currentStatus: 'Locked',
-      lockedDatetime: dateTime,
+      lockedDateTime: dateTime,
     };
+    mysqlLayer.Put('/cases/case', update);
 
     content = (
       <Container>
@@ -656,7 +677,7 @@ export const Collection = (props) => {
         <Card>
           <Button content="Submit" onClick={handleSubmit} />
           <Button content="Pend" onClick={handleSubmit} />
-          <Button content="Cancel" onClick={handleSubmit} />
+          <Button content="Cancel" onClick={cancelUpdate} />
           <Button content="Close" onClick={handleSubmit} />
         </Card>
       </Container>

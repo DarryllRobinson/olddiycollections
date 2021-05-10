@@ -62,7 +62,7 @@ export default class Security {
     //console.log('extendSession: ', user);
 
     const response = await this.mysqlLayer.Post('/users/refresh', user);
-    //console.log('extendSession response: ', response.user[0].refreshToken);
+    //console.log('extendSession response: ', response.data.user[0].refreshToken);
     sessionStorage.setItem('refreshToken', response.user[0].refreshToken);
   }
 

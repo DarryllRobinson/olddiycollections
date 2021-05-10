@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const workzoneAdapter = createEntityAdapter();
 
@@ -17,7 +18,7 @@ const initialState = workzoneAdapter.getInitialState({
 export const fetchWorkzone = createAsyncThunk(
   'workzone/fetchWorkzone',
   async () => {
-    const response = await MysqlLayer.Get('/workzone');
+    const response = await mysqlLayer.Get('/workzone');
     //console.log('workzone: ', response);
     return response;
   }

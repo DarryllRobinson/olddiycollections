@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const collectionsAdapter = createEntityAdapter();
 
@@ -17,7 +18,7 @@ const initialState = collectionsAdapter.getInitialState({
 export const fetchCollections = createAsyncThunk(
   'collections/fetchCollections',
   async () => {
-    const response = await MysqlLayer.Get('/collections');
+    const response = await mysqlLayer.Get('/collections');
     //console.log(response);
     return response;
   }
@@ -27,7 +28,7 @@ export const fetchCollection = createAsyncThunk(
   'collections/fetchCollection',
   async (collection_id) => {
     console.log('collection_id: ', collection_id);
-    const response = await MysqlLayer.Get(`/collection/${collection_id}`);
+    const response = await mysqlLayer.Get(`/collection/${collection_id}`);
     //console.log('fetchCollection response: ', response);
     return response;
   }

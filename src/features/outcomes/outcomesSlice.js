@@ -6,6 +6,7 @@ import {
 
 //import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 const outcomesAdapter = createEntityAdapter();
 
@@ -17,7 +18,7 @@ const initialState = outcomesAdapter.getInitialState({
 export const fetchOutcomes = createAsyncThunk(
   'outcomes/fetchOutcomes',
   async () => {
-    const response = await this.mysqlLayer.Get('/outcomes');
+    const response = await mysqlLayer.Get('/outcomes');
     //console.log(response);
     return response;
   }
@@ -26,7 +27,7 @@ export const fetchOutcomes = createAsyncThunk(
 export const fetchOutcomesByCase = createAsyncThunk(
   'outcomes/fetchOutcome',
   async (outcome_id) => {
-    const response = await this.mysqlLayer.Get(`/outcomes/${outcome_id}`);
+    const response = await mysqlLayer.Get(`/outcomes/${outcome_id}`);
     //console.log(response);
     return response;
   }

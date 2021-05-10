@@ -30,6 +30,8 @@ class Reports extends React.Component {
         },
       },
     };
+
+    this.mysqlLayer = new MysqlLayer();
   }
 
   componentDidMount() {
