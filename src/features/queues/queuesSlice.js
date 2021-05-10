@@ -4,7 +4,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 const queuesAdapter = createEntityAdapter();
 
@@ -14,7 +15,7 @@ const initialState = queuesAdapter.getInitialState({
 });
 
 export const fetchQueues = createAsyncThunk('queues/fetchQueues', async () => {
-  const response = await client.get('/queues');
+  const response = await this.mysqlLayer.Get('/queues');
   //console.log(response);
   return response;
 });

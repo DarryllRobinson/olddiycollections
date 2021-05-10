@@ -1,10 +1,13 @@
 import jwtDecode from 'jwt-decode';
-import { client } from '../api/client';
+import MysqlLayer from './MysqlLayer';
+//import { client } from '../api/client';
 //import moment from 'moment';
 
 import history from '../history';
 
 export default class Security {
+  mysqlLayer = new MysqlLayer();
+
   writeLoginSession(refreshToken) {
     //sessionStorage.setItem('token', response.token);
     sessionStorage.setItem('refreshToken', refreshToken);
@@ -58,7 +61,7 @@ export default class Security {
     };
     //console.log('extendSession: ', user);
 
-    const response = await client.post('/users/refresh', user);
+    const response = await this.mysqlLayer.Post('/users/refresh', user);
     //console.log('extendSession response: ', response.user[0].refreshToken);
     sessionStorage.setItem('refreshToken', response.user[0].refreshToken);
   }

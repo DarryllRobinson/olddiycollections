@@ -4,7 +4,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 const outcomesAdapter = createEntityAdapter();
 
@@ -16,7 +17,7 @@ const initialState = outcomesAdapter.getInitialState({
 export const fetchOutcomes = createAsyncThunk(
   'outcomes/fetchOutcomes',
   async () => {
-    const response = await client.get('/outcomes');
+    const response = await this.mysqlLayer.Get('/outcomes');
     //console.log(response);
     return response;
   }
@@ -25,7 +26,7 @@ export const fetchOutcomes = createAsyncThunk(
 export const fetchOutcomesByCase = createAsyncThunk(
   'outcomes/fetchOutcome',
   async (outcome_id) => {
-    const response = await client.get(`/outcomes/${outcome_id}`);
+    const response = await this.mysqlLayer.Get(`/outcomes/${outcome_id}`);
     //console.log(response);
     return response;
   }

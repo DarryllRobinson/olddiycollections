@@ -4,7 +4,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 const collectionsAdapter = createEntityAdapter();
 
@@ -16,7 +17,7 @@ const initialState = collectionsAdapter.getInitialState({
 export const fetchCollections = createAsyncThunk(
   'collections/fetchCollections',
   async () => {
-    const response = await client.get('/collections');
+    const response = await MysqlLayer.Get('/collections');
     //console.log(response);
     return response;
   }
@@ -26,7 +27,7 @@ export const fetchCollection = createAsyncThunk(
   'collections/fetchCollection',
   async (collection_id) => {
     console.log('collection_id: ', collection_id);
-    const response = await client.get(`/collection/${collection_id}`);
+    const response = await MysqlLayer.Get(`/collection/${collection_id}`);
     //console.log('fetchCollection response: ', response);
     return response;
   }

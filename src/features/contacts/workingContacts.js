@@ -5,9 +5,51 @@ import moment from 'moment';
 
 import { fetchContacts, editContact, selectAllContacts } from './contactsSlice';
 
+import { PopUp } from '../../utils/Modal';
+
 export const Contacts = (props) => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  //console.log('Contacts', props);
   const { id, user } = props;
+  const contacts = useSelector(selectAllContacts);
+  console.log('contacts: ', contacts);
+
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  /*const [state, setState] = React.useState({
+    primaryContactName: contacts.primaryContactName,
+    primaryContactNumber: '',
+    primaryContactEmail: '',
+    representativeName: contacts.representativeName,
+    representativeNumber: '',
+    representativeEmail: '',
+    alternativeRepName: '',
+    alternativeRepNumber: '',
+    alternativeRepEmail: '',
+    otherNumber1: '',
+    otherNumber2: '',
+    otherNumber3: '',
+    otherNumber4: '',
+    otherNumber5: '',
+    otherNumber6: '',
+    otherNumber7: '',
+    otherNumber8: '',
+    otherNumber9: '',
+    otherNumber10: '',
+    otherEmail1: '',
+    otherEmail2: '',
+    otherEmail3: '',
+    otherEmail4: '',
+    otherEmail5: '',
+    otherEmail6: '',
+    otherEmail7: '',
+    otherEmail8: '',
+    otherEmail9: '',
+    otherEmail10: '',
+    dnc1: '',
+    dnc2: '',
+    dnc3: '',
+    dnc4: '',
+    dnc5: '',
+  });*/
 
   const dispatch = useDispatch();
 
@@ -20,9 +62,7 @@ export const Contacts = (props) => {
     }
   }, [contactsStatus, dispatch, id]);
 
-  const contacts = useSelector(selectAllContacts);
   const [state, setState] = React.useState(contacts);
-  console.log('contacts: ', contacts);
   console.log('Current state: ', state);
 
   // Handlers

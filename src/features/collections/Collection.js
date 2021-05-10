@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Container, Divider, Form, Input } from 'semantic-ui-react';
+import {
+  Button,
+  Card,
+  Container,
+  Divider,
+  Form,
+  Input,
+} from 'semantic-ui-react';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
@@ -240,6 +247,16 @@ export const Collection = (props) => {
   } else if (collectionStatus === 'failed') {
     content = <Form>{error}</Form>;
   } else if (collectionStatus === 'succeeded') {
+    const prevStatus =
+      collection.currentStatus !== undefined ? collection.currentStatus : 'Opn';
+
+    // lock the record so no other agent accidentally opens it
+    const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    const update = {
+      currentStatus: 'Locked',
+      lockedDatetime: dateTime,
+    };
+
     content = (
       <Container>
         <Card raised centered fluid style={{ padding: '15px' }}>
@@ -503,10 +520,9 @@ export const Collection = (props) => {
                   </a>
                 </Form.Field>
               </Form.Group>
-              <Form.Group widths="equal">
-                <Contacts id={collection.accountNumber} />
-              </Form.Group>
+              <Form.Group widths="equal"></Form.Group>
             </Form>
+            <Contacts id={collection.accountNumber} user={user} />
           </Card.Content>
         </Card>
         {/* --------------------------------------------- Outcome History section ------------------------------------------------------- */}
@@ -521,7 +537,7 @@ export const Collection = (props) => {
         {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
         <br />
         <Card fluid>
-          <Form onSubmit={handleSubmit}>
+          <Form>
             <Form.Group widths="equal">
               <Form.Select
                 fluid
@@ -554,7 +570,6 @@ export const Collection = (props) => {
                 value={state.emailUsed}
                 required
               />
-              <Form.Button content="Submit" />
             </Form.Group>
             <Form.Group widths="equal">
               <Form.Field control={Input} label="PTP Date" required>
@@ -635,7 +650,14 @@ export const Collection = (props) => {
                 required
               />
             </Form.Group>
+            <Form.Group widths="equal"></Form.Group>
           </Form>
+        </Card>
+        <Card>
+          <Button content="Submit" onClick={handleSubmit} />
+          <Button content="Pend" onClick={handleSubmit} />
+          <Button content="Cancel" onClick={handleSubmit} />
+          <Button content="Close" onClick={handleSubmit} />
         </Card>
       </Container>
     );

@@ -4,7 +4,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 const workspaceAdapter = createEntityAdapter();
 
@@ -16,7 +17,7 @@ const initialState = workspaceAdapter.getInitialState({
 export const fetchWorkspace = createAsyncThunk(
   'workspace/fetchWorkspace',
   async () => {
-    const response = await client.get('/workspace');
+    const response = await this.mysqlLayer.Get('/workspace');
     //console.log(response);
     return response;
   }

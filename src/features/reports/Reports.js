@@ -2,7 +2,8 @@ import React from 'react';
 import { Container, Grid } from 'semantic-ui-react';
 
 import CustomBar from './CustomBar';
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 class Reports extends React.Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class Reports extends React.Component {
       reportObject.data = null;
       this.setState({ ...this.state, reportObject });
 
-      const reportData = await client.get(`/reports/${report}`);
+      const reportData = await this.mysqlLayer.Get(`/reports/${report}`);
 
       reportObject.data = this.prepData(reportData);
       this.setState({ ...this.state, reportObject });

@@ -4,7 +4,8 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-import { client } from '../../api/client';
+//import { client } from '../../api/client';
+import MysqlLayer from '../../services/MysqlLayer';
 
 const workzoneAdapter = createEntityAdapter();
 
@@ -16,7 +17,7 @@ const initialState = workzoneAdapter.getInitialState({
 export const fetchWorkzone = createAsyncThunk(
   'workzone/fetchWorkzone',
   async () => {
-    const response = await client.get('/workzone');
+    const response = await MysqlLayer.Get('/workzone');
     //console.log('workzone: ', response);
     return response;
   }
