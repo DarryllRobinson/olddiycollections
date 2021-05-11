@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Form, Input, Select } from 'semantic-ui-react';
+import { Button, Card, Form, Input, Select } from 'semantic-ui-react';
 import DateTime from 'react-datetime';
 import moment from 'moment';
 
@@ -8,7 +8,7 @@ import history from '../../history';
 import { UsersList } from '../users/UsersList';
 
 export const CollectionForm = (props) => {
-  console.log('CollectionForm props', props);
+  //console.log('CollectionForm props', props);
   const mysqlLayer = new MysqlLayer();
 
   const {
@@ -20,6 +20,16 @@ export const CollectionForm = (props) => {
     transactionType,
     user,
   } = props;
+
+  /*this.setState(prevState => ({
+  food: {
+    ...prevState.food,           // copy all other key-value pairs of food object
+    pizza: {                     // specific object of food object
+      ...prevState.food.pizza,   // copy all pizza key-value pairs
+      extraCheese: true          // update value of specific key
+    }
+  }
+}))*/
 
   const [state, setState] = React.useState({
     fields: {
@@ -92,7 +102,7 @@ export const CollectionForm = (props) => {
           error: '',
           isError: false,
           rules: [],
-          value: '',
+          value: '123',
         },
         outcomeNotes: {
           error: '',
@@ -178,15 +188,23 @@ export const CollectionForm = (props) => {
 
   // Handlers
   const handleChange = (evt) => {
+    const name = evt.target.name; //.split('.')[0];
     console.log('evt.target.name', evt.target.name);
+    console.log('name', name);
     const value = evt.target.value;
-    setState(
-      {
-        ...state,
-        [evt.target.name]: value,
+    console.log('value', value);
+    setState((prevState) => ({
+      fields: {
+        ...prevState.fields,
+        entities: {
+          ...prevState.fields.entities,
+          [name]: {
+            ...prevState.fields.entities[name],
+            value: value,
+          },
+        },
       },
-      console.log('new state: ', state.fields.entities.numberCalled)
-    );
+    }));
   };
 
   const handlePTPDate = (evt) => {
@@ -266,13 +284,15 @@ export const CollectionForm = (props) => {
           <Form.Input
             fluid
             id="form-input-control-numberCalled"
-            name="state.fields.entities.numberCalled.value"
+            name="numberCalled"
             label="Number Called"
             onChange={handleChange}
             type="text"
             value={state.fields.entities.numberCalled.value}
             required
           />
+          <div>numberCalled: {state.fields.entities.numberCalled.value}</div>
+          <Button type="submit">Submit</Button>
           <Form.Input
             fluid
             label="Email Used"

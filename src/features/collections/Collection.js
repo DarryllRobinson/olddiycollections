@@ -181,9 +181,9 @@ export const Collection = (props) => {
     content = <Form>{error}</Form>;
   } else if (collectionStatus === 'succeeded') {
     // What does our state look like?
-    const fieldList = state.fields.ids;
-    console.log('fieldList: ', fieldList);
-    console.log('emailUsed: ', state.fields.entities['emailUsed']);
+    //  const fieldList = state.fields.ids;
+    //  console.log('fieldList: ', fieldList);
+    //  console.log('emailUsed: ', state.fields.entities['emailUsed']);
 
     // lock the record so no other agent accidentally opens it
     const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
