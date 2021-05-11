@@ -22,8 +22,8 @@ export const Contacts = (props) => {
 
   const contacts = useSelector(selectAllContacts);
   const [state, setState] = React.useState(contacts);
-  console.log('contacts: ', contacts);
-  console.log('Current state: ', state);
+  //console.log('contacts: ', contacts);
+  //console.log('Current state: ', state);
 
   // Handlers
   const handleClick = (e, titleProps) => {

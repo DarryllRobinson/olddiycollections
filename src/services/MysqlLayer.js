@@ -94,7 +94,7 @@ export default class MysqlLayer {
         `${AppSettings.serverEndpoint}${path}`,
         object
       );
-      console.log('user: ', user);
+      //console.log('user: ', user);
       return user.data;
     } catch (e) {
       console.log('e: ', e);

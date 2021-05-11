@@ -14,7 +14,7 @@ export default class Security {
   }
 
   validateSession(component) {
-    console.log(component + ' is calling validateSession');
+    //console.log(component + ' is calling validateSession');
     let refreshToken = sessionStorage.getItem('refreshToken');
     //console.log('refreshToken for validateSession: ', refreshToken);
 

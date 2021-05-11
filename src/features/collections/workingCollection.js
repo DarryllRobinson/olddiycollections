@@ -7,19 +7,39 @@ import {
   Divider,
   Form,
   Input,
+  Select,
+  TextArea,
 } from 'semantic-ui-react';
+import DateTime from 'react-datetime';
 import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
 import { Outcomes } from '../outcomes/Outcomes';
+import { UsersList } from '../users/UsersList';
 import { Contacts } from '../contacts/Contacts';
-import { CollectionForm } from './CollectionForm';
 
 import MysqlLayer from '../../services/MysqlLayer';
 import history from '../../history';
 
 export const Collection = (props) => {
   //console.log('props', props);
+  const [state, setState] = React.useState({
+    currentAssignment: '',
+    debitResubmissionAmount: '',
+    debitResubmissionDate: '',
+    emailUsed: '',
+    kamNotes: '',
+    nextSteps: '',
+    nextVisitDateTime: '',
+    numberCalled: '',
+    outcomeNotes: '',
+    pendReason: '',
+    ptpAmount: '',
+    ptpDate: '',
+    regIdStatus: '',
+    resolution: '',
+    transactionType: '',
+  });
 
   //const [prevStatus, setPrevStatus] = React.useState('Open');
   const mysqlLayer = new MysqlLayer();
@@ -32,49 +52,12 @@ export const Collection = (props) => {
 
   const collectionStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
-  console.log('collection: ', collection);
 
   useEffect(() => {
     if (collectionStatus === 'idle') {
       dispatch(fetchCollection(id));
     }
   }, [dispatch, collectionStatus, id]);
-
-  const [state, setState] = React.useState({
-    fields: {
-      ids: [
-        'currentAssignment',
-        'debitResubmissionAmount',
-        'debitResubmissionDate',
-        'emailUsed',
-        'kamNotes',
-        'nextSteps',
-        'nextVisitDateTime',
-        'numberCalled',
-        'outcomeNotes',
-        'pendReason',
-        'ptpAmount',
-        'ptpDate',
-        'regIdStatus',
-        'resolution',
-        'transactionType',
-      ],
-      entities: {
-        currentAssignment: {
-          error: '',
-          isError: false,
-          rules: [],
-          value: '',
-        },
-        emailUsed: {
-          error: '',
-          isError: false,
-          rules: [],
-          value: '',
-        },
-      },
-    },
-  });
 
   // Preparing variables for rendering
   const regIdNumberRender = () => {
@@ -146,11 +129,108 @@ export const Collection = (props) => {
     { key: 's', text: 'Suspended', value: 'Suspended' },
   ];
 
+  const transactionTypeOptions = [
+    { key: 'a', text: 'Admin', value: 'Admin' },
+    { key: 'c', text: 'Call', value: 'Call' },
+    { key: 'e', text: 'Email', value: 'Email' },
+  ];
+
   const currencyFormatter = (currency) => {
     return 'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
   };
 
+  const resolutionOptions = [
+    {
+      key: 'callback',
+      text: 'Customer requested a callback',
+      value: 'Customer requested a callback',
+    },
+    {
+      key: 'info',
+      text: 'Customer requested additional information',
+      value: 'Customer requested additional information',
+    },
+    {
+      key: 'payment',
+      text: 'Payment already made',
+      value: 'Payment already made',
+    },
+    { key: 'ptp', text: 'Customer made PTP', value: 'Customer made PTP' },
+    {
+      key: 'dispute',
+      text: 'Customer disputed account',
+      value: 'Customer disputed account',
+    },
+  ];
+
+  const pendReasonOptions = [
+    { key: '1', text: 'Pend Reason 1', value: '1' },
+    { key: '2', text: 'Pend Reason 2', value: '2' },
+    { key: '3', text: 'Pend Reason 3', value: '3' },
+  ];
+
+  const notesRender = () => {
+    if (role !== 'kam') {
+      return (
+        <Form.TextArea
+          id="form-input-control-outcomeNotes"
+          defaultValue={state.outcomeNotes}
+          label="Outcome Notes"
+          required
+        />
+      );
+    } else {
+      return (
+        <Form.TextArea
+          id="form-input-control-kamNotes"
+          defaultValue={state.kamNotes}
+          label="KAM Notes"
+          required
+        />
+      );
+    }
+  };
+
   // Handlers
+  const handleChange = (evt) => {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value,
+    });
+  };
+
+  const handlePTPDate = (evt) => {
+    if (typeof evt !== 'string') {
+      const ptpDate = moment(evt.toDate()).format('YYYY-MM-DD HH:mm:ss');
+      const followup = moment(evt.toDate())
+        .subtract(1, 'day')
+        .set({ hour: 8, minute: 0 })
+        .format('YYYY-MM-DD HH:mm:ss');
+
+      setState({ ...state, ptpDate: ptpDate, nextVisitDateTime: followup });
+    }
+  };
+
+  const handleDebitDate = (evt) => {
+    if (typeof evt !== 'string') {
+      const debitResubmissionDate = moment(evt.toDate()).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+
+      setState({ ...state, debitResubmissionDate: debitResubmissionDate });
+    }
+  };
+
+  const handleNVTDate = (evt) => {
+    if (typeof evt !== 'string') {
+      const nextVisitDateTime = moment(evt.toDate()).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+
+      setState({ ...state, nextVisitDateTime: nextVisitDateTime });
+    }
+  };
 
   const handleSelect = (evt, data) => {
     const { name, value } = data;
@@ -173,6 +253,12 @@ export const Collection = (props) => {
     console.log('Current state: ', state);
   }
 
+  // Setting dates earlier than today as disabled for Next Date and Time
+  const yesterday = DateTime.moment().subtract(1, 'day');
+  const valid = function (current) {
+    return current.isAfter(yesterday);
+  };
+
   let content;
 
   if (collectionStatus === 'loading') {
@@ -180,10 +266,11 @@ export const Collection = (props) => {
   } else if (collectionStatus === 'failed') {
     content = <Form>{error}</Form>;
   } else if (collectionStatus === 'succeeded') {
-    // What does our state look like?
-    const fieldList = state.fields.ids;
-    console.log('fieldList: ', fieldList);
-    console.log('emailUsed: ', state.fields.entities['emailUsed']);
+    /*const prevStatus =
+      collection.currentStatus !== undefined
+        ? collection.currentStatus
+        : 'Open';
+    setPrevStatus(prevStatus);*/
 
     // lock the record so no other agent accidentally opens it
     const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -473,14 +560,124 @@ export const Collection = (props) => {
 
         {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
         <br />
-        <CollectionForm
-          currentAssignment={collection.currentAssignment}
-          currentStatus={collection.currentStatus}
-          id={id}
-          regIdStatus={collection.regIdStatus}
-          role={role}
-          user={user}
-        />
+        <Card fluid>
+          <Form>
+            <Form.Group widths="equal">
+              <Form.Field
+                control={Select}
+                fluid
+                id="form-input-control-transaction-type-select"
+                label="Transaction Type"
+                name="transactionType"
+                onChange={handleSelect}
+                options={transactionTypeOptions}
+                placeholder="Transaction Type"
+                required
+                value={state.transactionType}
+              />
+              <Form.Input
+                fluid
+                id="form-input-control-numberCalled"
+                name="numberCalled"
+                label="Number Called"
+                onChange={handleChange}
+                type="number"
+                value={state.numberCalled}
+                required
+              />
+              <Form.Input
+                fluid
+                label="Email Used"
+                id="form-input-control-emailUsed"
+                name="emailUsed"
+                onChange={handleChange}
+                type="email"
+                value={state.emailUsed}
+                required
+              />
+            </Form.Group>
+            <Form.Group widths="equal">
+              <Form.Field control={Input} label="PTP Date" required>
+                <DateTime isValidDate={valid} onChange={handlePTPDate} />
+              </Form.Field>
+              <Form.Input
+                fluid
+                label="PTP Amount"
+                name="ptpAmount"
+                onChange={handleChange}
+                id="form-input-control-ptpAmount"
+                value={state.ptpAmount}
+                required
+              />
+              <Form.Select
+                fluid
+                id="form-input-control-resolution"
+                label="Outcome Resolution"
+                name="resolution"
+                onChange={handleSelect}
+                options={resolutionOptions}
+                required
+              />
+            </Form.Group>
+            <Form.Group widths="equal">
+              <Form.Field
+                control={Input}
+                label="Debit Resubmission Date"
+                required
+              >
+                <DateTime
+                  isValidDate={valid}
+                  onChange={handleDebitDate}
+                  value={state.debitResubmissionDate}
+                />
+              </Form.Field>
+              <Form.Input
+                fluid
+                label="Debit Resubmission Amount"
+                name="debitResubmissionAmount"
+                id="form-input-control-debitResubmissionAmount"
+                onChange={handleChange}
+                value={state.debitResubmissionAmount}
+                required
+              />
+              <Form.Select
+                fluid
+                label="Pend Reason"
+                name="pendReason"
+                options={pendReasonOptions}
+                id="form-input-control-pendReason"
+                onChange={handleSelect}
+                required
+              />
+            </Form.Group>
+            <Form.Group widths="equal">{notesRender()}</Form.Group>
+            <Form.Group widths="equal">
+              <Form.Field
+                control={Input}
+                label="Next Visit Date and Time"
+                required
+              >
+                <DateTime
+                  isValidDate={valid}
+                  onChange={handleNVTDate}
+                  value={state.nextVisitDateTime}
+                />
+              </Form.Field>
+              <UsersList handleSelect={handleSelect} user={user} />
+            </Form.Group>
+            <Form.Group widths="equal">
+              <Form.TextArea
+                label="Next Steps"
+                name="nextSteps"
+                id="form-input-control-nextSteps"
+                onChange={handleChange}
+                value={state.nextSteps}
+                required
+              />
+            </Form.Group>
+            <Form.Group widths="equal"></Form.Group>
+          </Form>
+        </Card>
         <Card>
           <Button
             content="Submit"
