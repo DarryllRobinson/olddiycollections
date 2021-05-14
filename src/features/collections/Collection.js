@@ -32,7 +32,7 @@ export const Collection = (props) => {
 
   const collectionStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
-  console.log('collection: ', collection);
+  //console.log('collection: ', collection);
 
   useEffect(() => {
     if (collectionStatus === 'idle') {
@@ -481,22 +481,6 @@ export const Collection = (props) => {
           role={role}
           user={user}
         />
-        <Card>
-          <Button
-            content="Submit"
-            disabled={
-              !state.currentAssignment ||
-              !state.nextSteps ||
-              !state.nextVisitDateTime ||
-              !state.resolution ||
-              !state.transactionType
-            }
-            onClick={handleSubmit}
-          />
-          <Button content="Pend" onClick={handleSubmit} />
-          <Button content="Cancel" onClick={cancelUpdate} />
-          <Button content="Close" onClick={handleSubmit} />
-        </Card>
       </Container>
     );
   }

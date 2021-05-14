@@ -2,14 +2,42 @@ import React from 'react';
 import { Button, Card, Form, Input, Select, TextArea } from 'semantic-ui-react';
 import DateTime from 'react-datetime';
 import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
 
 import MysqlLayer from '../../services/MysqlLayer';
 import history from '../../history';
-import { UsersList } from '../users/UsersList';
+import { fetchUsers, selectAllUsers } from '../users/usersSlice';
 
 export const CollectionForm = (props) => {
   //console.log('CollectionForm props', props);
   const mysqlLayer = new MysqlLayer();
+
+  const dispatch = useDispatch();
+  const users = useSelector(selectAllUsers);
+
+  const userStatus = useSelector((state) => state.users.status);
+  const error = useSelector((state) => state.users.error);
+
+  React.useEffect(() => {
+    if (userStatus === 'idle') {
+      dispatch(fetchUsers());
+    }
+  }, [userStatus, dispatch]);
+
+  let userOptions = [];
+  if (userStatus === 'loading') {
+    userOptions.push([{ key: 1, text: 'Loading', value: 'Loading' }]);
+  }
+  if (userStatus === 'succeeded') {
+    users.map((user) =>
+      userOptions.push({
+        key: user.id,
+        text: user.firstName,
+        value: user.email,
+      })
+    );
+    console.log('userOptions: ', userOptions);
+  }
 
   const {
     currentAssignment,
@@ -87,21 +115,6 @@ export const CollectionForm = (props) => {
     }));
   };
 
-  const setErrorMsg = (msg, name) => {
-    setState((prevState) => ({
-      fields: {
-        ...prevState.fields,
-        entities: {
-          ...prevState.fields.entities,
-          [name]: {
-            ...prevState.fields.entities[name],
-            error: msg,
-          },
-        },
-      },
-    }));
-  };
-
   const handlePTPDate = (evt) => {
     if (typeof evt !== 'string') {
       const ptpDate = moment(evt.toDate()).format('YYYY-MM-DD HH:mm:ss');
@@ -151,26 +164,6 @@ export const CollectionForm = (props) => {
     }));
   };
 
-  const clearErrorMessages = () => {
-    const fields = state.fields.ids;
-
-    fields.forEach((field) => {
-      console.log('clearing field ' + field);
-      setState((prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            [field]: {
-              ...prevState.fields.entities[field],
-              error: null,
-            },
-          },
-        },
-      }));
-    });
-  };
-
   const cancelUpdate = () => {
     const newStatus = currentStatus === 'Locked' ? 'Open' : currentStatus;
     //console.log('newStatus', newStatus);
@@ -182,21 +175,7 @@ export const CollectionForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    clearErrorMessages();
-    console.log('Current state: ', state.fields.entities);
-
-    // Check captured values for compliance
-    if (!state.fields.entities['transactionType'].value) {
-      setErrorMsg('Please select a transaction type', 'transactionType');
-    }
-
-    if (
-      state.fields.entities['transactionType'].value === 'Call' &&
-      state.fields.entities['numberCalled'].value === ''
-    ) {
-      setErrorMsg('Please provide a phone number', 'numberCalled');
-    }
-    console.log('New state: ', state.fields.entities);
+    console.log('Current state: ', state);
   };
 
   const [state, setState] = React.useState({
@@ -217,7 +196,6 @@ export const CollectionForm = (props) => {
         'ptpDate',
         'regIdStatus',
         'resolution',
-        'transactionType',
       ],
       entities: {
         contactPerson: {
@@ -238,7 +216,7 @@ export const CollectionForm = (props) => {
           isError: false,
           label: 'Current Assignment',
           onChange: handleSelect,
-          options: '',
+          options: userOptions,
           rules: [],
           type: 'text',
           value: user,
@@ -311,7 +289,7 @@ export const CollectionForm = (props) => {
         },
         numberCalled: {
           control: Input,
-          error: null,
+          error: '',
           fluid: true,
           isError: false,
           label: 'Number Called',
@@ -390,7 +368,7 @@ export const CollectionForm = (props) => {
         },
         transactionType: {
           control: Select,
-          error: null,
+          error: '',
           fluid: false,
           isError: false,
           label: 'Transaction Type',
@@ -409,33 +387,137 @@ export const CollectionForm = (props) => {
   const valid = function (current) {
     return current.isAfter(yesterday);
   };
+  const fields = state.fields.ids;
+  //console.log('fields', fields);
+
+  const formField = fields.map((field, idx) => {
+    const {
+      control,
+      error,
+      fluid,
+      isError,
+      label,
+      onChange,
+      options,
+      rules,
+      type,
+      value,
+    } = state.fields.entities[field];
+
+    //console.log('formField options:', options);
+
+    let formSegment;
+    let fieldOrder = [];
+
+    switch (control) {
+      case Input:
+        formSegment = (
+          <Form.Field
+            key={idx}
+            control={control}
+            fluid={fluid}
+            label={label}
+            name={field}
+            onChange={onChange}
+            type={type}
+            value={value}
+            width={8}
+          />
+        );
+        break;
+      case Select:
+        formSegment = (
+          <Form.Field
+            key={idx}
+            control={control}
+            fluid={fluid}
+            label={label}
+            name={field}
+            onChange={onChange}
+            options={options}
+            type={type}
+            value={value}
+            width={8}
+          />
+        );
+        break;
+      case TextArea:
+        formSegment = (
+          <Form.Field
+            key={idx}
+            control={control}
+            fluid={fluid}
+            label={label}
+            name={field}
+            onChange={onChange}
+            options={options}
+            type={type}
+            value={value}
+            width={8}
+          />
+        );
+        break;
+      case DateTime:
+        formSegment = (
+          <Form.Field key={idx} control={Input} label={label}>
+            <DateTime
+              isValidDate={valid}
+              onChange={handleNVTDate}
+              value={state.fields.entities['nextVisitDateTime'].value}
+            />
+          </Form.Field>
+        );
+        break;
+      default:
+    }
+
+    if ((idx) === 0) {
+      formSegment = (
+        <Form.Group widths="equal">
+      ) && formSegment
+    } else if (idx%3 === 0 && idx > 0) {
+      formSegment = formSegment &&
+        </Form.Group>
+      
+    }
+    return formSegment;
+  });
 
   return (
+    <Card fluid>
+      <Form>
+        <Form.Group>{formField}</Form.Group>
+      </Form>
+    </Card>
+  );
+
+  /*return (
     <Card fluid>
       <Form>
         <Form.Group widths="equal">
           <Form.Field
             control={Select}
-            error={state.fields.entities['transactionType'].error}
             fluid
             id="form-input-control-transaction-type-select"
             label="Transaction Type"
-            name="transactionType"
+            name="state.fields.entities['transactionType'].value"
             onChange={handleSelect}
             options={transactionTypeOptions}
+            placeholder="Transaction Type"
             required
             value={state.fields.entities['transactionType'].value}
           />
           <Form.Input
             fluid
-            error={state.fields.entities['numberCalled'].error}
             id="form-input-control-numberCalled"
             name="numberCalled"
             label="Number Called"
             onChange={handleChange}
             type="text"
             value={state.fields.entities['numberCalled'].value}
+            required
           />
+          <Button type="submit">Submit</Button>
           <Form.Input
             fluid
             label="Email Used"
@@ -444,10 +526,11 @@ export const CollectionForm = (props) => {
             onChange={handleChange}
             type="email"
             value={state.fields.entities['emailUsed'].value}
+            required
           />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="PTP Date">
+          <Form.Field control={Input} label="PTP Date" required>
             <DateTime isValidDate={valid} onChange={handlePTPDate} />
           </Form.Field>
           <Form.Input
@@ -457,6 +540,7 @@ export const CollectionForm = (props) => {
             onChange={handleChange}
             id="form-input-control-ptpAmount"
             value={state.fields.entities['ptpAmount'].value}
+            required
           />
           <Form.Select
             fluid
@@ -469,7 +553,7 @@ export const CollectionForm = (props) => {
           />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="Debit Resubmission Date">
+          <Form.Field control={Input} label="Debit Resubmission Date" required>
             <DateTime
               isValidDate={valid}
               onChange={handleDebitDate}
@@ -483,6 +567,7 @@ export const CollectionForm = (props) => {
             id="form-input-control-debitResubmissionAmount"
             onChange={handleChange}
             value={state.fields.entities['debitResubmissionAmount'].value}
+            required
           />
           <Form.Select
             fluid
@@ -491,10 +576,11 @@ export const CollectionForm = (props) => {
             options={pendReasonOptions}
             id="form-input-control-pendReason"
             onChange={handleSelect}
+            required
           />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="Next Visit Date and Time">
+          <Form.Field control={Input} label="Next Visit Date and Time" required>
             <DateTime
               isValidDate={valid}
               onChange={handleNVTDate}
@@ -514,13 +600,7 @@ export const CollectionForm = (props) => {
           />
         </Form.Group>
         <Form.Group widths="equal"></Form.Group>
-        <Card>
-          <Button content="Submit" onClick={handleSubmit} />
-          <Button content="Pend" onClick={handleSubmit} />
-          <Button content="Cancel" onClick={cancelUpdate} />
-          <Button content="Close" onClick={handleSubmit} />
-        </Card>
       </Form>
     </Card>
-  );
+  );*/
 };

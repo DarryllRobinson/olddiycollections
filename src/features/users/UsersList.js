@@ -27,7 +27,7 @@ export const UsersList = (props) => {
     users.map((user) =>
       options.push({
         key: user.id,
-        text: user.firstName,
+        text: user.firstName + ' ' + user.surname,
         value: user.email,
       })
     );
