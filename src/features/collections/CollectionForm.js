@@ -88,6 +88,7 @@ export const CollectionForm = (props) => {
   };
 
   const setErrorMsg = (msg, name) => {
+    //console.log('msg', msg);
     setState((prevState) => ({
       fields: {
         ...prevState.fields,
@@ -107,30 +108,75 @@ export const CollectionForm = (props) => {
       const ptpDate = moment(evt.toDate()).format('YYYY-MM-DD HH:mm:ss');
       const followup = moment(evt.toDate())
         .subtract(1, 'day')
-        .set({ hour: 8, minute: 0 })
-        .format('YYYY-MM-DD HH:mm:ss');
+        .set({ hour: 8, minute: 0 });
+      //.format('YYYY-MM-DD HH:mm:ss');
+      //console.log('followup: ', followup);
 
-      setState({ ...state, ptpDate: ptpDate, nextVisitDateTime: followup });
+      setState((prevState) => ({
+        fields: {
+          ...prevState.fields,
+          entities: {
+            ...prevState.fields.entities,
+            ptpDate: {
+              ...prevState.fields.entities['ptpDate'],
+              value: ptpDate,
+            },
+          },
+        },
+      }));
+
+      setState((prevState) => ({
+        fields: {
+          ...prevState.fields,
+          entities: {
+            ...prevState.fields.entities,
+            nextVisitDateTime: {
+              ...prevState.fields.entities['nextVisitDateTime'],
+              value: followup,
+            },
+          },
+        },
+      }));
+
+      //setState({ ...state, ptpDate: ptpDate, nextVisitDateTime: followup });
     }
   };
 
   const handleDebitDate = (evt) => {
     if (typeof evt !== 'string') {
-      const debitResubmissionDate = moment(evt.toDate()).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
+      const debitResubmissionDate = evt.toDate();
 
-      setState({ ...state, debitResubmissionDate: debitResubmissionDate });
+      setState((prevState) => ({
+        fields: {
+          ...prevState.fields,
+          entities: {
+            ...prevState.fields.entities,
+            debitResubmissionDate: {
+              ...prevState.fields.entities['debitResubmissionDate'],
+              value: debitResubmissionDate,
+            },
+          },
+        },
+      }));
     }
   };
 
   const handleNVTDate = (evt) => {
     if (typeof evt !== 'string') {
-      const nextVisitDateTime = moment(evt.toDate()).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
+      const nextVisitDateTime = evt.toDate();
 
-      setState({ ...state, nextVisitDateTime: nextVisitDateTime });
+      setState((prevState) => ({
+        fields: {
+          ...prevState.fields,
+          entities: {
+            ...prevState.fields.entities,
+            nextVisitDateTime: {
+              ...prevState.fields.entities['nextVisitDateTime'],
+              value: nextVisitDateTime,
+            },
+          },
+        },
+      }));
     }
   };
 
@@ -155,7 +201,6 @@ export const CollectionForm = (props) => {
     const fields = state.fields.ids;
 
     fields.forEach((field) => {
-      console.log('clearing field ' + field);
       setState((prevState) => ({
         fields: {
           ...prevState.fields,
@@ -183,20 +228,60 @@ export const CollectionForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     clearErrorMessages();
+    checkFields();
+  };
+
+  const checkFields = () => {
+    // Check captured values for compliance
     console.log('Current state: ', state.fields.entities);
 
-    // Check captured values for compliance
-    if (!state.fields.entities['transactionType'].value) {
+    // Transaction Type, Number Called and Email Used
+    /*  if (!state.fields.entities['transactionType'].value) {
       setErrorMsg('Please select a transaction type', 'transactionType');
     }
 
     if (
       state.fields.entities['transactionType'].value === 'Call' &&
-      state.fields.entities['numberCalled'].value === ''
+      state.fields.entities['numberCalled'].value.length !== 11
     ) {
-      setErrorMsg('Please provide a phone number', 'numberCalled');
+      setErrorMsg('Please provide an 11 digit phone number', 'numberCalled');
     }
-    console.log('New state: ', state.fields.entities);
+
+    const filter = /^[\w._-]+[+]?[\w._-]+@[\w.-]+\.[a-zA-Z]{2,20}$/;
+
+    if (
+      state.fields.entities['transactionType'].value === 'Email' &&
+      !filter.test(state.fields.entities['emailUsed'].value)
+    ) {
+      setErrorMsg('Please provide a valid email address', 'emailUsed');
+    }
+
+    // PTP values
+    if (
+      state.fields.entities['ptpDate'].value !== '' &&
+      state.fields.entities['ptpAmount'].value === ''
+    )
+      setErrorMsg('Please provide an amount', 'ptpAmount');
+
+    // Outcome Resolution
+    if (state.fields.entities['resolution'].value === '')
+      setErrorMsg('Please select a resolution', 'resolution');
+
+    // Debit Resubmission values
+    if (
+      state.fields.entities['debitResubmissionDate'].value !== '' &&
+      state.fields.entities['debitResubmissionAmount'].value === ''
+    )
+      setErrorMsg('Please provide an amount', 'debitResubmissionAmount');*/
+
+    // Next Visit Date and Time values
+    if (state.fields.entities['nextVisitDateTime'].value === '') {
+      console.log(
+        'nextVisitDateTime: ',
+        state.fields.entities['nextVisitDateTime'].value
+      );
+      setErrorMsg('Please provide a date', 'nextVisitDateTime');
+    }
   };
 
   const [state, setState] = React.useState({
@@ -222,7 +307,7 @@ export const CollectionForm = (props) => {
       entities: {
         contactPerson: {
           control: Input,
-          error: '',
+          error: null,
           fluid: true,
           isError: false,
           label: 'Contact Person',
@@ -233,7 +318,7 @@ export const CollectionForm = (props) => {
         },
         currentAssignment: {
           control: Select,
-          error: '',
+          error: null,
           fluid: true,
           isError: false,
           label: 'Current Assignment',
@@ -245,7 +330,7 @@ export const CollectionForm = (props) => {
         },
         debitResubmissionAmount: {
           control: Input,
-          error: '',
+          error: null,
           fluid: true,
           isError: false,
           label: 'Debit Resubmission Amount',
@@ -256,7 +341,7 @@ export const CollectionForm = (props) => {
         },
         debitResubmissionDate: {
           control: DateTime,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'Debit Resubmission Date',
@@ -267,7 +352,7 @@ export const CollectionForm = (props) => {
         },
         emailUsed: {
           control: Input,
-          error: '',
+          error: null,
           fluid: true,
           isError: false,
           label: 'Email Used',
@@ -278,7 +363,7 @@ export const CollectionForm = (props) => {
         },
         kamNotes: {
           control: TextArea,
-          error: '',
+          error: null,
           fluid: 'true',
           isError: false,
           label: 'KAM Notes',
@@ -289,7 +374,7 @@ export const CollectionForm = (props) => {
         },
         nextSteps: {
           control: TextArea,
-          error: '',
+          error: null,
           fluid: 'true',
           isError: false,
           label: 'Next Steps',
@@ -300,7 +385,7 @@ export const CollectionForm = (props) => {
         },
         nextVisitDateTime: {
           control: DateTime,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'Next Visit Date and Time',
@@ -322,7 +407,7 @@ export const CollectionForm = (props) => {
         },
         outcomeNotes: {
           control: TextArea,
-          error: '',
+          error: null,
           fluid: 'true',
           isError: false,
           label: 'Outcome Notes',
@@ -333,7 +418,7 @@ export const CollectionForm = (props) => {
         },
         pendReason: {
           control: Select,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'Pend Reason',
@@ -345,7 +430,7 @@ export const CollectionForm = (props) => {
         },
         ptpAmount: {
           control: Input,
-          error: '',
+          error: null,
           fluid: true,
           isError: false,
           label: 'PTP Amount',
@@ -356,7 +441,7 @@ export const CollectionForm = (props) => {
         },
         ptpDate: {
           control: DateTime,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'PTP Date',
@@ -367,7 +452,7 @@ export const CollectionForm = (props) => {
         },
         regIdStatus: {
           control: Select,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'Registration / ID Status',
@@ -378,7 +463,7 @@ export const CollectionForm = (props) => {
         },
         resolution: {
           control: Select,
-          error: '',
+          error: null,
           fluid: false,
           isError: false,
           label: 'Resolution',
@@ -438,6 +523,7 @@ export const CollectionForm = (props) => {
           />
           <Form.Input
             fluid
+            error={state.fields.entities['emailUsed'].error}
             label="Email Used"
             id="form-input-control-emailUsed"
             name="emailUsed"
@@ -451,14 +537,17 @@ export const CollectionForm = (props) => {
             <DateTime isValidDate={valid} onChange={handlePTPDate} />
           </Form.Field>
           <Form.Input
+            error={state.fields.entities['ptpAmount'].error}
             fluid
             label="PTP Amount"
             name="ptpAmount"
             onChange={handleChange}
             id="form-input-control-ptpAmount"
+            type="number"
             value={state.fields.entities['ptpAmount'].value}
           />
           <Form.Select
+            error={state.fields.entities['resolution'].error}
             fluid
             id="form-input-control-resolution"
             label="Outcome Resolution"
@@ -471,20 +560,29 @@ export const CollectionForm = (props) => {
         <Form.Group widths="equal">
           <Form.Field control={Input} label="Debit Resubmission Date">
             <DateTime
+              error={state.fields.entities['debitResubmissionDate'].error}
+              fluid
+              label="Debit Resubmission Date"
+              name="debitResubmissionDate"
+              id="form-input-control-debitResubmissionDate"
               isValidDate={valid}
               onChange={handleDebitDate}
+              type="number"
               value={state.fields.entities['debitResubmissionDate'].value}
             />
           </Form.Field>
           <Form.Input
+            error={state.fields.entities['debitResubmissionAmount'].error}
             fluid
             label="Debit Resubmission Amount"
             name="debitResubmissionAmount"
             id="form-input-control-debitResubmissionAmount"
             onChange={handleChange}
+            type="number"
             value={state.fields.entities['debitResubmissionAmount'].value}
           />
           <Form.Select
+            error={state.fields.entities['pendReason'].error}
             fluid
             label="Pend Reason"
             name="pendReason"
@@ -492,12 +590,22 @@ export const CollectionForm = (props) => {
             id="form-input-control-pendReason"
             onChange={handleSelect}
           />
+          <Button content="Submit" onClick={handleSubmit} />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="Next Visit Date and Time">
+          <Form.Field
+            control={Input}
+            error={state.fields.entities['nextVisitDateTime'].error}
+            label="Next Visit Date and Time"
+          >
             <DateTime
+              fluid
+              label="Next Visit Date and Time"
+              name="nextVisitDateTime"
+              id="form-input-control-nextVisitDateTime"
               isValidDate={valid}
               onChange={handleNVTDate}
+              type="number"
               value={state.fields.entities['nextVisitDateTime'].value}
             />
           </Form.Field>
@@ -505,6 +613,7 @@ export const CollectionForm = (props) => {
         </Form.Group>
         <Form.Group widths="equal">
           <Form.TextArea
+            error={state.fields.entities['nextSteps'].error}
             label="Next Steps"
             name="nextSteps"
             id="form-input-control-nextSteps"
