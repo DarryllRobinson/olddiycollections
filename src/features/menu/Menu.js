@@ -68,6 +68,14 @@ export const MenuBar = () => {
       </Menu.Item>
 
       <Menu.Item
+        name="upload"
+        active={activeItem === 'upload'}
+        onClick={handleItemClick}
+      >
+        Upload
+      </Menu.Item>
+
+      <Menu.Item
         name="admin"
         active={activeItem === 'admin'}
         onClick={handleItemClick}

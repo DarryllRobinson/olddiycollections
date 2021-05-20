@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card, Form, Input, Select, TextArea } from 'semantic-ui-react';
-import DateTime from 'react-datetime';
+import { DateTimeInput } from 'semantic-ui-calendar-react';
 import moment from 'moment';
 
 import MysqlLayer from '../../services/MysqlLayer';
@@ -103,65 +103,59 @@ export const CollectionForm = (props) => {
     }));
   };
 
-  const handlePTPDate = (evt) => {
-    if (typeof evt !== 'string') {
-      const ptpDate = moment(evt.toDate()).format('YYYY-MM-DD HH:mm:ss');
-      const followup = moment(evt.toDate())
-        .subtract(1, 'day')
-        .set({ hour: 8, minute: 0 });
-      //.format('YYYY-MM-DD HH:mm:ss');
-      //console.log('followup: ', followup);
+  const handlePTPDate = (event, { name, value }) => {
+    const ptpDate = value; // moment(value).format('YYYY-MM-DD HH:mm:ss');
+    const followupPrep = moment(value)
+      .subtract(1, 'day')
+      .set({ hour: 8, minute: 0 })
+      .format('DD-MM-YYYY HH:mm');
+    const followup = followupPrep.toString();
+    //console.log('ptpDate: ', ptpDate);
+    //console.log('followup: ', followup);
 
-      setState((prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            ptpDate: {
-              ...prevState.fields.entities['ptpDate'],
-              value: ptpDate,
-            },
+    setState((prevState) => ({
+      fields: {
+        ...prevState.fields,
+        entities: {
+          ...prevState.fields.entities,
+          ptpDate: {
+            ...prevState.fields.entities['ptpDate'],
+            value: ptpDate,
           },
         },
-      }));
+      },
+    }));
 
-      setState((prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            nextVisitDateTime: {
-              ...prevState.fields.entities['nextVisitDateTime'],
-              value: followup,
-            },
+    setState((prevState) => ({
+      fields: {
+        ...prevState.fields,
+        entities: {
+          ...prevState.fields.entities,
+          nextVisitDateTime: {
+            ...prevState.fields.entities['nextVisitDateTime'],
+            value: followup,
           },
         },
-      }));
-
-      //setState({ ...state, ptpDate: ptpDate, nextVisitDateTime: followup });
-    }
+      },
+    }));
   };
 
-  const handleDebitDate = (evt) => {
-    if (typeof evt !== 'string') {
-      const debitResubmissionDate = evt.toDate();
-
-      setState((prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            debitResubmissionDate: {
-              ...prevState.fields.entities['debitResubmissionDate'],
-              value: debitResubmissionDate,
-            },
+  const handleDate = (event, { name, value }) => {
+    setState((prevState) => ({
+      fields: {
+        ...prevState.fields,
+        entities: {
+          ...prevState.fields.entities,
+          [name]: {
+            ...prevState.fields.entities[name],
+            value: value,
           },
         },
-      }));
-    }
+      },
+    }));
   };
 
-  const handleNVTDate = (evt) => {
+  /*const handleDate = (evt) => {
     if (typeof evt !== 'string') {
       const nextVisitDateTime = evt.toDate();
 
@@ -178,7 +172,7 @@ export const CollectionForm = (props) => {
         },
       }));
     }
-  };
+  };*/
 
   const handleSelect = (evt, data) => {
     const { name, value } = data;
@@ -340,12 +334,12 @@ export const CollectionForm = (props) => {
           value: '',
         },
         debitResubmissionDate: {
-          control: DateTime,
+          //control: DateTime,
           error: null,
           fluid: false,
           isError: false,
           label: 'Debit Resubmission Date',
-          onChange: handleDebitDate,
+          onChange: handleDate,
           rules: [],
           type: 'text',
           value: '',
@@ -384,12 +378,12 @@ export const CollectionForm = (props) => {
           value: '',
         },
         nextVisitDateTime: {
-          control: DateTime,
+          //control: DateTime,
           error: null,
           fluid: false,
           isError: false,
           label: 'Next Visit Date and Time',
-          onChange: handleNVTDate,
+          onChange: handleDate,
           rules: [],
           type: 'text',
           value: '',
@@ -440,7 +434,7 @@ export const CollectionForm = (props) => {
           value: '',
         },
         ptpDate: {
-          control: DateTime,
+          //control: DateTime,
           error: null,
           fluid: false,
           isError: false,
@@ -490,10 +484,10 @@ export const CollectionForm = (props) => {
   });
 
   // Setting dates earlier than today as disabled for Next Date and Time
-  const yesterday = DateTime.moment().subtract(1, 'day');
+  /*const yesterday = DateTime.moment().subtract(1, 'day');
   const valid = function (current) {
     return current.isAfter(yesterday);
-  };
+  };*/
 
   return (
     <Card fluid>
@@ -534,7 +528,13 @@ export const CollectionForm = (props) => {
         </Form.Group>
         <Form.Group widths="equal">
           <Form.Field control={Input} label="PTP Date">
-            <DateTime isValidDate={valid} onChange={handlePTPDate} />
+            <DateTimeInput
+              name="ptpDate"
+              placeholder="PTP Date"
+              value={state.fields.entities['ptpDate'].value}
+              iconPosition="left"
+              onChange={handlePTPDate}
+            />
           </Form.Field>
           <Form.Input
             error={state.fields.entities['ptpAmount'].error}
@@ -559,16 +559,12 @@ export const CollectionForm = (props) => {
         </Form.Group>
         <Form.Group widths="equal">
           <Form.Field control={Input} label="Debit Resubmission Date">
-            <DateTime
-              error={state.fields.entities['debitResubmissionDate'].error}
-              fluid
-              label="Debit Resubmission Date"
+            <DateTimeInput
               name="debitResubmissionDate"
-              id="form-input-control-debitResubmissionDate"
-              isValidDate={valid}
-              onChange={handleDebitDate}
-              type="number"
+              placeholder="Debit Resubmission Date"
               value={state.fields.entities['debitResubmissionDate'].value}
+              iconPosition="left"
+              onChange={handleDate}
             />
           </Form.Field>
           <Form.Input
@@ -598,15 +594,12 @@ export const CollectionForm = (props) => {
             error={state.fields.entities['nextVisitDateTime'].error}
             label="Next Visit Date and Time"
           >
-            <DateTime
-              fluid
-              label="Next Visit Date and Time"
+            <DateTimeInput
               name="nextVisitDateTime"
-              id="form-input-control-nextVisitDateTime"
-              isValidDate={valid}
-              onChange={handleNVTDate}
-              type="number"
+              placeholder="Next Visit Date and Time"
               value={state.fields.entities['nextVisitDateTime'].value}
+              iconPosition="left"
+              onChange={handleDate}
             />
           </Form.Field>
           <UsersList handleSelect={handleSelect} user={user} />

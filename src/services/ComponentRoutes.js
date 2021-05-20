@@ -14,6 +14,8 @@ import { Collections } from '../features/collections/Collections';
 import { Collection } from '../features/collections/Collection';
 import { Contacts } from '../features/contacts/Contacts';
 
+import { Upload } from '../features/upload/Upload';
+
 export const ComponentRoutes = (props) => {
   const security = new Security();
   security.validateSession('ComponentRoutes');
@@ -29,6 +31,7 @@ export const ComponentRoutes = (props) => {
       <PrivateRoute exact path="/collections" component={Collections} />
       <PrivateRoute exact path="/collection/:id" component={Collection} />
       <PrivateRoute exact path="/contacts/:id" component={Contacts} />
+      <PrivateRoute exact path="/upload" component={Upload} />
     </>
   );
 };
