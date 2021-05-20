@@ -529,6 +529,7 @@ export const CollectionForm = (props) => {
         <Form.Group widths="equal">
           <Form.Field control={Input} label="PTP Date">
             <DateTimeInput
+              closable
               name="ptpDate"
               placeholder="PTP Date"
               value={state.fields.entities['ptpDate'].value}
@@ -560,6 +561,7 @@ export const CollectionForm = (props) => {
         <Form.Group widths="equal">
           <Form.Field control={Input} label="Debit Resubmission Date">
             <DateTimeInput
+              closable
               name="debitResubmissionDate"
               placeholder="Debit Resubmission Date"
               value={state.fields.entities['debitResubmissionDate'].value}
@@ -595,6 +597,7 @@ export const CollectionForm = (props) => {
             label="Next Visit Date and Time"
           >
             <DateTimeInput
+              closable
               name="nextVisitDateTime"
               placeholder="Next Visit Date and Time"
               value={state.fields.entities['nextVisitDateTime'].value}
