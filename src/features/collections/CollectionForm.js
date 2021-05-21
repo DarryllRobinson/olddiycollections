@@ -236,9 +236,9 @@ export const CollectionForm = (props) => {
 
     if (
       state.fields.entities['transactionType'].value === 'Call' &&
-      state.fields.entities['numberCalled'].value.length !== 11
+      state.fields.entities['numberCalled'].value.length !== 10
     ) {
-      setErrorMsg('Please provide an 11 digit phone number', 'numberCalled');
+      setErrorMsg('Please provide an 10 digit phone number', 'numberCalled');
     }
 
     const filter = /^[\w._-]+[+]?[\w._-]+@[\w.-]+\.[a-zA-Z]{2,20}$/;
@@ -257,6 +257,12 @@ export const CollectionForm = (props) => {
     )
       setErrorMsg('Please provide an amount', 'ptpAmount');
 
+    if (
+      state.fields.entities['ptpAmount'].value !== '' &&
+      state.fields.entities['ptpDate'].value === ''
+    )
+      setErrorMsg('Please provide a date', 'ptpDate');
+
     // Outcome Resolution
     if (state.fields.entities['resolution'].value === '')
       setErrorMsg('Please select a resolution', 'resolution');
@@ -267,6 +273,12 @@ export const CollectionForm = (props) => {
       state.fields.entities['debitResubmissionAmount'].value === ''
     )
       setErrorMsg('Please provide an amount', 'debitResubmissionAmount');
+
+    if (
+      state.fields.entities['debitResubmissionAmount'].value !== '' &&
+      state.fields.entities['debitResubmissionDate'].value === ''
+    )
+      setErrorMsg('Please provide a date', 'debitResubmissionDate');
 
     // Next Visit Date and Time values
     if (state.fields.entities['nextVisitDateTime'].value === '')
@@ -523,7 +535,12 @@ export const CollectionForm = (props) => {
           />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="PTP Date">
+          <Form.Field
+            control={Input}
+            error={state.fields.entities['ptpDate'].error}
+            label="PTP Date"
+            name="ptpDate"
+          >
             <DateTimeInput
               closable
               minDate={today}
@@ -556,7 +573,12 @@ export const CollectionForm = (props) => {
           />
         </Form.Group>
         <Form.Group widths="equal">
-          <Form.Field control={Input} label="Debit Resubmission Date">
+          <Form.Field
+            control={Input}
+            error={state.fields.entities['debitResubmissionDate'].error}
+            label="Debit Resubmission Date"
+            name="debitResubmissionDate"
+          >
             <DateTimeInput
               closable
               minDate={today}
