@@ -483,11 +483,8 @@ export const CollectionForm = (props) => {
     },
   });
 
-  // Setting dates earlier than today as disabled for Next Date and Time
-  /*const yesterday = DateTime.moment().subtract(1, 'day');
-  const valid = function (current) {
-    return current.isAfter(yesterday);
-  };*/
+  // Setting dates earlier than today as disabled for all date pickers
+  const today = new Date();
 
   return (
     <Card fluid>
@@ -530,6 +527,7 @@ export const CollectionForm = (props) => {
           <Form.Field control={Input} label="PTP Date">
             <DateTimeInput
               closable
+              minDate={today}
               name="ptpDate"
               placeholder="PTP Date"
               value={state.fields.entities['ptpDate'].value}
@@ -562,6 +560,7 @@ export const CollectionForm = (props) => {
           <Form.Field control={Input} label="Debit Resubmission Date">
             <DateTimeInput
               closable
+              minDate={today}
               name="debitResubmissionDate"
               placeholder="Debit Resubmission Date"
               value={state.fields.entities['debitResubmissionDate'].value}
@@ -598,6 +597,7 @@ export const CollectionForm = (props) => {
           >
             <DateTimeInput
               closable
+              minDate={today}
               name="nextVisitDateTime"
               placeholder="Next Visit Date and Time"
               value={state.fields.entities['nextVisitDateTime'].value}
