@@ -155,25 +155,6 @@ export const CollectionForm = (props) => {
     }));
   };
 
-  /*const handleDate = (evt) => {
-    if (typeof evt !== 'string') {
-      const nextVisitDateTime = evt.toDate();
-
-      setState((prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            nextVisitDateTime: {
-              ...prevState.fields.entities['nextVisitDateTime'],
-              value: nextVisitDateTime,
-            },
-          },
-        },
-      }));
-    }
-  };*/
-
   const handleSelect = (evt, data) => {
     const { name, value } = data;
     //console.log('name, value', name, value);
@@ -287,6 +268,17 @@ export const CollectionForm = (props) => {
     // Next Steps
     if (state.fields.entities['nextSteps'].value.length < 10)
       setErrorMsg('Please provide more detailed notes', 'nextSteps');
+  };
+
+  const updateDatabase = () => {
+    const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    const closedBy = user;
+
+    let customerUpdate = {
+      regIdStatus: state.fields.entities['regIdStatus'].value,
+      updatedBy: user,
+      updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+    };
   };
 
   const [state, setState] = React.useState({
