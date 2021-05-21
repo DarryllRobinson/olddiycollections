@@ -230,7 +230,7 @@ export const CollectionForm = (props) => {
     console.log('Current state: ', state.fields.entities);
 
     // Transaction Type, Number Called and Email Used
-    /*  if (!state.fields.entities['transactionType'].value) {
+    if (!state.fields.entities['transactionType'].value) {
       setErrorMsg('Please select a transaction type', 'transactionType');
     }
 
@@ -266,16 +266,15 @@ export const CollectionForm = (props) => {
       state.fields.entities['debitResubmissionDate'].value !== '' &&
       state.fields.entities['debitResubmissionAmount'].value === ''
     )
-      setErrorMsg('Please provide an amount', 'debitResubmissionAmount');*/
+      setErrorMsg('Please provide an amount', 'debitResubmissionAmount');
 
     // Next Visit Date and Time values
-    if (state.fields.entities['nextVisitDateTime'].value === '') {
-      console.log(
-        'nextVisitDateTime: ',
-        state.fields.entities['nextVisitDateTime'].value
-      );
+    if (state.fields.entities['nextVisitDateTime'].value === '')
       setErrorMsg('Please provide a date', 'nextVisitDateTime');
-    }
+
+    // Next Steps
+    if (state.fields.entities['nextSteps'].value.length < 10)
+      setErrorMsg('Please provide more detailed notes', 'nextSteps');
   };
 
   const [state, setState] = React.useState({
