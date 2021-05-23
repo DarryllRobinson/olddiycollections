@@ -57,6 +57,34 @@ export const CollectionForm = (props) => {
     { key: 'e', text: 'Email', value: 'Email' },
   ];
 
+  const renderNotes = () => {
+    if (role === 'agent') {
+      return (
+        <Form.TextArea
+          error={state.fields.entities['outcomeNotes'].error}
+          label="Outcome Notes"
+          name="outcomeNotes"
+          id="form-input-control-outcomeNotes"
+          onChange={handleChange}
+          value={state.fields.entities['outcomeNotes'].value}
+          required
+        />
+      );
+    } else if (role === 'kam') {
+      return (
+        <Form.TextArea
+          error={state.fields.entities['kamNotes'].error}
+          label="KAM Notes"
+          name="kamNotes"
+          id="form-input-control-kamNotes"
+          onChange={handleChange}
+          value={state.fields.entities['kamNotes'].value}
+          required
+        />
+      );
+    }
+  };
+
   /*let userOptions = UsersList();
   const userOptionsss = [
     { key: 1, text: 'Me', value: '1' },
@@ -261,6 +289,15 @@ export const CollectionForm = (props) => {
     )
       setErrorMsg('Please provide a date', 'debitResubmissionDate');
 
+    // Outcome or KAM Notes
+    if (
+      role === 'agent' &&
+      state.fields.entities['outcomeNotes'].value.length < 10
+    )
+      setErrorMsg('Please provide more detailed notes', 'outcomeNotes');
+    if (role === 'kam' && state.fields.entities['kamNotes'].value.length < 10)
+      setErrorMsg('Please provide more detailed notes', 'kamNotes');
+
     // Next Visit Date and Time values
     if (state.fields.entities['nextVisitDateTime'].value === '')
       setErrorMsg('Please provide a date', 'nextVisitDateTime');
@@ -270,15 +307,42 @@ export const CollectionForm = (props) => {
       setErrorMsg('Please provide more detailed notes', 'nextSteps');
   };
 
-  const updateDatabase = () => {
+  const updateDatabase = (stage) => {
+    let newKamNote;
+    if (role === 'kam') {
+      let oldKamNotes = state.fields.entities['kamNotes'].value
+        ? state.fields.entities['kamNotes'].value
+        : '';
+      newKamNote =
+        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+          state.fields.entities['kamNotes'].value
+        }\n\r` + oldKamNotes;
+
+      if (!state.fields.entities['outcomeNotes'].value)
+        state.fields.entities['outcomeNotes'].value = 'KAM notes updated';
+    }
+
     const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     const closedBy = user;
 
-    let customerUpdate = {
-      regIdStatus: state.fields.entities['regIdStatus'].value,
-      updatedBy: user,
-      updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-    };
+    let caseUpdate;
+    switch (stage) {
+      case 'Closed':
+        caseUpdate = {
+          currentStatus: stage,
+          kamNotes: newKamNote,
+          updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        };
+        break;
+      case 'Closed':
+        caseUpdate = {
+          currentStatus: stage,
+          kamNotes: newKamNote,
+          updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        };
+        break;
+      default:
+    }
   };
 
   const [state, setState] = React.useState({
@@ -602,6 +666,7 @@ export const CollectionForm = (props) => {
           />
           <Button content="Submit" onClick={handleSubmit} />
         </Form.Group>
+        <Form.Group widths="equal">{renderNotes()}</Form.Group>
         <Form.Group widths="equal">
           <Form.Field
             control={Input}
@@ -634,7 +699,6 @@ export const CollectionForm = (props) => {
         <Form.Group widths="equal"></Form.Group>
         <Card>
           <Button content="Submit" onClick={handleSubmit} />
-          <Button content="Pend" onClick={handleSubmit} />
           <Button content="Cancel" onClick={cancelUpdate} />
           <Button content="Close" onClick={handleSubmit} />
         </Card>
