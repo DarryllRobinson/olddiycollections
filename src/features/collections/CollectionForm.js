@@ -17,7 +17,6 @@ export const CollectionForm = (props) => {
     id,
     regIdStatus,
     role,
-    transactionType,
     user,
   } = props;
 
@@ -133,13 +132,16 @@ export const CollectionForm = (props) => {
 
   const handlePTPDate = (event, { name, value }) => {
     const ptpDate = value; // moment(value).format('YYYY-MM-DD HH:mm:ss');
-    const followupPrep = moment(value)
-      .subtract(1, 'day')
-      .set({ hour: 8, minute: 0 })
-      .format('DD-MM-YYYY HH:mm');
+    const followupPrep = moment(value);
+    //.subtract(1, 'days');
+    //  .set({ hour: 8, minute: 0 });
+    //.format('DD-MM-YYYY HH:mm');
+    // var startdate = moment().subtract(1, "days").format("DD-MM-YYYY");
     const followup = followupPrep.toString();
-    //console.log('ptpDate: ', ptpDate);
-    //console.log('followup: ', followup);
+    console.log('ptpDate: ', ptpDate);
+    console.log('followupPrep: ', followupPrep);
+    console.log('typeof followup: ', typeof followup);
+    console.log('followup: ', followup);
 
     setState((prevState) => ({
       fields: {
@@ -305,44 +307,6 @@ export const CollectionForm = (props) => {
     // Next Steps
     if (state.fields.entities['nextSteps'].value.length < 10)
       setErrorMsg('Please provide more detailed notes', 'nextSteps');
-  };
-
-  const updateDatabase = (stage) => {
-    let newKamNote;
-    if (role === 'kam') {
-      let oldKamNotes = state.fields.entities['kamNotes'].value
-        ? state.fields.entities['kamNotes'].value
-        : '';
-      newKamNote =
-        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
-          state.fields.entities['kamNotes'].value
-        }\n\r` + oldKamNotes;
-
-      if (!state.fields.entities['outcomeNotes'].value)
-        state.fields.entities['outcomeNotes'].value = 'KAM notes updated';
-    }
-
-    const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-    const closedBy = user;
-
-    let caseUpdate;
-    switch (stage) {
-      case 'Closed':
-        caseUpdate = {
-          currentStatus: stage,
-          kamNotes: newKamNote,
-          updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-        };
-        break;
-      case 'Closed':
-        caseUpdate = {
-          currentStatus: stage,
-          kamNotes: newKamNote,
-          updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-        };
-        break;
-      default:
-    }
   };
 
   const [state, setState] = React.useState({
@@ -549,6 +513,201 @@ export const CollectionForm = (props) => {
       },
     },
   });
+
+  const updateDatabase = (process) => {
+    let newKamNote;
+    let newOutcomeNote;
+
+    if (role === 'kam') {
+      let oldKamNotes = state.fields.entities['kamNotes'].value
+        ? state.fields.entities['kamNotes'].value
+        : '';
+      newKamNote =
+        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+          state.fields.entities['kamNotes'].value
+        }\n\r` + oldKamNotes;
+
+      if (!state.fields.entities['outcomeNotes'].value)
+        state.fields.entities['outcomeNotes'].value = 'KAM notes updated';
+    } else if (role === 'agent') {
+      let oldOutcomeNotes = state.fields.entities['outcomeNotes'].value
+        ? state.fields.entities['outcomeNotes'].value
+        : '';
+      newOutcomeNote =
+        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+          state.fields.entities['outcomeNotes'].value
+        }\n\r` + oldOutcomeNotes;
+    }
+
+    const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    const closedBy = user;
+
+    let caseUpdate;
+    // Working out which role for notes and what action has been submitted
+    if (role === 'kam' && process === 'Closed') {
+      caseUpdate = {
+        currentStatus: process,
+        kamNotes: newKamNote,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (role === 'kam' && process !== 'Closed') {
+      caseUpdate = {
+        currentAssignment: currentAssignment,
+        currentStatus: process,
+        kamNotes: newKamNote,
+        nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (role === 'agent' && process === 'Closed') {
+      caseUpdate = {
+        currentStatus: process,
+        outcomeNotes: newOutcomeNote,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (role === 'agent' && process !== 'Closed') {
+      caseUpdate = {
+        currentAssignment: currentAssignment,
+        currentStatus: process,
+        outcomeNotes: newOutcomeNote,
+        nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    }
+
+    let outcomeInsert;
+    let accountUpdate;
+
+    // Working out PTP and Debit Resubmission arrangement
+    if (
+      !state.fields.entities['ptpDate'].value &&
+      !state.fields.entities['debitResubmissionDate'].value
+    ) {
+      accountUpdate = {
+        //accountStatus: this.state.accountStatus,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      outcomeInsert = {
+        createdBy: user,
+        outcomeStatus: 'Closed',
+        transactionType: state.fields.entities['transactionType'].value,
+        numberCalled: state.fields.entities['numberCalled'].value,
+        emailUsed: state.fields.entities['emailUsed'].value,
+        contactPerson: state.fields.entities['contactPerson'].value,
+        outcomeResolution: state.fields.entities['Resolution'].value,
+        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        nextSteps: state.fields.entities['nextSteps'].value,
+        closedDate: closedDate,
+        closedBy: closedBy,
+        f_caseId: this.state.collection.caseIddd,
+      };
+    } else if (
+      state.fields.entities['ptpDate'].value &&
+      !state.fields.entities['debitResubmissionDate'].value
+    ) {
+      accountUpdate = {
+        //accountStatus: this.state.accountStatus,
+        lastPTPDate: moment(state.fields.entities['ptpDate'].value).format(
+          'YYYY-MM-DD'
+        ),
+        lastPTPAmount: state.fields.entities['ptpAmount'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      outcomeInsert = {
+        createdBy: user,
+        outcomeStatus: 'Closed',
+        transactionType: state.fields.entities['transactionType'].value,
+        numberCalled: state.fields.entities['numberCalled'].value,
+        emailUsed: state.fields.entities['emailUsed'].value,
+        contactPerson: state.fields.entities['contactPerson'].value,
+        outcomeResolution: state.fields.entities['resolution'].value,
+        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        ptpDate: moment(state.fields.entities['ptpDate'].value).format(
+          'YYYY-MM-DD'
+        ),
+        ptpAmount: state.fields.entities['ptpAmount'].value,
+        nextSteps: state.fields.entities['nextSteps'].value,
+        closedDate: closedDate,
+        closedBy: closedBy,
+        f_caseId: this.state.collection.caseIddd,
+      };
+    } else if (
+      !state.fields.entities['ptpDate'].value &&
+      state.fields.entities['debitResubmissionDate'].value
+    ) {
+      accountUpdate = {
+        //accountStatus: this.state.accountStatus,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      outcomeInsert = {
+        createdBy: user,
+        outcomeStatus: 'Closed',
+        transactionType: state.fields.entities['transactionType'].value,
+        numberCalled: state.fields.entities['numberCalled'].value,
+        emailUsed: state.fields.entities['emailUsed'].value,
+        contactPerson: state.fields.entities['contactPerson'].value,
+        outcomeResolution: state.fields.entities['resolution'].value,
+        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        nextSteps: state.fields.entities['nextSteps'].value,
+        closedDate: closedDate,
+        closedBy: closedBy,
+        debitResubmissionDate: moment(
+          state.fields.entities['debitResubmissionDate'].value
+        ).format('YYYY-MM-DD'),
+        debitResubmissionAmount:
+          state.fields.entities['debitResubmissionAmount'].value,
+        f_caseId: this.state.collection.caseId,
+      };
+    } else if (
+      state.fields.entities['ptpDate'].value &&
+      state.fields.entities['debitResubmissionDate'].value
+    ) {
+      accountUpdate = {
+        //accountStatus: this.state.accountStatus,
+        lastPTPDate: moment(state.fields.entities['ptpDate'].value).format(
+          'YYYY-MM-DD'
+        ),
+        lastPTPAmount: state.fields.entities['ptpAmount'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      outcomeInsert = {
+        createdBy: user,
+        outcomeStatus: 'Closed',
+        transactionType: state.fields.entities['transactionType'].value,
+        numberCalled: state.fields.entities['numberCalled'].value,
+        emailUsed: state.fields.entities['emailUsed'].value,
+        contactPerson: state.fields.entities['contactPerson'].value,
+        outcomeResolution: state.fields.entities['resolution'].value,
+        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        ptpDate: moment(state.fields.entities['ptpDate'].value).format(
+          'YYYY-MM-DD'
+        ),
+        ptpAmount: state.fields.entities['ptpAmount'].value,
+        nextSteps: state.fields.entities['nextSteps'].value,
+        closedDate: closedDate,
+        closedBy: closedBy,
+        debitResubmissionDate: moment(
+          state.fields.entities['debitResubmissionDate'].value
+        ).format('YYYY-MM-DD'),
+        debitResubmissionAmount:
+          state.fields.entities['debitResubmissionAmount'].value,
+        f_caseId: this.state.collection.caseIddd,
+      };
+    }
+
+    mysqlLayer.Put('accounts/account', accountUpdate);
+  };
 
   // Setting dates earlier than today as disabled for all date pickers
   const today = new Date();
