@@ -132,16 +132,11 @@ export const CollectionForm = (props) => {
 
   const handlePTPDate = (event, { name, value }) => {
     const ptpDate = value; // moment(value).format('YYYY-MM-DD HH:mm:ss');
-    const followupPrep = moment(value);
-    //.subtract(1, 'days');
-    //  .set({ hour: 8, minute: 0 });
-    //.format('DD-MM-YYYY HH:mm');
+    const followup = moment(value)
+      .subtract(1, 'days')
+      .set({ hour: 8, minute: 0 })
+      .format('YYYY-MM-DD HH:mm');
     // var startdate = moment().subtract(1, "days").format("DD-MM-YYYY");
-    const followup = followupPrep.toString();
-    console.log('ptpDate: ', ptpDate);
-    console.log('followupPrep: ', followupPrep);
-    console.log('typeof followup: ', typeof followup);
-    console.log('followup: ', followup);
 
     setState((prevState) => ({
       fields: {
@@ -234,6 +229,7 @@ export const CollectionForm = (props) => {
     e.preventDefault();
     clearErrorMessages();
     checkFields();
+    updateDatabase();
   };
 
   const checkFields = () => {
@@ -612,9 +608,7 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
-        lastPTPDate: moment(state.fields.entities['ptpDate'].value).format(
-          'YYYY-MM-DD'
-        ),
+        lastPTPDate: state.fields.entities['ptpDate'].value,
         lastPTPAmount: state.fields.entities['ptpAmount'].value,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -636,7 +630,7 @@ export const CollectionForm = (props) => {
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
-        f_caseId: this.state.collection.caseIddd,
+        f_caseId: id,
       };
     } else if (
       !state.fields.entities['ptpDate'].value &&
@@ -665,7 +659,7 @@ export const CollectionForm = (props) => {
         ).format('YYYY-MM-DD'),
         debitResubmissionAmount:
           state.fields.entities['debitResubmissionAmount'].value,
-        f_caseId: this.state.collection.caseId,
+        f_caseId: id,
       };
     } else if (
       state.fields.entities['ptpDate'].value &&
@@ -702,11 +696,12 @@ export const CollectionForm = (props) => {
         ).format('YYYY-MM-DD'),
         debitResubmissionAmount:
           state.fields.entities['debitResubmissionAmount'].value,
-        f_caseId: this.state.collection.caseIddd,
+        f_caseId: id,
       };
     }
 
-    mysqlLayer.Put('accounts/account', accountUpdate);
+    console.log('Sending accountUpdate');
+    mysqlLayer.Put('/accounts/account', accountUpdate);
   };
 
   // Setting dates earlier than today as disabled for all date pickers
@@ -758,6 +753,7 @@ export const CollectionForm = (props) => {
           >
             <DateTimeInput
               closable
+              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
               minDate={today}
               name="ptpDate"
               placeholder="PTP Date"
@@ -796,6 +792,7 @@ export const CollectionForm = (props) => {
           >
             <DateTimeInput
               closable
+              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
               minDate={today}
               name="debitResubmissionDate"
               placeholder="Debit Resubmission Date"
@@ -834,6 +831,7 @@ export const CollectionForm = (props) => {
           >
             <DateTimeInput
               closable
+              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
               minDate={today}
               name="nextVisitDateTime"
               placeholder="Next Visit Date and Time"
