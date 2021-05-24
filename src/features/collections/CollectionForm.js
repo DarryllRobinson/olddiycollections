@@ -308,6 +308,7 @@ export const CollectionForm = (props) => {
   const [state, setState] = React.useState({
     fields: {
       ids: [
+        'caseNotes',
         'contactPerson',
         'currentAssignment',
         'debitResubmissionAmount',
@@ -326,6 +327,17 @@ export const CollectionForm = (props) => {
         'transactionType',
       ],
       entities: {
+        caseNotes: {
+          control: TextArea,
+          error: null,
+          fluid: true,
+          isError: false,
+          label: 'Case Notes',
+          onChange: handleChange,
+          rules: [],
+          type: 'text',
+          value: '',
+        },
         contactPerson: {
           control: Input,
           error: null,
@@ -513,6 +525,7 @@ export const CollectionForm = (props) => {
   const updateDatabase = (process) => {
     let newKamNote;
     let newOutcomeNote;
+    let newCaseNote;
 
     if (role === 'kam') {
       let oldKamNotes = state.fields.entities['kamNotes'].value
@@ -523,8 +536,8 @@ export const CollectionForm = (props) => {
           state.fields.entities['kamNotes'].value
         }\n\r` + oldKamNotes;
 
-      if (!state.fields.entities['outcomeNotes'].value)
-        state.fields.entities['outcomeNotes'].value = 'KAM notes updated';
+      if (!state.fields.entities['caseNotes'].value)
+        state.fields.entities['caseNotes'].value = 'KAM notes updated';
     } else if (role === 'agent') {
       let oldOutcomeNotes = state.fields.entities['outcomeNotes'].value
         ? state.fields.entities['outcomeNotes'].value
@@ -533,6 +546,14 @@ export const CollectionForm = (props) => {
         `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
           state.fields.entities['outcomeNotes'].value
         }\n\r` + oldOutcomeNotes;
+
+      let oldCaseNotes = state.fields.entities['caseNotes'].value
+        ? state.fields.entities['caseNotes'].value
+        : '';
+      newCaseNote =
+        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+          state.fields.entities['caseNotes'].value
+        }\n\r` + oldCaseNotes;
     }
 
     const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -559,7 +580,7 @@ export const CollectionForm = (props) => {
     } else if (role === 'agent' && process === 'Closed') {
       caseUpdate = {
         currentStatus: process,
-        outcomeNotes: newOutcomeNote,
+        caseNotes: newCaseNote,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       };
@@ -567,7 +588,7 @@ export const CollectionForm = (props) => {
       caseUpdate = {
         currentAssignment: currentAssignment,
         currentStatus: process,
-        outcomeNotes: newOutcomeNote,
+        caseNotes: newCaseNote,
         nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -595,12 +616,12 @@ export const CollectionForm = (props) => {
         numberCalled: state.fields.entities['numberCalled'].value,
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
-        outcomeResolution: state.fields.entities['Resolution'].value,
+        outcomeResolution: state.fields.entities['resolution'].value,
         outcomeNotes: state.fields.entities['outcomeNotes'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
-        f_caseId: this.state.collection.caseIddd,
+        f_caseId: id,
       };
     } else if (
       state.fields.entities['ptpDate'].value &&
@@ -608,7 +629,6 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
-        accountNumber: accountNumber,
         lastPTPDate: state.fields.entities['ptpDate'].value,
         lastPTPAmount: state.fields.entities['ptpAmount'].value,
         updatedBy: user,
@@ -624,9 +644,7 @@ export const CollectionForm = (props) => {
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
         outcomeNotes: state.fields.entities['outcomeNotes'].value,
-        ptpDate: moment(state.fields.entities['ptpDate'].value).format(
-          'YYYY-MM-DD'
-        ),
+        ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
@@ -639,7 +657,6 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
-        accountNumber: accountNumber,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       };
@@ -656,11 +673,10 @@ export const CollectionForm = (props) => {
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
-        debitResubmissionDate: moment(
-          state.fields.entities['debitResubmissionDate'].value
-        ).format('YYYY-MM-DD'),
         debitResubmissionAmount:
           state.fields.entities['debitResubmissionAmount'].value,
+        debitResubmissionDate:
+          state.fields.entities['debitResubmissionDate'].value,
         f_caseId: id,
       };
     } else if (
@@ -669,7 +685,6 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
-        accountNumber: accountNumber,
         lastPTPDate: state.fields.entities['ptpDate'].value,
         lastPTPAmount: state.fields.entities['ptpAmount'].value,
         updatedBy: user,
@@ -685,24 +700,22 @@ export const CollectionForm = (props) => {
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
         outcomeNotes: state.fields.entities['outcomeNotes'].value,
-        ptpDate: moment(state.fields.entities['ptpDate'].value).format(
-          'YYYY-MM-DD'
-        ),
+        ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
-        debitResubmissionDate: moment(
-          state.fields.entities['debitResubmissionDate'].value
-        ).format('YYYY-MM-DD'),
         debitResubmissionAmount:
           state.fields.entities['debitResubmissionAmount'].value,
+        debitResubmissionDate:
+          state.fields.entities['debitResubmissionDate'].value,
         f_caseId: id,
       };
     }
 
-    console.log('Sending accountUpdate');
-    mysqlLayer.Put('/accounts/account', accountUpdate);
+    console.log('Sending updates');
+    mysqlLayer.Put(`/accounts/account/${accountNumber}`, accountUpdate);
+    mysqlLayer.Put(`/cases/case/${id}`, caseUpdate);
   };
 
   // Setting dates earlier than today as disabled for all date pickers
@@ -711,6 +724,18 @@ export const CollectionForm = (props) => {
   return (
     <Card fluid>
       <Form>
+        <Form.Group widths="equal">
+          <Form.TextArea
+            fluid
+            error={state.fields.entities['caseNotes'].error}
+            id="form-input-control-caseNotes"
+            name="caseNotes"
+            label="Case Notes"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['caseNotes'].value}
+          />
+        </Form.Group>
         <Form.Group widths="equal">
           <Form.Field
             control={Select}

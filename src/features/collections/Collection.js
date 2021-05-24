@@ -188,11 +188,10 @@ export const Collection = (props) => {
     // lock the record so no other agent accidentally opens it
     const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     const update = {
-      id: id,
       currentStatus: 'Locked',
       lockedDateTime: dateTime,
     };
-    mysqlLayer.Put('/cases/case', update);
+    mysqlLayer.Put(`/cases/case/${id}`, update);
 
     content = (
       <Container>
