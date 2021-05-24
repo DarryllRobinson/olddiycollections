@@ -12,6 +12,7 @@ export const CollectionForm = (props) => {
   const mysqlLayer = new MysqlLayer();
 
   const {
+    accountNumber,
     currentAssignment,
     currentStatus,
     id,
@@ -131,12 +132,11 @@ export const CollectionForm = (props) => {
   };
 
   const handlePTPDate = (event, { name, value }) => {
-    const ptpDate = value; // moment(value).format('YYYY-MM-DD HH:mm:ss');
+    const ptpDate = value;
     const followup = moment(value)
       .subtract(1, 'days')
       .set({ hour: 8, minute: 0 })
       .format('YYYY-MM-DD HH:mm');
-    // var startdate = moment().subtract(1, "days").format("DD-MM-YYYY");
 
     setState((prevState) => ({
       fields: {
@@ -608,6 +608,7 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
+        accountNumber: accountNumber,
         lastPTPDate: state.fields.entities['ptpDate'].value,
         lastPTPAmount: state.fields.entities['ptpAmount'].value,
         updatedBy: user,
@@ -638,6 +639,7 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
+        accountNumber: accountNumber,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       };
@@ -667,9 +669,8 @@ export const CollectionForm = (props) => {
     ) {
       accountUpdate = {
         //accountStatus: this.state.accountStatus,
-        lastPTPDate: moment(state.fields.entities['ptpDate'].value).format(
-          'YYYY-MM-DD'
-        ),
+        accountNumber: accountNumber,
+        lastPTPDate: state.fields.entities['ptpDate'].value,
         lastPTPAmount: state.fields.entities['ptpAmount'].value,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),

@@ -474,6 +474,7 @@ export const Collection = (props) => {
         {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
         <br />
         <CollectionForm
+          accountNumber={collection.accountNumber}
           currentAssignment={collection.currentAssignment}
           currentStatus={collection.currentStatus}
           id={id}
