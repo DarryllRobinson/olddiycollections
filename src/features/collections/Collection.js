@@ -11,7 +11,7 @@ import {
 import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
-import { Outcomes } from '../outcomes/Outcomes';
+import { Outcomes, OutcomesBundle } from '../outcomes/Outcomes';
 import { Contacts } from '../contacts/Contacts';
 import { CollectionForm } from './CollectionForm';
 
@@ -52,6 +52,7 @@ export const Collection = (props) => {
         'nextVisitDateTime',
         'numberCalled',
         'outcomeNotes',
+        'outcomeNotesBundle',
         'pendReason',
         'ptpAmount',
         'ptpDate',
@@ -71,6 +72,12 @@ export const Collection = (props) => {
           isError: false,
           rules: [],
           value: '',
+        },
+        outcomeNotesBundle: {
+          error: '',
+          isError: false,
+          rules: [],
+          value: OutcomesBundle((props = { id })),
         },
       },
     },
@@ -175,6 +182,8 @@ export const Collection = (props) => {
 
   let content;
 
+  //console.log('outcomeNotesBundle: ', outcomeNotesBundle);
+
   if (collectionStatus === 'loading') {
     content = <Form loading></Form>;
   } else if (collectionStatus === 'failed') {
@@ -192,15 +201,30 @@ export const Collection = (props) => {
       lockedDateTime: dateTime,
     };
     mysqlLayer.Put(`/cases/case/${id}`, update);
+    console.log(
+      'OutcomesBundle: ',
+      state.fields.entities['outcomeNotesBundle'].value
+    );
 
     content = (
       <Container>
-        <Card raised centered fluid style={{ padding: '15px' }}>
+        <Card raised centered fluid>
           <Card.Header>
-            <Card.Content>Case Number {collection.caseNumber}</Card.Content>
+            <Card.Content className="collection-card-header">
+              Case Number {collection.caseNumber}
+            </Card.Content>
           </Card.Header>
           <Card.Content>
             <Form>
+              <Form.Group widths="equal">
+                <Form.TextArea
+                  label="Outcome Notes Bundle"
+                  id="form-input-control-notesBundle"
+                  readOnly
+                  rows="3"
+                  value={state.fields.entities['outcomeNotesBundle'].value}
+                />
+              </Form.Group>
               <Form.Group widths="equal">
                 <Form.TextArea
                   label={`Account Number ${collection.accountNumber} - Notes`}
@@ -464,7 +488,7 @@ export const Collection = (props) => {
         {/* --------------------------------------------- Outcome History section ------------------------------------------------------- */}
         <br />
 
-        <Card fluid>
+        <Card raised centered fluid>
           <Form>
             <Outcomes id={id} />
           </Form>

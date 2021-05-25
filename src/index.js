@@ -6,6 +6,9 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
+import 'semantic-ui-css/semantic.min.css';
+import './styles.css';
+
 //import { fetchUsers } from './features/users/usersSlice';
 //store.dispatch(fetchUsers());
 

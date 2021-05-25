@@ -76,7 +76,7 @@ export const Contacts = (props) => {
           <Button>Click for more contact details</Button>
         </Accordion.Title>
         <Accordion.Content active={activeIndex === 0}>
-          <Card fluid>
+          <Card raised centered fluid>
             <Form>
               <Form.Group widths="equal">
                 <Form.Input

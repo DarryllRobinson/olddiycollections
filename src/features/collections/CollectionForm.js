@@ -308,13 +308,13 @@ export const CollectionForm = (props) => {
   const [state, setState] = React.useState({
     fields: {
       ids: [
-        'caseNotes',
         'contactPerson',
         'currentAssignment',
         'debitResubmissionAmount',
         'debitResubmissionDate',
         'emailUsed',
-        'kamNotes',
+        'newCaseNotes',
+        'newKamNotes',
         'nextSteps',
         'nextVisitDateTime',
         'numberCalled',
@@ -327,17 +327,6 @@ export const CollectionForm = (props) => {
         'transactionType',
       ],
       entities: {
-        caseNotes: {
-          control: TextArea,
-          error: null,
-          fluid: true,
-          isError: false,
-          label: 'Case Notes',
-          onChange: handleChange,
-          rules: [],
-          type: 'text',
-          value: '',
-        },
         contactPerson: {
           control: Input,
           error: null,
@@ -394,12 +383,21 @@ export const CollectionForm = (props) => {
           type: 'email',
           value: '',
         },
-        kamNotes: {
+        newCaseNotes: {
           control: TextArea,
           error: null,
-          fluid: 'true',
           isError: false,
-          label: 'KAM Notes',
+          label: 'New Case Notes',
+          onChange: handleChange,
+          rules: [],
+          type: 'text',
+          value: '',
+        },
+        newKamNotes: {
+          control: TextArea,
+          error: null,
+          isError: false,
+          label: 'New KAM Notes',
           onChange: handleChange,
           rules: [],
           type: 'text',
@@ -408,7 +406,6 @@ export const CollectionForm = (props) => {
         nextSteps: {
           control: TextArea,
           error: null,
-          fluid: 'true',
           isError: false,
           label: 'Next Steps',
           onChange: handleChange,
@@ -441,7 +438,6 @@ export const CollectionForm = (props) => {
         outcomeNotes: {
           control: TextArea,
           error: null,
-          fluid: 'true',
           isError: false,
           label: 'Outcome Notes',
           onChange: handleChange,
@@ -722,18 +718,28 @@ export const CollectionForm = (props) => {
   const today = new Date();
 
   return (
-    <Card fluid>
+    <Card raised centered fluid>
       <Form>
         <Form.Group widths="equal">
           <Form.TextArea
-            fluid
-            error={state.fields.entities['caseNotes'].error}
-            id="form-input-control-caseNotes"
-            name="caseNotes"
-            label="Case Notes"
+            error={state.fields.entities['newKamNotes'].error}
+            id="form-input-control-newKamNotes"
+            name="newKamNotes"
+            label="New KAM Note"
             onChange={handleChange}
             type="text"
-            value={state.fields.entities['caseNotes'].value}
+            value={state.fields.entities['newKamNotes'].value}
+          />
+        </Form.Group>
+        <Form.Group widths="equal">
+          <Form.TextArea
+            error={state.fields.entities['newCaseNotes'].error}
+            id="form-input-control-newCaseNotes"
+            name="newCaseNotes"
+            label="New Case Note"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['newCaseNotes'].value}
           />
         </Form.Group>
         <Form.Group widths="equal">
