@@ -725,7 +725,7 @@ export const CollectionForm = (props) => {
             error={state.fields.entities['newCaseNotes'].error}
             id="form-input-control-newCaseNotes"
             name="newCaseNotes"
-            label="New Case Note"
+            label="New Case Notes"
             onChange={handleChange}
             type="text"
             value={state.fields.entities['newCaseNotes'].value}
