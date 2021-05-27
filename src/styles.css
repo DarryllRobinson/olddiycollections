@@ -5,15 +5,27 @@
   border-bottom: 1px solid, rgba(0, 0, 0, 0.125);
 }
 
-.field {
-  padding: 1.25rem;
+.ui.form input {
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  color: #7b8a8b !important;
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 1;
+  padding: 0.375rem 0.75rem;
+  transition: border-color 0.15s;
+  width: 100%;
 }
 
-#form-input-control-notesBundle,
-#form-input-control-accountNumber,
-#form-input-control-caseNotes,
-#form-input-control-outcomesHistory {
+.ui.form input:read-only {
   background: #ecf0f1;
+}
+
+.ui.form textarea {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
@@ -27,6 +39,10 @@
   padding: 0.375rem 0.75rem;
   transition: border-color 0.15s;
   width: 100%;
+}
+
+.ui.form textarea:read-only {
+  background: #ecf0f1;
 }
 
 .ui.centered.fluid.raised.card {

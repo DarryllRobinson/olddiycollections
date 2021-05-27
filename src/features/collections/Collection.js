@@ -1,17 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Button,
-  Card,
-  Container,
-  Divider,
-  Form,
-  Input,
-} from 'semantic-ui-react';
+import { Card, Container, Divider, Form, Input } from 'semantic-ui-react';
 import moment from 'moment';
 
 import { fetchCollection, selectCollectionById } from './collectionsSlice';
-import { Outcomes, OutcomesBundle } from '../outcomes/Outcomes';
+import { Outcomes } from '../outcomes/Outcomes';
 import { Contacts } from '../contacts/Contacts';
 import { CollectionForm } from './CollectionForm';
 
@@ -52,7 +45,6 @@ export const Collection = (props) => {
         'nextVisitDateTime',
         'numberCalled',
         'outcomeNotes',
-        'outcomeNotesBundle',
         'pendReason',
         'ptpAmount',
         'ptpDate',
@@ -72,12 +64,6 @@ export const Collection = (props) => {
           isError: false,
           rules: [],
           value: '',
-        },
-        outcomeNotesBundle: {
-          error: '',
-          isError: false,
-          rules: [],
-          value: OutcomesBundle((props = { id })),
         },
       },
     },
@@ -158,10 +144,14 @@ export const Collection = (props) => {
   };
 
   // Handlers
+  const handleChange = (value) => {
+    //console.log('value', value);
+    setState(value);
+  };
 
   const handleSelect = (evt, data) => {
     const { name, value } = data;
-    //console.log('name, value', name, value);
+    console.log('name, value', name, value);
     setState({ ...state, [name]: value });
   };
 
@@ -201,30 +191,15 @@ export const Collection = (props) => {
       lockedDateTime: dateTime,
     };
     mysqlLayer.Put(`/cases/case/${id}`, update);
-    console.log(
-      'OutcomesBundle: ',
-      state.fields.entities['outcomeNotesBundle'].value
-    );
 
     content = (
       <Container>
         <Card raised centered fluid>
-          <Card.Header>
-            <Card.Content className="collection-card-header">
-              Case Number {collection.caseNumber}
-            </Card.Content>
+          <Card.Header className="collection-card-header">
+            <Card.Content>Case Number {collection.caseNumber}</Card.Content>
           </Card.Header>
           <Card.Content>
             <Form>
-              <Form.Group widths="equal">
-                <Form.TextArea
-                  label="Outcome Notes Bundle"
-                  id="form-input-control-notesBundle"
-                  readOnly
-                  rows="3"
-                  value={state.fields.entities['outcomeNotesBundle'].value}
-                />
-              </Form.Group>
               <Form.Group widths="equal">
                 <Form.TextArea
                   label={`Account Number ${collection.accountNumber} - Notes`}
@@ -489,19 +464,19 @@ export const Collection = (props) => {
         <br />
 
         <Card raised centered fluid>
-          <Form>
-            <Outcomes id={id} />
-          </Form>
+          <Outcomes id={id} />
         </Card>
 
         {/* --------------------------------------------- New activity section ------------------------------------------------------- */}
         <br />
         <CollectionForm
           accountNumber={collection.accountNumber}
+          caseNotes={collection.caseNotes}
           currentAssignment={collection.currentAssignment}
           currentStatus={collection.currentStatus}
           id={id}
-          regIdStatus={collection.regIdStatus}
+          kamNotes={collection.kamNotes}
+          outcomeNotes={''}
           role={role}
           user={user}
         />

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Accordion, Button, Card, Form, Modal } from 'semantic-ui-react';
+import { Accordion, Button, Card, Form } from 'semantic-ui-react';
 import moment from 'moment';
 
-import { fetchContacts, editContact, selectAllContacts } from './contactsSlice';
+import { fetchContacts, selectAllContacts } from './contactsSlice';
 
 export const Contacts = (props) => {
   const [activeIndex, setActiveIndex] = React.useState(0);

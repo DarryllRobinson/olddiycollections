@@ -1,8 +1,8 @@
 import React from 'react';
-import { Container, Grid } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 
 export const Upload = () => {
-  const [state, setState] = React.useState({
+  /*const [state, setState] = React.useState({
     workspaces: {
       ids: ['customers', 'accounts', 'contacts', 'cases', 'outcomes'],
       entities: {
@@ -45,11 +45,12 @@ export const Upload = () => {
     },
   });
 
+
   const workspaceToRender = () => {
     state.workspaces.ids.map((workspace, idx) => {
       return <Grid>workspaceToRender: {idx}</Grid>;
     });
-  };
+  };*/
 
-  return <Container>{workspaceToRender()}</Container>;
+  return <Container>Upload</Container>;
 };

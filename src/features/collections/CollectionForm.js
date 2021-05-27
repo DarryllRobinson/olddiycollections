@@ -13,10 +13,11 @@ export const CollectionForm = (props) => {
 
   const {
     accountNumber,
+    caseNotes,
     currentAssignment,
     currentStatus,
     id,
-    regIdStatus,
+    kamNotes,
     role,
     user,
   } = props;
@@ -56,34 +57,6 @@ export const CollectionForm = (props) => {
     { key: 'c', text: 'Call', value: 'Call' },
     { key: 'e', text: 'Email', value: 'Email' },
   ];
-
-  const renderNotes = () => {
-    if (role === 'agent') {
-      return (
-        <Form.TextArea
-          error={state.fields.entities['outcomeNotes'].error}
-          label="Outcome Notes"
-          name="outcomeNotes"
-          id="form-input-control-outcomeNotes"
-          onChange={handleChange}
-          value={state.fields.entities['outcomeNotes'].value}
-          required
-        />
-      );
-    } else if (role === 'kam') {
-      return (
-        <Form.TextArea
-          error={state.fields.entities['kamNotes'].error}
-          label="KAM Notes"
-          name="kamNotes"
-          id="form-input-control-kamNotes"
-          onChange={handleChange}
-          value={state.fields.entities['kamNotes'].value}
-          required
-        />
-      );
-    }
-  };
 
   /*let userOptions = UsersList();
   const userOptionsss = [
@@ -228,17 +201,18 @@ export const CollectionForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     clearErrorMessages();
-    checkFields();
-    updateDatabase();
+    if (checkFields()) updateDatabase();
   };
 
   const checkFields = () => {
+    let cont = true;
     // Check captured values for compliance
     console.log('Current state: ', state.fields.entities);
 
     // Transaction Type, Number Called and Email Used
     if (!state.fields.entities['transactionType'].value) {
       setErrorMsg('Please select a transaction type', 'transactionType');
+      cont = false;
     }
 
     if (
@@ -246,6 +220,7 @@ export const CollectionForm = (props) => {
       state.fields.entities['numberCalled'].value.length !== 10
     ) {
       setErrorMsg('Please provide an 10 digit phone number', 'numberCalled');
+      cont = false;
     }
 
     const filter = /^[\w._-]+[+]?[\w._-]+@[\w.-]+\.[a-zA-Z]{2,20}$/;
@@ -255,54 +230,76 @@ export const CollectionForm = (props) => {
       !filter.test(state.fields.entities['emailUsed'].value)
     ) {
       setErrorMsg('Please provide a valid email address', 'emailUsed');
+      cont = false;
     }
 
     // PTP values
     if (
       state.fields.entities['ptpDate'].value !== '' &&
       state.fields.entities['ptpAmount'].value === ''
-    )
+    ) {
       setErrorMsg('Please provide an amount', 'ptpAmount');
+      cont = false;
+    }
 
     if (
       state.fields.entities['ptpAmount'].value !== '' &&
       state.fields.entities['ptpDate'].value === ''
-    )
+    ) {
       setErrorMsg('Please provide a date', 'ptpDate');
+      cont = false;
+    }
 
     // Outcome Resolution
-    if (state.fields.entities['resolution'].value === '')
+    if (state.fields.entities['resolution'].value === '') {
       setErrorMsg('Please select a resolution', 'resolution');
+      cont = false;
+    }
 
     // Debit Resubmission values
     if (
       state.fields.entities['debitResubmissionDate'].value !== '' &&
       state.fields.entities['debitResubmissionAmount'].value === ''
-    )
+    ) {
       setErrorMsg('Please provide an amount', 'debitResubmissionAmount');
+      cont = false;
+    }
 
     if (
       state.fields.entities['debitResubmissionAmount'].value !== '' &&
       state.fields.entities['debitResubmissionDate'].value === ''
-    )
+    ) {
       setErrorMsg('Please provide a date', 'debitResubmissionDate');
+      cont = false;
+    }
 
     // Outcome or KAM Notes
     if (
       role === 'agent' &&
       state.fields.entities['outcomeNotes'].value.length < 10
-    )
+    ) {
       setErrorMsg('Please provide more detailed notes', 'outcomeNotes');
-    if (role === 'kam' && state.fields.entities['kamNotes'].value.length < 10)
+      cont = false;
+    }
+
+    if (role === 'kam' && state.fields.entities['kamNotes'].value.length < 10) {
       setErrorMsg('Please provide more detailed notes', 'kamNotes');
+      cont = false;
+    }
 
     // Next Visit Date and Time values
-    if (state.fields.entities['nextVisitDateTime'].value === '')
+    if (state.fields.entities['nextVisitDateTime'].value === '') {
       setErrorMsg('Please provide a date', 'nextVisitDateTime');
+      cont = false;
+    }
 
     // Next Steps
-    if (state.fields.entities['nextSteps'].value.length < 10)
+    if (state.fields.entities['nextSteps'].value.length < 10) {
       setErrorMsg('Please provide more detailed notes', 'nextSteps');
+      cont = false;
+    }
+
+    return cont;
   };
 
   const [state, setState] = React.useState({
@@ -362,7 +359,7 @@ export const CollectionForm = (props) => {
           value: '',
         },
         debitResubmissionDate: {
-          //control: DateTime,
+          DateTimeInput,
           error: null,
           fluid: false,
           isError: false,
@@ -414,7 +411,7 @@ export const CollectionForm = (props) => {
           value: '',
         },
         nextVisitDateTime: {
-          //control: DateTime,
+          DateTimeInput,
           error: null,
           fluid: false,
           isError: false,
@@ -469,7 +466,7 @@ export const CollectionForm = (props) => {
           value: '',
         },
         ptpDate: {
-          //control: DateTime,
+          DateTimeInput,
           error: null,
           fluid: false,
           isError: false,
@@ -519,38 +516,28 @@ export const CollectionForm = (props) => {
   });
 
   const updateDatabase = (process) => {
+    let newCaseNote;
     let newKamNote;
     let newOutcomeNote;
-    let newCaseNote;
 
     if (role === 'kam') {
-      let oldKamNotes = state.fields.entities['kamNotes'].value
-        ? state.fields.entities['kamNotes'].value
-        : '';
       newKamNote =
         `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
-          state.fields.entities['kamNotes'].value
-        }\n\r` + oldKamNotes;
+          state.fields.entities['newKamNotes'].value
+        }\n\r` + kamNotes;
 
-      if (!state.fields.entities['caseNotes'].value)
-        state.fields.entities['caseNotes'].value = 'KAM notes updated';
-    } else if (role === 'agent') {
-      let oldOutcomeNotes = state.fields.entities['outcomeNotes'].value
-        ? state.fields.entities['outcomeNotes'].value
-        : '';
-      newOutcomeNote =
-        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
-          state.fields.entities['outcomeNotes'].value
-        }\n\r` + oldOutcomeNotes;
-
-      let oldCaseNotes = state.fields.entities['caseNotes'].value
-        ? state.fields.entities['caseNotes'].value
-        : '';
-      newCaseNote =
-        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
-          state.fields.entities['caseNotes'].value
-        }\n\r` + oldCaseNotes;
+      if (!state.fields.entities['newCaseNotes'].value)
+        state.fields.entities['newCaseNotes'].value = 'KAM notes updated';
     }
+
+    newOutcomeNote = `${moment(new Date()).format(
+      'YYYY-MM-DD HH:mm:ss'
+    )} by ${user}\n${state.fields.entities['outcomeNotes'].value}\n\r`;
+
+    newCaseNote =
+      `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+        state.fields.entities['newCaseNotes'].value
+      }\n\r` + caseNotes;
 
     const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     const closedBy = user;
@@ -613,7 +600,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        outcomesNotes: newOutcomeNote,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
@@ -639,7 +626,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        outcomesNotes: newOutcomeNote,
         ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
@@ -665,7 +652,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        outcomesNotes: newOutcomeNote,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
@@ -695,7 +682,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomeNotes: state.fields.entities['outcomeNotes'].value,
+        outcomesNotes: newOutcomeNote,
         ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
@@ -712,6 +699,7 @@ export const CollectionForm = (props) => {
     console.log('Sending updates');
     mysqlLayer.Put(`/accounts/account/${accountNumber}`, accountUpdate);
     mysqlLayer.Put(`/cases/case/${id}`, caseUpdate);
+    mysqlLayer.Post(`/outcomes/outcome`, outcomeInsert);
   };
 
   // Setting dates earlier than today as disabled for all date pickers
@@ -731,6 +719,7 @@ export const CollectionForm = (props) => {
             value={state.fields.entities['newKamNotes'].value}
           />
         </Form.Group>
+
         <Form.Group widths="equal">
           <Form.TextArea
             error={state.fields.entities['newCaseNotes'].error}
@@ -742,6 +731,7 @@ export const CollectionForm = (props) => {
             value={state.fields.entities['newCaseNotes'].value}
           />
         </Form.Group>
+
         <Form.Group widths="equal">
           <Form.Field
             control={Select}
@@ -776,24 +766,25 @@ export const CollectionForm = (props) => {
             value={state.fields.entities['emailUsed'].value}
           />
         </Form.Group>
+
         <Form.Group widths="equal">
-          <Form.Field
-            control={Input}
+          <Form.Input
             error={state.fields.entities['ptpDate'].error}
+            input={
+              <DateTimeInput
+                closable
+                dateTimeFormat="YYYY-MM-DD HH:mm:ss"
+                minDate={today}
+                name="ptpDate"
+                placeholder="PTP Date"
+                value={state.fields.entities['ptpDate'].value}
+                iconPosition="left"
+                onChange={handlePTPDate}
+              />
+            }
             label="PTP Date"
             name="ptpDate"
-          >
-            <DateTimeInput
-              closable
-              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
-              minDate={today}
-              name="ptpDate"
-              placeholder="PTP Date"
-              value={state.fields.entities['ptpDate'].value}
-              iconPosition="left"
-              onChange={handlePTPDate}
-            />
-          </Form.Field>
+          />
           <Form.Input
             error={state.fields.entities['ptpAmount'].error}
             fluid
@@ -815,24 +806,25 @@ export const CollectionForm = (props) => {
             required
           />
         </Form.Group>
+
         <Form.Group widths="equal">
-          <Form.Field
-            control={Input}
+          <Form.Input
             error={state.fields.entities['debitResubmissionDate'].error}
+            input={
+              <DateTimeInput
+                closable
+                dateTimeFormat="YYYY-MM-DD HH:mm:ss"
+                minDate={today}
+                name="debitResubmissionDate"
+                placeholder="Debit Resubmission Date"
+                value={state.fields.entities['debitResubmissionDate'].value}
+                iconPosition="left"
+                onChange={handleDate}
+              />
+            }
             label="Debit Resubmission Date"
             name="debitResubmissionDate"
-          >
-            <DateTimeInput
-              closable
-              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
-              minDate={today}
-              name="debitResubmissionDate"
-              placeholder="Debit Resubmission Date"
-              value={state.fields.entities['debitResubmissionDate'].value}
-              iconPosition="left"
-              onChange={handleDate}
-            />
-          </Form.Field>
+          />
           <Form.Input
             error={state.fields.entities['debitResubmissionAmount'].error}
             fluid
@@ -854,26 +846,40 @@ export const CollectionForm = (props) => {
           />
           <Button content="Submit" onClick={handleSubmit} />
         </Form.Group>
-        <Form.Group widths="equal">{renderNotes()}</Form.Group>
+
         <Form.Group widths="equal">
-          <Form.Field
-            control={Input}
+          <Form.TextArea
+            error={state.fields.entities['outcomeNotes'].error}
+            label="Outcome Notes"
+            name="outcomeNotes"
+            id="form-input-control-outcomeNotes"
+            onChange={handleChange}
+            value={state.fields.entities['outcomeNotes'].value}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group widths="equal">
+          <Form.Input
             error={state.fields.entities['nextVisitDateTime'].error}
+            input={
+              <DateTimeInput
+                closable
+                dateTimeFormat="YYYY-MM-DD HH:mm:ss"
+                minDate={today}
+                name="nextVisitDateTime"
+                placeholder="Next Visit Date and Time"
+                value={state.fields.entities['nextVisitDateTime'].value}
+                iconPosition="left"
+                onChange={handleDate}
+              />
+            }
             label="Next Visit Date and Time"
-          >
-            <DateTimeInput
-              closable
-              dateTimeFormat="YYYY-MM-DD HH:mm:ss"
-              minDate={today}
-              name="nextVisitDateTime"
-              placeholder="Next Visit Date and Time"
-              value={state.fields.entities['nextVisitDateTime'].value}
-              iconPosition="left"
-              onChange={handleDate}
-            />
-          </Form.Field>
+            required
+          />
           <UsersList handleSelect={handleSelect} user={user} />
         </Form.Group>
+
         <Form.Group widths="equal">
           <Form.TextArea
             error={state.fields.entities['nextSteps'].error}
@@ -885,6 +891,7 @@ export const CollectionForm = (props) => {
             required
           />
         </Form.Group>
+
         <Form.Group widths="equal"></Form.Group>
         <Card>
           <Button content="Submit" onClick={handleSubmit} />
