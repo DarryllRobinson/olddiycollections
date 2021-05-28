@@ -6,6 +6,7 @@ import moment from 'moment';
 import MysqlLayer from '../../services/MysqlLayer';
 import history from '../../history';
 import { UsersList } from '../users/UsersList';
+import { ProgressBar } from '../../utils/ProgressBar';
 
 export const CollectionForm = (props) => {
   //console.log('CollectionForm props', props);
@@ -515,43 +516,96 @@ export const CollectionForm = (props) => {
     },
   });
 
-  const updateDatabase = (process) => {
+  const updateDatabase = async (process) => {
     let newCaseNote;
     let newKamNote;
     let newOutcomeNote;
 
-    if (role === 'kam') {
+    if (state.fields.entities['newKamNotes'].value !== '') {
       newKamNote =
         `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
           state.fields.entities['newKamNotes'].value
         }\n\r` + kamNotes;
 
-      if (!state.fields.entities['newCaseNotes'].value)
+      if (state.fields.entities['newCaseNotes'].value === '')
         state.fields.entities['newCaseNotes'].value = 'KAM notes updated';
+    }
+
+    if (state.fields.entities['newCaseNotes'].value !== '') {
+      newCaseNote =
+        `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
+          state.fields.entities['newCaseNotes'].value
+        }\n\r` + caseNotes;
     }
 
     newOutcomeNote = `${moment(new Date()).format(
       'YYYY-MM-DD HH:mm:ss'
     )} by ${user}\n${state.fields.entities['outcomeNotes'].value}\n\r`;
 
-    newCaseNote =
-      `${moment(new Date()).format('YYYY-MM-DD HH:mm:ss')} by ${user}\n${
-        state.fields.entities['newCaseNotes'].value
-      }\n\r` + caseNotes;
-
     const closedDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     const closedBy = user;
 
     let caseUpdate;
     // Working out which role for notes and what action has been submitted
-    if (role === 'kam' && process === 'Closed') {
+    if (process === 'Closed' && newKamNote !== '' && newCaseNote !== '') {
+      caseUpdate = {
+        currentStatus: process,
+        caseNotes: newCaseNote,
+        kamNotes: newKamNote,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (
+      process === 'Closed' &&
+      newKamNote !== '' &&
+      newCaseNote === ''
+    ) {
       caseUpdate = {
         currentStatus: process,
         kamNotes: newKamNote,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       };
-    } else if (role === 'kam' && process !== 'Closed') {
+    } else if (
+      process === 'Closed' &&
+      newKamNote === '' &&
+      newCaseNote !== ''
+    ) {
+      caseUpdate = {
+        currentStatus: process,
+        caseNotes: newCaseNote,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (
+      process === 'Closed' &&
+      newKamNote === '' &&
+      newCaseNote === ''
+    ) {
+      caseUpdate = {
+        currentStatus: process,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (
+      process !== 'Closed' &&
+      newKamNote !== '' &&
+      newCaseNote !== ''
+    ) {
+      caseUpdate = {
+        currentAssignment: currentAssignment,
+        currentStatus: process,
+        caseNotes: newCaseNote,
+        kamNotes: newKamNote,
+        nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (
+      process !== 'Closed' &&
+      newKamNote !== '' &&
+      newCaseNote === ''
+    ) {
       caseUpdate = {
         currentAssignment: currentAssignment,
         currentStatus: process,
@@ -560,18 +614,27 @@ export const CollectionForm = (props) => {
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
       };
-    } else if (role === 'agent' && process === 'Closed') {
-      caseUpdate = {
-        currentStatus: process,
-        caseNotes: newCaseNote,
-        updatedBy: user,
-        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-      };
-    } else if (role === 'agent' && process !== 'Closed') {
+    } else if (
+      process !== 'Closed' &&
+      newKamNote === '' &&
+      newCaseNote !== ''
+    ) {
       caseUpdate = {
         currentAssignment: currentAssignment,
         currentStatus: process,
         caseNotes: newCaseNote,
+        nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
+        updatedBy: user,
+        updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      };
+    } else if (
+      process !== 'Closed' &&
+      newKamNote === '' &&
+      newCaseNote === ''
+    ) {
+      caseUpdate = {
+        currentAssignment: currentAssignment,
+        currentStatus: process,
         nextVisitDateTime: state.fields.entities['nextVisitDateTime'].value,
         updatedBy: user,
         updatedDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -600,7 +663,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomesNotes: newOutcomeNote,
+        outcomeNotes: newOutcomeNote,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
@@ -626,7 +689,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomesNotes: newOutcomeNote,
+        outcomeNotes: newOutcomeNote,
         ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
@@ -652,7 +715,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomesNotes: newOutcomeNote,
+        outcomeNotes: newOutcomeNote,
         nextSteps: state.fields.entities['nextSteps'].value,
         closedDate: closedDate,
         closedBy: closedBy,
@@ -682,7 +745,7 @@ export const CollectionForm = (props) => {
         emailUsed: state.fields.entities['emailUsed'].value,
         contactPerson: state.fields.entities['contactPerson'].value,
         outcomeResolution: state.fields.entities['resolution'].value,
-        outcomesNotes: newOutcomeNote,
+        outcomeNotes: newOutcomeNote,
         ptpDate: state.fields.entities['ptpDate'].value,
         ptpAmount: state.fields.entities['ptpAmount'].value,
         nextSteps: state.fields.entities['nextSteps'].value,
@@ -699,7 +762,16 @@ export const CollectionForm = (props) => {
     console.log('Sending updates');
     mysqlLayer.Put(`/accounts/account/${accountNumber}`, accountUpdate);
     mysqlLayer.Put(`/cases/case/${id}`, caseUpdate);
-    mysqlLayer.Post(`/outcomes/outcome`, outcomeInsert);
+    const outcomeStatus = await mysqlLayer.Post(
+      `/outcomes/outcome`,
+      outcomeInsert
+    );
+    if (outcomeStatus.status === 'Ok') {
+      <ProgressBar />;
+      //history.push('/collections');
+    } else {
+      console.log(outcomeStatus);
+    }
   };
 
   // Setting dates earlier than today as disabled for all date pickers

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'semantic-ui-react';
 
-// Modal for saving update
-export const PopUp = () => {
+// Modal for confirming successful save
+const Toast = () => {
   const [open, setOpen] = useState(false);
-  console.log('Going to popup now');
+  //console.log('Going to popup now');
 
   return (
     <Modal
@@ -21,3 +21,5 @@ export const PopUp = () => {
     </Modal>
   );
 };
+
+export default Toast;
