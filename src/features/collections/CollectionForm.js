@@ -767,8 +767,7 @@ export const CollectionForm = (props) => {
       outcomeInsert
     );
     if (outcomeStatus.status === 'Ok') {
-      <ProgressBar />;
-      //history.push('/collections');
+      history.push('/collections');
     } else {
       console.log(outcomeStatus);
     }
@@ -780,18 +779,19 @@ export const CollectionForm = (props) => {
   return (
     <Card raised centered fluid>
       <Form>
-        <Form.Group widths="equal">
-          <Form.TextArea
-            error={state.fields.entities['newKamNotes'].error}
-            id="form-input-control-newKamNotes"
-            name="newKamNotes"
-            label="New KAM Note"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['newKamNotes'].value}
-          />
-        </Form.Group>
-
+        {role === 'kam' && (
+          <Form.Group widths="equal">
+            <Form.TextArea
+              error={state.fields.entities['newKamNotes'].error}
+              id="form-input-control-newKamNotes"
+              name="newKamNotes"
+              label="New KAM Note"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['newKamNotes'].value}
+            />
+          </Form.Group>
+        )}
         <Form.Group widths="equal">
           <Form.TextArea
             error={state.fields.entities['newCaseNotes'].error}
@@ -803,7 +803,6 @@ export const CollectionForm = (props) => {
             value={state.fields.entities['newCaseNotes'].value}
           />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.Field
             control={Select}
@@ -838,7 +837,6 @@ export const CollectionForm = (props) => {
             value={state.fields.entities['emailUsed'].value}
           />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.Input
             error={state.fields.entities['ptpDate'].error}
@@ -878,7 +876,6 @@ export const CollectionForm = (props) => {
             required
           />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.Input
             error={state.fields.entities['debitResubmissionDate'].error}
@@ -918,7 +915,6 @@ export const CollectionForm = (props) => {
           />
           <Button content="Submit" onClick={handleSubmit} />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.TextArea
             error={state.fields.entities['outcomeNotes'].error}
@@ -930,7 +926,6 @@ export const CollectionForm = (props) => {
             required
           />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.Input
             error={state.fields.entities['nextVisitDateTime'].error}
@@ -951,7 +946,6 @@ export const CollectionForm = (props) => {
           />
           <UsersList handleSelect={handleSelect} user={user} />
         </Form.Group>
-
         <Form.Group widths="equal">
           <Form.TextArea
             error={state.fields.entities['nextSteps'].error}
@@ -963,7 +957,6 @@ export const CollectionForm = (props) => {
             required
           />
         </Form.Group>
-
         <Form.Group widths="equal"></Form.Group>
         <Card>
           <Button content="Submit" onClick={handleSubmit} />

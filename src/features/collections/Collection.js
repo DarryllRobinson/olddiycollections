@@ -9,7 +9,6 @@ import { Contacts } from '../contacts/Contacts';
 import { CollectionForm } from './CollectionForm';
 
 import MysqlLayer from '../../services/MysqlLayer';
-import history from '../../history';
 
 export const Collection = (props) => {
   //console.log('props', props);
@@ -144,31 +143,11 @@ export const Collection = (props) => {
   };
 
   // Handlers
-  const handleChange = (value) => {
-    //console.log('value', value);
-    setState(value);
-  };
-
   const handleSelect = (evt, data) => {
     const { name, value } = data;
     console.log('name, value', name, value);
     setState({ ...state, [name]: value });
   };
-
-  const cancelUpdate = () => {
-    const newStatus =
-      collection.currentStatus === 'Locked' ? 'Open' : collection.currentStatus;
-    //console.log('newStatus', newStatus);
-    const update = { id: id, currentStatus: newStatus, lockedDateTime: null };
-
-    mysqlLayer.Put('/cases/case', update);
-    history.push('/collections');
-  };
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    console.log('Current state: ', state);
-  }
 
   let content;
 

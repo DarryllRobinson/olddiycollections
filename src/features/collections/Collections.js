@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table } from 'semantic-ui-react';
+import { Dimmer, Loader, Table } from 'semantic-ui-react';
 import moment from 'moment';
 
 import { fetchCollections, selectAllCollections } from './collectionsSlice';
@@ -8,7 +8,7 @@ import { fetchCollections, selectAllCollections } from './collectionsSlice';
 export const Collections = () => {
   const dispatch = useDispatch();
   const collections = useSelector(selectAllCollections);
-  console.log('collections: ', collections);
+  //console.log('collections: ', collections);
 
   const collectionsStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
@@ -25,7 +25,9 @@ export const Collections = () => {
     content = (
       <Table.Row>
         <Table.Cell>
-          <div className="loading">Loading...</div>
+          <Dimmer active>
+            <Loader>Loading...</Loader>
+          </Dimmer>
         </Table.Cell>
       </Table.Row>
     );
