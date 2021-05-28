@@ -14,7 +14,7 @@ import { Collections } from '../features/collections/Collections';
 import { Collection } from '../features/collections/Collection';
 import { Contacts } from '../features/contacts/Contacts';
 
-import { Upload } from '../features/upload/Upload';
+import Upload from '../features/upload/Upload';
 
 export const ComponentRoutes = (props) => {
   const security = new Security();
