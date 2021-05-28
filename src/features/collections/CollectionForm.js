@@ -6,7 +6,7 @@ import moment from 'moment';
 import MysqlLayer from '../../services/MysqlLayer';
 import history from '../../history';
 import { UsersList } from '../users/UsersList';
-import { ProgressBar } from '../../utils/ProgressBar';
+//import { ProgressBar } from '../../utils/ProgressBar';
 
 export const CollectionForm = (props) => {
   //console.log('CollectionForm props', props);

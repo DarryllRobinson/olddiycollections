@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import XLSX from 'xlsx';
 import { make_cols } from './MakeColumns';
 import { SheetJSFT } from './types';
-//import LinearProgress from 'components/CustomLinearProgress/CustomLinearProgress';
+
+import { ProgressBar } from '../../utils/ProgressBar';
 import MysqlLayer from '../../services/MysqlLayer';
 import ErrorReporting from '../../services/ErrorReporting';
 import moment from 'moment';
@@ -17,7 +18,6 @@ class Upload extends Component {
       file: {},
       data: [],
       cols: [],
-      type: sessionStorage.getItem('cwsType'),
       workspaces: {
         ids: ['customers', 'accounts', 'contacts', 'cases', 'outcomes'],
         entities: {
@@ -212,6 +212,7 @@ class Upload extends Component {
 
   async uploadData(workspace, data) {
     let workspaceObject = this.state.workspaces.entities[workspace];
+    console.log('workspaceObject: ', workspaceObject);
     workspaceObject.loading = true;
     workspaceObject.progress = 0;
     this.setState({ ...this.state, workspaceObject });
@@ -248,19 +249,20 @@ class Upload extends Component {
           progress: Math.round(((i + 1) / chunkedData.length) * 100),
         })
       );
-      if (response.data.errno) {
+      console.log('response: ', response);
+      if (response.data !== undefined) {
         let error = [];
         error = this.state.customerErrors;
         error.push(response.data);
         this.setState({ customerErrors: error });
       }
 
-      totalRecords = totalRecords + response.data.affectedRows;
+      totalRecords = totalRecords + response.affectedRows;
     }
 
     workspaceObject.loading = false;
     workspaceObject.progress = 100;
-    this.setState({ ...this.state, workspaceObject });
+    //this.setState({ ...this.state, workspaceObject });
     return totalRecords;
   }
 
@@ -281,7 +283,7 @@ class Upload extends Component {
             productType: record.ProductType,
             createdBy: 'System',
             regIdStatus: record.CIPCStatus,
-            f_clientId: sessionStorage.getItem('cwsClient'),
+            f_clientId: 1,
           },
         ];
       } else if (record.CustomerEntity === 'Consumer') {
@@ -296,7 +298,7 @@ class Upload extends Component {
             productType: record.ProductType,
             createdBy: 'System',
             regIdStatus: record.IDVStatus,
-            f_clientId: sessionStorage.getItem('cwsClient'),
+            f_clientId: 1,
           },
         ];
       }
@@ -507,12 +509,10 @@ class Upload extends Component {
   }
 
   async postToDb(records, workspace) {
-    let type = this.state.type;
-    let task = 'create_items';
-    let clientId = sessionStorage.getItem('cwsClient');
+    const newRecord = workspace.slice(0, -1);
 
     const response = await this.mysqlLayer.Post(
-      `/${type}/${workspace}/${task}/${clientId}`,
+      `/${workspace}/${newRecord}`,
       records
     );
     return response;
@@ -547,7 +547,7 @@ class Upload extends Component {
               <>
                 <br />
                 <br />
-                {/*<LinearProgress variant="determinate" value={progress} />*/}
+                <ProgressBar file={workspace} percent={progress} />
               </>
             )}
             {workspaces.entities[workspace].progress === 100 &&

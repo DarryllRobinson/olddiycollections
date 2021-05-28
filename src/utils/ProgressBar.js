@@ -1,12 +1,16 @@
 import React from 'react';
 import { Progress } from 'semantic-ui-react';
 
-export const ProgressBar = (progress) => {
-  const [percent, setPercent] = React.useState(0);
+export const ProgressBar = (props) => {
+  const { file, percent } = props;
 
-  setPercent((prevState, percent) => ({
-    percent: prevState.percent === 0 ? 100 : 0,
-  }));
-
-  return <Progress percent={percent} autoSuccess />;
+  if (percent < 100) {
+    return <Progress percent={percent} progress active />;
+  } else {
+    return (
+      <Progress percent={percent} success>
+        {file} successfully uploaded
+      </Progress>
+    );
+  }
 };
