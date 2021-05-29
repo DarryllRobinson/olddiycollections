@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Grid } from 'semantic-ui-react';
 
 import CustomBar from './CustomBar';
-//import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
 
 class Reports extends React.Component {
@@ -10,7 +9,7 @@ class Reports extends React.Component {
     super(props);
     this.state = {
       reports: {
-        ids: ['aging', 'agentPTP', 'datePTP'],
+        ids: ['aging', 'agentPTP', 'datePTP', 'penetrationRate'],
         entities: {
           aging: {
             data: null,
@@ -26,6 +25,11 @@ class Reports extends React.Component {
             data: null,
             description: 'PTP sum per date',
             title: 'PTP by Date',
+          },
+          penetrationRate: {
+            data: null,
+            description: 'Contacts made per account per month',
+            title: 'Penetration rate',
           },
         },
       },

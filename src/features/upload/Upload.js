@@ -7,7 +7,7 @@ import { ProgressBar } from '../../utils/ProgressBar';
 import MysqlLayer from '../../services/MysqlLayer';
 import ErrorReporting from '../../services/ErrorReporting';
 import moment from 'moment';
-//import image from '../../../assets/img/green-tick.jpeg';
+import image from '../../assets/img/green-tick.jpeg';
 
 //const workspaces = ['customers', 'accounts', 'contacts', 'cases', 'outcomes'];
 
@@ -212,7 +212,7 @@ class Upload extends Component {
 
   async uploadData(workspace, data) {
     let workspaceObject = this.state.workspaces.entities[workspace];
-    console.log('workspaceObject: ', workspaceObject);
+    //console.log('workspaceObject: ', workspaceObject);
     workspaceObject.loading = true;
     workspaceObject.progress = 0;
     this.setState({ ...this.state, workspaceObject });
@@ -249,8 +249,8 @@ class Upload extends Component {
           progress: Math.round(((i + 1) / chunkedData.length) * 100),
         })
       );
-      console.log('response: ', response);
-      if (response.data !== undefined) {
+      //console.log('response: ', response);
+      if (response.errno !== undefined) {
         let error = [];
         error = this.state.customerErrors;
         error.push(response.data);
@@ -542,7 +542,6 @@ class Upload extends Component {
                 onClick={this.handleFile}
               />
             )}
-
             {workspaces.entities[workspace].loading && (
               <>
                 <br />
@@ -550,10 +549,9 @@ class Upload extends Component {
                 <ProgressBar file={workspace} percent={progress} />
               </>
             )}
-            {workspaces.entities[workspace].progress === 100 &&
-              {
-                /*<img src={image} alt="Green tick" width="55" height="45" />*/
-              }}
+            {workspaces.entities[workspace].progress === 100 && (
+              <img src={image} alt="Green tick" width="55" height="45" />
+            )}
           </div>
         </div>
         <br />

@@ -4,7 +4,6 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 
-//import { client } from '../../api/client';
 import MysqlLayer from '../../services/MysqlLayer';
 
 const reportsAdapter = createEntityAdapter();
