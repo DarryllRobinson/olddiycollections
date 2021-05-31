@@ -18,22 +18,20 @@ export const Dashboard = (props) => {
       <div style={{ color: 'red' }}>{timerMsg}</div>
       <Grid celled="internally" stackable textAlign="center" columns={2}>
         <Grid.Row>
-          <Grid.Column width={4} style={{ padding: 0 }}>
+          <Grid.Column className="queues" width={4}>
             <Queues />
           </Grid.Column>
-          <Grid.Column width={12} style={{ padding: 0 }}>
-            <Workzone />
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column width={4} style={{ padding: 0 }}>
-            TopTips
-          </Grid.Column>
-          <Grid.Column width={12} style={{ padding: 0 }}>
+          <Grid.Column width={12}>
             <Reports styleType="dash" />
           </Grid.Column>
         </Grid.Row>
-      </Grid>{' '}
+        <Grid.Row>
+          <Grid.Column width={4}>TopTips</Grid.Column>
+          <Grid.Column className="workzone" width={12}>
+            <Workzone />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </Container>
   );
 };

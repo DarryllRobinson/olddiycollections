@@ -49,9 +49,9 @@ export const Workzone = () => {
   }
 
   return (
-    <Table className="workzone">
-      <Table.Header className="workzone">
-        <Table.Row className="workzone">
+    <Table celled selectable color="grey" inverted unstackable>
+      <Table.Header>
+        <Table.Row>
           <Table.HeaderCell>Account Number</Table.HeaderCell>
           <Table.HeaderCell>Customer Name</Table.HeaderCell>
           <Table.HeaderCell>Registration / ID Number</Table.HeaderCell>
@@ -60,7 +60,7 @@ export const Workzone = () => {
           <Table.HeaderCell>Total Due</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
-      <Table.Body className="workzone">{content}</Table.Body>
+      <Table.Body>{content}</Table.Body>
     </Table>
   );
 };

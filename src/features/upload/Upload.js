@@ -3,6 +3,8 @@ import XLSX from 'xlsx';
 import { make_cols } from './MakeColumns';
 import { SheetJSFT } from './types';
 
+import { Container, Grid, Input } from 'semantic-ui-react';
+
 import { ProgressBar } from '../../utils/ProgressBar';
 import MysqlLayer from '../../services/MysqlLayer';
 import ErrorReporting from '../../services/ErrorReporting';
@@ -522,20 +524,20 @@ class Upload extends Component {
     const { progress, workspaces } = this.state;
 
     const workspaceDisplay = workspaces.ids.map((workspace, idx) => (
-      <div key={idx} className="container">
-        <div className="row">
-          <div className="col-8">
-            <label htmlFor="file">Import new {workspace}</label>
-            <br />
-            <input
-              type="file"
-              id="file"
+      <Grid key={idx}>
+        <Grid.Row>
+          <Grid.Column width={8}>
+            <Input
               accept={SheetJSFT}
+              action="Upload file"
+              id="file"
+              label={`Import new ${workspace}`}
               onChange={this.handleChange}
-              style={{ width: '400px' }}
+              type="file"
             />
+            <br />
             {workspaces.entities[workspace].progress === 0 && (
-              <input
+              <Input
                 type="submit"
                 name={workspace}
                 value="Upload file"
@@ -552,14 +554,14 @@ class Upload extends Component {
             {workspaces.entities[workspace].progress === 100 && (
               <img src={image} alt="Green tick" width="55" height="45" />
             )}
-          </div>
-        </div>
+          </Grid.Column>
+        </Grid.Row>
         <br />
         <br />
-      </div>
+      </Grid>
     ));
 
-    return <div className="container">{workspaceDisplay}</div>;
+    return <Container>{workspaceDisplay}</Container>;
   }
 }
 

@@ -1,8 +1,52 @@
+:root {
+  --BACKGROUND: #ced4da;
+  --FONT_COLOUR: #333333;
+  --HEADER: #aeafae;
+}
+
 .content.collection-card-header {
   background-color: rgba(0, 0, 0, 0.03);
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
   border-bottom: 1px solid, rgba(0, 0, 0, 0.125);
+}
+
+.column.queues {
+  padding: 0 !important;
+}
+
+.ui.segment.queues {
+  background-color: var(--BACKGROUND);
+  color: var(--FONT_COLOUR);
+  padding: 17px 0 0 0;
+}
+
+/* Hidden by the items in the list */
+.ui.list.queues {
+  background-color: var(--BACKGROUND);
+  color: var(--FONT_COLOUR);
+}
+
+.a.item.queues {
+  margin-top: 0;
+}
+
+.ui.list.queues > a.item.queues {
+  background-color: var(--BACKGROUND);
+  border: 0.5px dotted var(--HEADER) !important;
+  color: var(--FONT_COLOUR);
+  height: 40px;
+  margin-top: 0;
+  padding: 10px 20px 10px 20px;
+  vertical-align: center !important;
+}
+
+.ui.label.queues {
+  background-color: var(--HEADER);
+  color: var(--FONT_COLOUR);
+  height: 45px;
+  padding: 0 !important;
+  vertical-align: center;
 }
 
 .ui.form input {
@@ -19,6 +63,25 @@
   padding: 0.375rem 0.75rem;
   transition: border-color 0.15s;
   width: 100%;
+}
+
+.ui.table.workzone {
+  color: var(--FONT_COLOUR);
+}
+
+.ui.table.workzone th {
+  background-color: var(--HEADER);
+  color: var(--FONT_COLOUR);
+}
+
+.ui.table.workzone > tbody {
+  background-color: var(--BACKGROUND);
+}
+
+.column.workzone {
+  background-color: var(--BACKGROUND);
+  height: 285px;
+  padding: 0 !important;
 }
 
 .ui.form input:read-only {
