@@ -1,9 +1,10 @@
 import React from 'react';
 import { Container, Grid } from 'semantic-ui-react';
 
-import Reports from '../reports/Reports';
+//import Reports from '../reports/Reports';
 import { Workzone } from '../workzone/Workzone';
 import { Queues } from '../queues/Queues';
+import { CustomPie } from '../reports/CustomPie';
 //import moment from 'moment';
 
 export const Dashboard = (props) => {
@@ -22,7 +23,8 @@ export const Dashboard = (props) => {
             <Queues />
           </Grid.Column>
           <Grid.Column width={12}>
-            <Reports styleType="dash" />
+            {/*<Reports styleType="dash" />*/}
+            <CustomPie />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
