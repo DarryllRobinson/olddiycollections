@@ -50,24 +50,25 @@ export const TopChart = () => {
       style={{
         boxSizing: 'border-box',
         display: 'inline',
+        background: '#DEE0E1',
         height: '250',
         padding: 0,
         fontFamily: "'Fira Sans', sans-serif",
       }}
-      viewBox="0 0 1950 450"
+      viewBox="-45 0 2000 480"
     >
       <VictoryLabel
         x={25}
-        y={24}
+        y={45}
         style={{
           textAnchor: 'start',
           verticalAnchor: 'end',
           fill: '#000000',
           fontFamily: 'inherit',
-          fontSize: '20px',
+          fontSize: '50px',
           fontWeight: 'bold',
         }}
-        text="Top Chart"
+        text="Owed, PTP and Collections"
       />
       <VictoryLabel
         x={430}
@@ -82,36 +83,14 @@ export const TopChart = () => {
       />
       <VictoryLabel
         x={25}
-        y={55}
-        style={{ fontFamily: 'inherit', fontSize: 18, fontStyle: 'italic' }}
-        text="Top chart for dashboard"
-      />
-
-      <VictoryLegend
-        x={55}
-        y={90}
-        centerTitle
-        orientation="vertical"
-        gutter={20}
-        standalone={false}
-        style={{ border: { stroke: 'black' } }}
-        data={[
-          {
-            name: 'Owed',
-            symbol: { fill: '#1F5DBB', fillOpacity: 0.8 },
-            labels: { fontSize: 12 },
-          },
-          {
-            name: 'PTP',
-            symbol: { fill: '#254D8A', fillOpacity: 0.8 },
-            labels: { fontSize: 12 },
-          },
-          {
-            name: 'Collected',
-            symbol: { fill: '#254D8A', fillOpacity: 1 },
-            labels: { fontSize: 12 },
-          },
-        ]}
+        y={65}
+        style={{
+          fill: 'grey',
+          fontFamily: 'inherit',
+          fontSize: 25,
+          fontStyle: 'italic',
+        }}
+        text="Previous two years"
       />
 
       <g transform={'translate(0, 40)'}>
@@ -122,16 +101,16 @@ export const TopChart = () => {
             onLoad: { duration: 1000 },
           }}
           containerComponent={<VictoryContainer responsive={false} />}
-          height={435}
+          height={455}
           standalone={false}
-          width={1950}
+          width={1990}
         >
           <VictoryAxis
             dependentAxis
             standalone={false}
             style={{
               ticks: { stroke: 'grey', size: 5 },
-              tickLabels: { fontSize: 13, padding: 5 },
+              tickLabels: { fontSize: 25, padding: 5 },
             }}
             tickFormat={(t) => `R ${Math.round(t) / 1000} k`}
           />
@@ -139,7 +118,7 @@ export const TopChart = () => {
             standalone={false}
             style={{
               ticks: { stroke: 'grey', size: 5 },
-              tickLabels: { fontSize: 13, padding: 5 },
+              tickLabels: { fontSize: 25, padding: 5 },
             }}
           />
           <VictoryArea
@@ -174,6 +153,34 @@ export const TopChart = () => {
               { x: 5, y: 213133 * 0.63 },
             ]}
             style={{ data: { fill: '#142744', fillOpacity: 1 } }}
+          />
+
+          <VictoryLegend
+            x={1400}
+            y={280}
+            background="white"
+            centerTitle
+            orientation="horizontal"
+            gutter={30}
+            standalone={false}
+            style={{ border: { fill: 'grey', stroke: 'white' } }}
+            data={[
+              {
+                name: 'Owed',
+                symbol: { fill: '#1F5DBB', fillOpacity: 0.7 },
+                labels: { fill: 'white', fontSize: 25 },
+              },
+              {
+                name: 'PTP',
+                symbol: { fill: '#254D8A', fillOpacity: 0.5 },
+                labels: { fill: 'white', fontSize: 25 },
+              },
+              {
+                name: 'Collected',
+                symbol: { fill: '#254D8A', fillOpacity: 0.3 },
+                labels: { fill: 'white', fontSize: 25 },
+              },
+            ]}
           />
         </VictoryChart>
       </g>

@@ -22,7 +22,7 @@ export const Dashboard = (props) => {
           <Grid.Column className="queues" width={4}>
             <Queues />
           </Grid.Column>
-          <Grid.Column width={12}>
+          <Grid.Column width={12} style={{ backgroundColor: '#DEE0E1' }}>
             {/*<Reports styleType="dash" />*/}
             <TopChart />
           </Grid.Column>
