@@ -10,11 +10,11 @@ class Reports extends React.Component {
     super(props);
     this.state = {
       reports: {
-        //ids: ['aging', 'agentPTP', 'datePTP', 'penetrationRate'],
-        ids: ['aging', 'penetrationRate'],
+        ids: ['aging', 'agentPTP', 'datePTP'],
+        //  ids: ['aging', 'penetrationRate'],
         entities: {
           aging: {
-            data: [
+            data: null /*[
               {
                 name: '30',
                 value: 314882.58,
@@ -47,22 +47,24 @@ class Reports extends React.Component {
                 name: '>180',
                 value: 829422.3,
               },
-            ],
+            ],*/,
             description: 'Amount owed per period',
             title: 'Aging',
             type: 'bar',
-          } /*
+          },
           agentPTP: {
             data: null,
             description: 'PTP sum per agent',
             title: 'PTP by Agent',
+            type: 'bar',
           },
           datePTP: {
             data: null,
             description: 'PTP sum per date',
             title: 'PTP by Date',
-          },*/,
-          penetrationRate: {
+            type: 'bar',
+          },
+          /*penetrationRate: {
             data: [
               {
                 name: 'Dec 20',
@@ -92,7 +94,7 @@ class Reports extends React.Component {
             description: 'Contacts made per account per month',
             title: 'Penetration rate',
             type: 'line',
-          },
+          },*/
         },
       },
     };
@@ -100,7 +102,7 @@ class Reports extends React.Component {
     this.mysqlLayer = new MysqlLayer();
   }
 
-  /*componentDidMount() {
+  componentDidMount() {
     this.loadData();
     this.interval = setInterval(() => this.loadData(), 30 * 60 * 1000);
   }
@@ -152,7 +154,7 @@ class Reports extends React.Component {
     }
 
     return tempArray;
-  }*/
+  }
 
   customChartRender() {
     const reports = this.state.reports;

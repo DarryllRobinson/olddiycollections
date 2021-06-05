@@ -72,6 +72,10 @@ export const TopChart = () => {
     },
 
     axixY: {
+      grid: {
+        stroke: '#787C82',
+        strokeWidth: 1,
+      },
       ticks: { stroke: '#787C82', size: 5 },
       tickLabels: { fill: '#333740', fontSize: 25, padding: 5 },
     },
@@ -124,14 +128,14 @@ export const TopChart = () => {
   return (
     <svg style={styles.parent} viewBox="-45 0 2120 480">
       <VictoryLabel
-        x={25}
+        x={55}
         y={45}
         style={styles.title}
         text="Owed, PTP and Collections"
       />
       <VictoryLabel x={430} y={20} style={styles.chartNumber} text="1" />
       <VictoryLabel
-        x={25}
+        x={55}
         y={65}
         style={styles.description}
         text="Previous six months"
@@ -149,13 +153,6 @@ export const TopChart = () => {
           standalone={false}
           width={1990}
         >
-          <VictoryAxis
-            dependentAxis
-            standalone={false}
-            style={styles.axixY}
-            tickFormat={(t) => `R ${Math.round(t) / 1000} k`}
-          />
-          <VictoryAxis standalone={false} style={styles.axisX} />
           <VictoryArea
             animate={{ duration: 2000, onLoad: { duration: 1000 } }}
             data={owed}
@@ -171,10 +168,17 @@ export const TopChart = () => {
             data={collected}
             style={{ data: { fill: '#003D6A', fillOpacity: 1 } }}
           />
+          <VictoryAxis
+            dependentAxis
+            standalone={false}
+            style={styles.axixY}
+            tickFormat={(t) => `R ${Math.round(t) / 1000} k`}
+          />
+          <VictoryAxis standalone={false} style={styles.axisX} />
 
           <VictoryLegend
-            x={1400}
-            y={280}
+            x={1500}
+            y={300}
             background="#cdc2b4"
             centerTitle
             orientation="horizontal"

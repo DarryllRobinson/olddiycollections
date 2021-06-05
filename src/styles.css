@@ -1,5 +1,5 @@
 :root {
-  --BACKGROUND: #cdc2b4;
+  --BACKGROUND: #a8abac;
   --FONT_COLOUR: #333740;
   --HEADER: #787c82;
 }
@@ -17,7 +17,7 @@
 
 .column.queues {
   background: 'linear-gradient(to right, #031114, #597D86, #031114)' !important;
-  padding: 0 !important;
+  padding: 15px 5px !important;
 }
 
 .ui.segment.queues {
@@ -30,12 +30,14 @@
 .ui.list.queues {
   background-color: var(--BACKGROUND);
   color: var(--FONT_COLOUR);
+  height: 250px;
 }
 
+/* Queues header */
 .ui.label.queues {
   background-color: var(--HEADER);
   color: var(--FONT_COLOUR);
-  height: 45px;
+  font-size: 20px;
   width: 100%;
 }
 
@@ -43,6 +45,7 @@
   background-color: white;
   border: 1px solid var(--HEADER) !important;
   color: var(--FONT_COLOUR);
+  height: 38px;
   padding: 10px 20px 10px 20px !important;
 }
 
@@ -56,6 +59,7 @@
 
 .column.topChart {
   /*background: linear-gradient(to right, #031114, #597d86, #031114);*/
+  padding-bottom: 2px !important;
 }
 
 .ui.form input {

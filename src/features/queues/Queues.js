@@ -30,7 +30,7 @@ export const Queues = () => {
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
       <List.Item className="queues" key={idx} as={Link} to="/collections">
-        <List.Content floated="left">{item.item.toUpperCase()}</List.Content>
+        <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>
         </List.Content>
@@ -53,7 +53,7 @@ export const Queues = () => {
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
       <List.Item className="queues" key={idx} as={Link} to="/collections">
-        <List.Content floated="left">{item.item.toUpperCase()}</List.Content>
+        <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>
         </List.Content>
@@ -123,10 +123,8 @@ export const Queues = () => {
   }
   return (
     <Segment className="queues">
-      <List className="queues" selection divided inverted relaxed link>
-        <Label className="queues" size="large">
-          Queues
-        </Label>
+      <List className="queues" selection divided link>
+        <Label className="queues">Queues by status</Label>
         {mainQueues}
         {userQueues}
       </List>

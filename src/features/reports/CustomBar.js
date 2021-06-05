@@ -10,22 +10,22 @@ import {
 
 class CustomBar extends React.Component {
   getStylesMain() {
-    const BLUE_COLOR = '#00a3de';
-    const PURPLE_COLOR = '#422590';
+    const BLUE_COLOR = '#003d6a';
+    const PURPLE_COLOR = '#2062ae';
 
     return {
       parent: {
-        background: '#0F5A99',
+        background: '#a8abac',
         boxSizing: 'border-box',
         display: 'inline',
-        height: '350',
-        padding: 0,
+        height: '275',
+        margin: '15px 3px',
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
         textAnchor: 'start',
         verticalAnchor: 'end',
-        fill: '#000000',
+        fill: '#333740',
         fontFamily: 'inherit',
         fontSize: '18px',
         fontWeight: 'bold',
@@ -42,7 +42,7 @@ class CustomBar extends React.Component {
         axis: { stroke: 'black', strokeWidth: 1 },
         domainPadding: { x: 20, y: 5 },
         tickLabels: {
-          fill: 'black',
+          fill: '#333740',
           fontFamily: 'inherit',
           fontSize: 10,
         },
@@ -171,8 +171,8 @@ class CustomBar extends React.Component {
     return (
       <svg style={styles.parent} viewBox="0 0 450 350">
         {/* Create stylistic elements */}
-        <rect x="0" y="0" width="10" height="30" fill="#f01616" />
-        <rect x="420" y="10" width="20" height="20" fill="#458ca8" />
+        <rect x="0" y="0" width="10" height="30" fill="#ee303d" />
+        <rect x="420" y="10" width="20" height="20" fill="#517790" />
 
         {/* Define labels */}
         <VictoryLabel x={25} y={24} style={styles.title} text={title} />
