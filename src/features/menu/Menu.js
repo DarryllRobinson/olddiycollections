@@ -44,7 +44,7 @@ export const MenuBar = () => {
   );
 
   return (
-    <Menu stackable fixed="top">
+    <Menu stackable fixed="top" inverted>
       <Link to="/">
         <Menu.Item>
           <img src="https://react.semantic-ui.com/logo.png" alt="menu logo" />

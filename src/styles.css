@@ -1,7 +1,11 @@
 :root {
-  --BACKGROUND: #ced4da;
-  --FONT_COLOUR: #333333;
-  --HEADER: #aeafae;
+  --BACKGROUND: #cdc2b4;
+  --FONT_COLOUR: #333740;
+  --HEADER: #787c82;
+}
+
+.ui.container.AgentWorkspace {
+  margin-top: 53px;
 }
 
 .content.collection-card-header {
@@ -12,13 +16,14 @@
 }
 
 .column.queues {
+  background: 'linear-gradient(to right, #031114, #597D86, #031114)' !important;
   padding: 0 !important;
 }
 
 .ui.segment.queues {
   background-color: var(--BACKGROUND);
   color: var(--FONT_COLOUR);
-  padding: 17px 0 0 0;
+  padding: 0;
 }
 
 /* Hidden by the items in the list */
@@ -27,26 +32,30 @@
   color: var(--FONT_COLOUR);
 }
 
-.a.item.queues {
-  margin-top: 0;
-}
-
-.ui.list.queues > a.item.queues {
-  background-color: var(--BACKGROUND);
-  border: 0.5px dotted var(--HEADER) !important;
-  color: var(--FONT_COLOUR);
-  height: 40px;
-  margin-top: 0;
-  padding: 10px 20px 10px 20px;
-  vertical-align: center !important;
-}
-
 .ui.label.queues {
   background-color: var(--HEADER);
   color: var(--FONT_COLOUR);
   height: 45px;
+  width: 100%;
+}
+
+.ui.list.queues > a.item.queues {
+  background-color: white;
+  border: 1px solid var(--HEADER) !important;
+  color: var(--FONT_COLOUR);
+  padding: 10px 20px 10px 20px !important;
+}
+
+.ui.list.queues > a.item.queues:nth-child(even) {
+  background-color: var(--BACKGROUND) !important;
+}
+
+.column.topTips {
   padding: 0 !important;
-  vertical-align: center;
+}
+
+.column.topChart {
+  /*background: linear-gradient(to right, #031114, #597d86, #031114);*/
 }
 
 .ui.form input {
@@ -65,8 +74,14 @@
   width: 100%;
 }
 
-.ui.table.workzone {
+.column.workzone {
+  padding: 0 !important;
+}
+
+/*.ui.table.workzone {
   color: var(--FONT_COLOUR);
+  height: 100%;
+  width: 100%;
 }
 
 .ui.table.workzone th {
@@ -82,7 +97,7 @@
   background-color: var(--BACKGROUND);
   height: 285px;
   padding: 0 !important;
-}
+}*/
 
 .ui.form input:read-only {
   background: #ecf0f1;

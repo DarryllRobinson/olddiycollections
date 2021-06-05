@@ -124,7 +124,7 @@ export const Queues = () => {
   return (
     <Segment className="queues">
       <List className="queues" selection divided inverted relaxed link>
-        <Label className="queues" attached="top" size="large">
+        <Label className="queues" size="large">
           Queues
         </Label>
         {mainQueues}

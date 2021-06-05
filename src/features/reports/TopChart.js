@@ -6,91 +6,135 @@ import {
   VictoryContainer,
   VictoryLabel,
   VictoryLegend,
-  VictoryStack,
-  VictoryVoronoiContainer,
 } from 'victory';
 
 export const TopChart = () => {
   const owed = [
-    { x: 1, y: 100000 },
-    { x: 2, y: 112244 },
-    { x: 3, y: 232211 },
-    { x: 4, y: 175000 },
-    { x: 5, y: 213133 },
+    { x: 'Jan 21', y: 100000 },
+    { x: 'Feb 21', y: 112244 },
+    { x: 'Mar 21', y: 232211 },
+    { x: 'Apr 21', y: 175000 },
+    { x: 'May 21', y: 213133 },
   ];
 
   const ptp = [
-    { x: 1, y: 100000 * 0.75 },
-    { x: 2, y: 112244 * 0.75 },
-    { x: 3, y: 232211 * 0.75 },
-    { x: 4, y: 175000 * 0.75 },
-    { x: 5, y: 213133 * 0.75 },
+    { x: 'Jan 21', y: 100000 * 0.75 },
+    { x: 'Feb 21', y: 112244 * 0.75 },
+    { x: 'Mar 21', y: 232211 * 0.75 },
+    { x: 'Apr 21', y: 175000 * 0.75 },
+    { x: 'May 21', y: 213133 * 0.75 },
   ];
 
   const collected = [
-    { x: 1, y: 100000 * 0.63 },
-    { x: 2, y: 112244 * 0.63 },
-    { x: 3, y: 232211 * 0.63 },
-    { x: 4, y: 175000 * 0.63 },
-    { x: 5, y: 213133 * 0.63 },
+    { x: 'Jan 21', y: 100000 * 0.63 },
+    { x: 'Feb 21', y: 112244 * 0.63 },
+    { x: 'Mar 21', y: 232211 * 0.63 },
+    { x: 'Apr 21', y: 175000 * 0.63 },
+    { x: 'May 21', y: 213133 * 0.63 },
   ];
 
   const styles = {
     parent: {
       boxSizing: 'border-box',
       display: 'inline',
-      height: '200',
+      //background: 'linear-gradient(to right, #072025, #253D42, #072025)',
+      height: '250',
       padding: 0,
       fontFamily: "'Fira Sans', sans-serif",
+    },
+
+    title: {
+      textAnchor: 'start',
+      verticalAnchor: 'end',
+      fill: '#333740',
+      fontFamily: 'inherit',
+      fontSize: '50px',
+      fontWeight: 'bold',
+    },
+
+    chartNumber: {
+      textAnchor: 'middle',
+      fill: '#ffffff',
+      fontFamily: 'inherit',
+      fontSize: '14px',
+    },
+
+    description: {
+      fill: '#787C82',
+      fontFamily: 'inherit',
+      fontSize: 25,
+      fontStyle: 'italic',
+    },
+
+    axisX: {
+      ticks: { stroke: '#787C82', size: 5 },
+      tickLabels: { fill: '#333740', fontSize: 25, padding: 5 },
+    },
+
+    axixY: {
+      ticks: { stroke: '#787C82', size: 5 },
+      tickLabels: { fill: '#333740', fontSize: 25, padding: 5 },
+    },
+  };
+
+  const oldstyles = {
+    parent: {
+      boxSizing: 'border-box',
+      display: 'inline',
+      background: '#DEE0E1',
+      height: '250',
+      padding: 0,
+      fontFamily: "'Fira Sans', sans-serif",
+    },
+
+    title: {
+      textAnchor: 'start',
+      verticalAnchor: 'end',
+      fill: '#000000',
+      fontFamily: 'inherit',
+      fontSize: '50px',
+      fontWeight: 'bold',
+    },
+
+    chartNumber: {
+      textAnchor: 'middle',
+      fill: '#ffffff',
+      fontFamily: 'inherit',
+      fontSize: '14px',
+    },
+
+    description: {
+      fill: 'grey',
+      fontFamily: 'inherit',
+      fontSize: 25,
+      fontStyle: 'italic',
+    },
+
+    axisX: {
+      ticks: { stroke: 'grey', size: 5 },
+      tickLabels: { fontSize: 25, padding: 5 },
+    },
+
+    axixY: {
+      ticks: { stroke: 'grey', size: 5 },
+      tickLabels: { fontSize: 25, padding: 5 },
     },
   };
 
   return (
-    <svg
-      style={{
-        boxSizing: 'border-box',
-        display: 'inline',
-        background: '#DEE0E1',
-        height: '250',
-        padding: 0,
-        fontFamily: "'Fira Sans', sans-serif",
-      }}
-      viewBox="-45 0 2000 480"
-    >
+    <svg style={styles.parent} viewBox="-45 0 2120 480">
       <VictoryLabel
         x={25}
         y={45}
-        style={{
-          textAnchor: 'start',
-          verticalAnchor: 'end',
-          fill: '#000000',
-          fontFamily: 'inherit',
-          fontSize: '50px',
-          fontWeight: 'bold',
-        }}
+        style={styles.title}
         text="Owed, PTP and Collections"
       />
-      <VictoryLabel
-        x={430}
-        y={20}
-        style={{
-          textAnchor: 'middle',
-          fill: '#ffffff',
-          fontFamily: 'inherit',
-          fontSize: '14px',
-        }}
-        text="1"
-      />
+      <VictoryLabel x={430} y={20} style={styles.chartNumber} text="1" />
       <VictoryLabel
         x={25}
         y={65}
-        style={{
-          fill: 'grey',
-          fontFamily: 'inherit',
-          fontSize: 25,
-          fontStyle: 'italic',
-        }}
-        text="Previous two years"
+        style={styles.description}
+        text="Previous six months"
       />
 
       <g transform={'translate(0, 40)'}>
@@ -108,76 +152,49 @@ export const TopChart = () => {
           <VictoryAxis
             dependentAxis
             standalone={false}
-            style={{
-              ticks: { stroke: 'grey', size: 5 },
-              tickLabels: { fontSize: 25, padding: 5 },
-            }}
+            style={styles.axixY}
             tickFormat={(t) => `R ${Math.round(t) / 1000} k`}
           />
-          <VictoryAxis
-            standalone={false}
-            style={{
-              ticks: { stroke: 'grey', size: 5 },
-              tickLabels: { fontSize: 25, padding: 5 },
-            }}
+          <VictoryAxis standalone={false} style={styles.axisX} />
+          <VictoryArea
+            animate={{ duration: 2000, onLoad: { duration: 1000 } }}
+            data={owed}
+            style={{ data: { fill: '#00B6F0', fillOpacity: 1 } }}
           />
           <VictoryArea
             animate={{ duration: 2000, onLoad: { duration: 1000 } }}
-            data={[
-              { x: 1, y: 100000 },
-              { x: 2, y: 112244 },
-              { x: 3, y: 232211 },
-              { x: 4, y: 175000 },
-              { x: 5, y: 213133 },
-            ]}
-            style={{ data: { fill: '#1F5DBB', fillOpacity: 0.7 } }}
+            data={ptp}
+            style={{ data: { fill: '#0062AE', fillOpacity: 1 } }}
           />
           <VictoryArea
             animate={{ duration: 2000, onLoad: { duration: 1000 } }}
-            data={[
-              { x: 1, y: 100000 * 0.75 },
-              { x: 2, y: 112244 * 0.75 },
-              { x: 3, y: 232211 * 0.75 },
-              { x: 4, y: 175000 * 0.75 },
-              { x: 5, y: 213133 * 0.75 },
-            ]}
-            style={{ data: { fill: '#254D8A', fillOpacity: 1 } }}
-          />
-          <VictoryArea
-            animate={{ duration: 2000, onLoad: { duration: 1000 } }}
-            data={[
-              { x: 1, y: 100000 * 0.63 },
-              { x: 2, y: 112244 * 0.63 },
-              { x: 3, y: 232211 * 0.63 },
-              { x: 4, y: 175000 * 0.63 },
-              { x: 5, y: 213133 * 0.63 },
-            ]}
-            style={{ data: { fill: '#142744', fillOpacity: 1 } }}
+            data={collected}
+            style={{ data: { fill: '#003D6A', fillOpacity: 1 } }}
           />
 
           <VictoryLegend
             x={1400}
             y={280}
-            background="white"
+            background="#cdc2b4"
             centerTitle
             orientation="horizontal"
             gutter={30}
             standalone={false}
-            style={{ border: { fill: 'grey', stroke: 'white' } }}
+            style={{ border: { fill: '#787c82', stroke: 'white' } }}
             data={[
               {
                 name: 'Owed',
-                symbol: { fill: '#1F5DBB', fillOpacity: 0.7 },
+                symbol: { fill: '#00B6F0', fillOpacity: 1 },
                 labels: { fill: 'white', fontSize: 25 },
               },
               {
                 name: 'PTP',
-                symbol: { fill: '#254D8A', fillOpacity: 0.5 },
+                symbol: { fill: '#0062AE', fillOpacity: 1 },
                 labels: { fill: 'white', fontSize: 25 },
               },
               {
                 name: 'Collected',
-                symbol: { fill: '#254D8A', fillOpacity: 0.3 },
+                symbol: { fill: '#003D6A', fillOpacity: 1 },
                 labels: { fill: 'white', fontSize: 25 },
               },
             ]}

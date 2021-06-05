@@ -1,8 +1,9 @@
 import React from 'react';
 import { Container, Grid } from 'semantic-ui-react';
 
-//import Reports from '../reports/Reports';
-import { Workzone } from '../workzone/Workzone';
+import Reports from '../reports/Reports';
+import mieLogo from '../../assets/img/mie_logo.png';
+//import { Workzone } from '../workzone/Workzone';
 import { Queues } from '../queues/Queues';
 import { TopChart } from '../reports/TopChart';
 //import moment from 'moment';
@@ -19,18 +20,20 @@ export const Dashboard = (props) => {
       <div style={{ color: 'red' }}>{timerMsg}</div>
       <Grid celled="internally" stackable textAlign="center" columns={2}>
         <Grid.Row>
-          <Grid.Column className="queues" width={4}>
-            <Queues />
+          <Grid.Column className="logo" width={4}>
+            <img src={mieLogo} alt="logo" />
           </Grid.Column>
-          <Grid.Column width={12} style={{ backgroundColor: '#DEE0E1' }}>
+          <Grid.Column className="topChart" width={12}>
             {/*<Reports styleType="dash" />*/}
             <TopChart />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-          <Grid.Column width={4}>TopTips</Grid.Column>
+          <Grid.Column className="queues" width={4}>
+            <Queues />
+          </Grid.Column>
           <Grid.Column className="workzone" width={12}>
-            <Workzone />
+            <Reports />
           </Grid.Column>
         </Grid.Row>
       </Grid>
