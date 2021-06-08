@@ -14,8 +14,17 @@ class CustomBar extends React.Component {
     const PURPLE_COLOR = '#2062ae';
 
     return {
-      parent: {
+      oldparent: {
         background: '#a8abac',
+        boxSizing: 'border-box',
+        display: 'inline',
+        height: '275',
+        margin: '15px 3px',
+        fontFamily: "'Fira Sans', sans-serif",
+      },
+      parent: {
+        background: '#ffffff',
+        border: '1px solid #000000',
         boxSizing: 'border-box',
         display: 'inline',
         height: '275',
@@ -51,7 +60,7 @@ class CustomBar extends React.Component {
       // DATA SET
       axisOne: {
         grid: {
-          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#ffffff'),
+          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#a8abac'),
           strokeWidth: 2,
         },
         axis: { stroke: BLUE_COLOR, strokeWidth: 0 },

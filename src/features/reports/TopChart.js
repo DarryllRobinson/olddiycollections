@@ -81,50 +81,6 @@ export const TopChart = () => {
     },
   };
 
-  const oldstyles = {
-    parent: {
-      boxSizing: 'border-box',
-      display: 'inline',
-      background: '#DEE0E1',
-      height: '250',
-      padding: 0,
-      fontFamily: "'Fira Sans', sans-serif",
-    },
-
-    title: {
-      textAnchor: 'start',
-      verticalAnchor: 'end',
-      fill: '#000000',
-      fontFamily: 'inherit',
-      fontSize: '50px',
-      fontWeight: 'bold',
-    },
-
-    chartNumber: {
-      textAnchor: 'middle',
-      fill: '#ffffff',
-      fontFamily: 'inherit',
-      fontSize: '14px',
-    },
-
-    description: {
-      fill: 'grey',
-      fontFamily: 'inherit',
-      fontSize: 25,
-      fontStyle: 'italic',
-    },
-
-    axisX: {
-      ticks: { stroke: 'grey', size: 5 },
-      tickLabels: { fontSize: 25, padding: 5 },
-    },
-
-    axixY: {
-      ticks: { stroke: 'grey', size: 5 },
-      tickLabels: { fontSize: 25, padding: 5 },
-    },
-  };
-
   return (
     <svg style={styles.parent} viewBox="-45 0 2120 480">
       <VictoryLabel

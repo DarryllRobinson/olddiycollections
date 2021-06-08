@@ -103,6 +103,27 @@
   padding: 0 !important;
 }*/
 
+/* Collections Workspace */
+.ui.container.collections {
+  /*margin: 60px 100px !important;*/
+  min-width: 1220px !important;
+}
+
+.ui.table.collections {
+  min-width: 1200px !important;
+}
+
+/* Header */
+.ui.table.collections th {
+  background-color: var(--HEADER);
+  color: var(--FONT_COLOUR);
+}
+
+.collections.row:nth-child(odd) {
+  background-color: var(--BACKGROUND);
+  color: var(--FONT_COLOUR);
+}
+
 .ui.form input:read-only {
   background: #ecf0f1;
 }

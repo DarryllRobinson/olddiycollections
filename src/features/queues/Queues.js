@@ -29,7 +29,17 @@ export const Queues = () => {
 
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item className="queues" key={idx} as={Link} to="/collections">
+      <List.Item
+        className="queues"
+        key={idx}
+        as={Link}
+        to={{
+          pathname: '/collections',
+          state: {
+            caseStatus: item.item,
+          },
+        }}
+      >
         <List.Content floated="left">{item.item}</List.Content>
         <List.Content floated="right">
           <Label circular>{item.count}</Label>

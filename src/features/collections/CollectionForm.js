@@ -1,5 +1,12 @@
 import React from 'react';
-import { Button, Card, Form, Input, Select, TextArea } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Form,
+  Input,
+  Select,
+  TextArea,
+} from 'semantic-ui-react';
 import { DateTimeInput } from 'semantic-ui-calendar-react';
 import moment from 'moment';
 
@@ -193,9 +200,9 @@ export const CollectionForm = (props) => {
   const cancelUpdate = () => {
     const newStatus = currentStatus === 'Locked' ? 'Open' : currentStatus;
     //console.log('newStatus', newStatus);
-    const update = { id: id, currentStatus: newStatus, lockedDateTime: null };
+    const update = { currentStatus: newStatus, lockedDateTime: null };
 
-    mysqlLayer.Put('/cases/case', update);
+    mysqlLayer.Put(`/cases/case/${id}`, update);
     history.push('/collections');
   };
 
@@ -777,7 +784,7 @@ export const CollectionForm = (props) => {
   const today = new Date();
 
   return (
-    <Card raised centered fluid>
+    <Container>
       <Form>
         {role === 'kam' && (
           <Form.Group widths="equal">
@@ -958,12 +965,16 @@ export const CollectionForm = (props) => {
           />
         </Form.Group>
         <Form.Group widths="equal"></Form.Group>
-        <Card>
-          <Button content="Submit" onClick={handleSubmit} />
-          <Button content="Cancel" onClick={cancelUpdate} />
-          <Button content="Close" onClick={handleSubmit} />
-        </Card>
+        <Container fluid textAlign="center">
+          <Button.Group size="large">
+            <Button content="Submit" onClick={handleSubmit} />
+            <Button.Or />
+            <Button content="Cancel" onClick={cancelUpdate} />
+            <Button.Or />
+            <Button content="Close" onClick={handleSubmit} />
+          </Button.Group>
+        </Container>
       </Form>
-    </Card>
+    </Container>
   );
 };

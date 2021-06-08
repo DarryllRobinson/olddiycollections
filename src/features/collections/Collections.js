@@ -1,13 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dimmer, Loader, Table } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Dimmer,
+  Header,
+  Loader,
+  Table,
+} from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-import { fetchCollections, selectAllCollections } from './collectionsSlice';
+import { fetchCollections, fetchCollectionsByStatus } from './collectionsSlice';
 
-export const Collections = () => {
+export const Collections = (props) => {
+  const { caseStatus } = props.location.state;
+  //console.log('caseStatus: ', caseStatus);
+  //console.log('props.location.state: ', props.location.state);
   const dispatch = useDispatch();
-  const collections = useSelector(selectAllCollections);
+  const collections = useSelector((state) =>
+    fetchCollectionsByStatus(state, caseStatus)
+  );
   //console.log('collections: ', collections);
 
   const collectionsStatus = useSelector((state) => state.collections.status);
@@ -41,11 +54,11 @@ export const Collections = () => {
     content = collections.map((collections) => {
       const hlink = `/collection/${collections.id}`;
       return (
-        <Table.Row key={collections.id}>
+        <Table.Row className="collections row" key={collections.id}>
           <Table.Cell>
-            <a href={hlink} style={{ color: 'white' }}>
-              Open: {collections.caseNumber}
-            </a>
+            <Button as={Link} to={hlink} style={{ padding: '10px' }}>
+              Open
+            </Button>
           </Table.Cell>
           <Table.Cell>{collections.accountNumber}</Table.Cell>
           <Table.Cell>{collections.customerName}</Table.Cell>
@@ -74,34 +87,38 @@ export const Collections = () => {
   }
 
   return (
-    <Table
-      celled
-      selectable
-      unstackable
-      compact
-      size="small"
-      color="blue"
-      inverted
-    >
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell>Case Number</Table.HeaderCell>
-          <Table.HeaderCell>Account Number</Table.HeaderCell>
-          <Table.HeaderCell>Customer Name</Table.HeaderCell>
-          <Table.HeaderCell>Registration / ID Number</Table.HeaderCell>
-          <Table.HeaderCell>Debtor Age</Table.HeaderCell>
-          <Table.HeaderCell>Case Notes</Table.HeaderCell>
-          <Table.HeaderCell>Total Balance</Table.HeaderCell>
-          <Table.HeaderCell>Amount Due</Table.HeaderCell>
-          <Table.HeaderCell>Current Balance</Table.HeaderCell>
-          <Table.HeaderCell>Resolution</Table.HeaderCell>
-          <Table.HeaderCell>Next Visit Date and Time</Table.HeaderCell>
-          <Table.HeaderCell>Current Assignment</Table.HeaderCell>
-          <Table.HeaderCell>Updated By</Table.HeaderCell>
-          <Table.HeaderCell>Updated Date</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>{content}</Table.Body>
-    </Table>
+    <Container className="collections">
+      <Header as="h2" dividing style={{ padding: '10px' }}>
+        Collections: {caseStatus}
+      </Header>
+      <Table
+        className="collections"
+        celled
+        selectable
+        unstackable
+        compact
+        size="small"
+      >
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Case Number</Table.HeaderCell>
+            <Table.HeaderCell>Account Number</Table.HeaderCell>
+            <Table.HeaderCell>Customer Name</Table.HeaderCell>
+            <Table.HeaderCell>Registration / ID Number</Table.HeaderCell>
+            <Table.HeaderCell>Debtor Age</Table.HeaderCell>
+            <Table.HeaderCell>Case Notes</Table.HeaderCell>
+            <Table.HeaderCell>Total Balance</Table.HeaderCell>
+            <Table.HeaderCell>Amount Due</Table.HeaderCell>
+            <Table.HeaderCell>Current Balance</Table.HeaderCell>
+            <Table.HeaderCell>Resolution</Table.HeaderCell>
+            <Table.HeaderCell>Next Visit Date and Time</Table.HeaderCell>
+            <Table.HeaderCell>Current Assignment</Table.HeaderCell>
+            <Table.HeaderCell>Updated By</Table.HeaderCell>
+            <Table.HeaderCell>Updated Date</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>{content}</Table.Body>
+      </Table>
+    </Container>
   );
 };

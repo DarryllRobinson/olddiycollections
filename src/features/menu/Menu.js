@@ -60,6 +60,14 @@ export const MenuBar = () => {
       </Menu.Item>
 
       <Menu.Item
+        name="collections"
+        active={activeItem === 'collections'}
+        onClick={handleItemClick}
+      >
+        Collections
+      </Menu.Item>
+
+      <Menu.Item
         name="reports"
         active={activeItem === 'reports'}
         onClick={handleItemClick}

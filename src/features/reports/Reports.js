@@ -122,7 +122,7 @@ class Reports extends React.Component {
       const reportData = await this.mysqlLayer.Get(`/reports/${report}`);
 
       reportObject.data = this.prepData(reportData);
-      console.log('reportObject: ', reportObject);
+      //console.log('reportObject: ', reportObject);
       this.setState({ ...this.state, reportObject });
     });
   }

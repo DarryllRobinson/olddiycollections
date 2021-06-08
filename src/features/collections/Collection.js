@@ -24,7 +24,8 @@ export const Collection = (props) => {
 
   const collectionStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
-  //console.log('collection: ', collection);
+  console.log('collection status: ', collectionStatus);
+  console.log('collection: ', collection);
 
   useEffect(() => {
     if (collectionStatus === 'idle') {
@@ -68,80 +69,6 @@ export const Collection = (props) => {
     },
   });
 
-  // Preparing variables for rendering
-  const regIdNumberRender = () => {
-    if (collection.customerEntity === 'Enterprise') {
-      return (
-        <Form.Input
-          fluid
-          label="Registration Number"
-          id="form-input-control-regIdNumber"
-          readOnly
-          width="4"
-          defaultValue={collection.regIdNumber}
-        />
-      );
-    } else if (collection.customerEntity === 'Consumer') {
-      return (
-        <Form.Input
-          fluid
-          label="ID Number"
-          id="form-input-control-regIdNumber"
-          readOnly
-          width="4"
-          defaultValue={collection.regIdNumber}
-        />
-      );
-    }
-  };
-
-  const cipcStatusOptions = [
-    { key: 'i', text: 'In Business', value: 'In Business' },
-    { key: 'f', text: 'Final Deregistration', value: 'Final Deregistration' },
-  ];
-
-  const idvStatusOptions = [
-    { key: 'a', text: 'Alive', value: 'Alive' },
-    { key: 'd', text: 'Deceased', value: 'Deceased' },
-  ];
-
-  const cipcIdvStatus = () => {
-    if (collection.customerEntity === 'Enterprise') {
-      return (
-        <Form.Select
-          onChange={handleSelect}
-          defaultValue={collection.regIdStatus}
-          label="CIPC Status"
-          name="regIdStatus"
-          options={cipcStatusOptions}
-          width="4"
-        />
-      );
-    } else if (collection.customerEntity === 'Consumer') {
-      return (
-        <Form.Select
-          onChange={handleSelect}
-          defaultValue={collection.regIdStatus}
-          label="IDV Status"
-          name="regIdStatus"
-          options={idvStatusOptions}
-          width="4"
-        />
-      );
-    }
-  };
-
-  const accountStatusList = [
-    { key: 'a', text: 'Active', value: 'Active' },
-    { key: 'c', text: 'Cancelled', value: 'Cancelled' },
-    { key: 'o', text: 'Open', value: 'Open' },
-    { key: 's', text: 'Suspended', value: 'Suspended' },
-  ];
-
-  const currencyFormatter = (currency) => {
-    return 'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
-  };
-
   // Handlers
   const handleSelect = (evt, data) => {
     const { name, value } = data;
@@ -162,6 +89,86 @@ export const Collection = (props) => {
     //  const fieldList = state.fields.ids;
     //  console.log('fieldList: ', fieldList);
     //  console.log('emailUsed: ', state.fields.entities['emailUsed']);
+
+    // Preparing variables for rendering
+    const regIdNumberRender = () => {
+      if (collection.customerEntity === 'Enterprise') {
+        return (
+          <Form.Input
+            fluid
+            label="Registration Number"
+            id="form-input-control-regIdNumber"
+            readOnly
+            width="4"
+            defaultValue={collection.regIdNumber}
+          />
+        );
+      } else if (collection.customerEntity === 'Consumer') {
+        return (
+          <Form.Input
+            fluid
+            label="ID Number"
+            id="form-input-control-regIdNumber"
+            readOnly
+            width="4"
+            defaultValue={collection.regIdNumber}
+          />
+        );
+      }
+    };
+
+    const cipcStatusOptions = [
+      { key: 'i', text: 'In Business', value: 'In Business' },
+      { key: 'f', text: 'Final Deregistration', value: 'Final Deregistration' },
+    ];
+
+    const idvStatusOptions = [
+      { key: 'a', text: 'Alive', value: 'Alive' },
+      { key: 'd', text: 'Deceased', value: 'Deceased' },
+    ];
+
+    const cipcIdvStatus = () => {
+      if (collection.customerEntity === 'Enterprise') {
+        return (
+          <Form.Select
+            onChange={handleSelect}
+            defaultValue={collection.regIdStatus}
+            label="CIPC Status"
+            name="regIdStatus"
+            options={cipcStatusOptions}
+            width="4"
+          />
+        );
+      } else if (collection.customerEntity === 'Consumer') {
+        return (
+          <Form.Select
+            onChange={handleSelect}
+            defaultValue={collection.regIdStatus}
+            label="IDV Status"
+            name="regIdStatus"
+            options={idvStatusOptions}
+            width="4"
+          />
+        );
+      }
+    };
+
+    const accountStatusList = [
+      { key: 'a', text: 'Active', value: 'Active' },
+      { key: 'c', text: 'Cancelled', value: 'Cancelled' },
+      { key: 'o', text: 'Open', value: 'Open' },
+      { key: 's', text: 'Suspended', value: 'Suspended' },
+    ];
+
+    const currencyFormatter = (currency) => {
+      if (currency !== 0) {
+        return (
+          'R ' + currency.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+        );
+      } else {
+        return 'R 0.00';
+      }
+    };
 
     // lock the record so no other agent accidentally opens it
     const dateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -412,6 +419,7 @@ export const Collection = (props) => {
                   control={Input}
                   label="Representative Number"
                   readOnly
+                  defaultValue={collection.representativeNumber}
                 >
                   <a
                     href={`tel:${collection.representativeNumber}`}

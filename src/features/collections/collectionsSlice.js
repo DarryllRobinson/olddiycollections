@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
 
@@ -19,7 +20,7 @@ export const fetchCollections = createAsyncThunk(
   'collections/fetchCollections',
   async () => {
     const response = await mysqlLayer.Get('/collections');
-    //console.log(response);
+    console.log('fetchCollections response: ', response);
     return response;
   }
 );
@@ -29,7 +30,7 @@ export const fetchCollection = createAsyncThunk(
   async (collection_id) => {
     console.log('collection_id: ', collection_id);
     const response = await mysqlLayer.Get(`/collection/${collection_id}`);
-    //console.log('fetchCollection response: ', response);
+    console.log('fetchCollection response: ', response);
     return response;
   }
 );
@@ -70,3 +71,11 @@ export const {
   selectAll: selectAllCollections,
   selectById: selectCollectionById,
 } = collectionsAdapter.getSelectors((state) => state.collections);
+
+export const fetchCollectionsByStatus = createSelector(
+  [selectAllCollections, (state, currentStatus) => currentStatus],
+  (collections, currentStatus) =>
+    collections.filter(
+      (collection) => collection.currentStatus === currentStatus
+    )
+);
