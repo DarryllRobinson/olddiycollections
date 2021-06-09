@@ -19,7 +19,7 @@ import {
 
 export const Collections = (props) => {
   //console.log('Collections props', props);
-  const { caseStatus } = props.location.state;
+  const { caseStatus } = props.location.state ? props.location.state : 'Open';
   const [recordStatus, setRecordStatus] = React.useState('Open');
   //console.log('caseStatus: ', caseStatus);
   //console.log('props.location.state: ', props.location.state);
@@ -112,6 +112,7 @@ export const Collections = (props) => {
           <Header as="h2" dividing style={{ padding: '15px' }}>
             Collections: {recordStatus}{' '}
             <Button onClick={() => loadRecords('Open')}>Load Open</Button>
+            <Button onClick={() => loadRecords('Pended')}>Load Pended</Button>
           </Header>
         );
       case 'Open':
@@ -119,12 +120,14 @@ export const Collections = (props) => {
           <Header as="h2" dividing style={{ padding: '15px' }}>
             Collections: {recordStatus}{' '}
             <Button onClick={() => loadRecords('Closed')}>Load Closed</Button>
+            <Button onClick={() => loadRecords('Pended')}>Load Pended</Button>
           </Header>
         );
       case 'Pended':
         return (
           <Header as="h2" dividing style={{ padding: '15px' }}>
             Collections: {recordStatus}{' '}
+            <Button onClick={() => loadRecords('Closed')}>Load Closed</Button>
             <Button onClick={() => loadRecords('Open')}>Load Open</Button>
           </Header>
         );
