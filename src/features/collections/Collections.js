@@ -11,11 +11,7 @@ import {
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-import {
-  fetchCollections,
-  fetchCollectionsByStatus,
-  selectAllCollections,
-} from './collectionsSlice';
+import { fetchCollections, selectAllCollections } from './collectionsSlice';
 
 export const Collections = (props) => {
   //console.log('Collections props', props);
@@ -28,7 +24,7 @@ export const Collections = (props) => {
     fetchCollectionsByStatus(state, caseStatus)
   );*/
   const collections = useSelector(selectAllCollections);
-  console.log('collections: ', collections);
+  //console.log('collections: ', collections);
 
   const collectionsStatus = useSelector((state) => state.collections.status);
   const error = useSelector((state) => state.collections.error);
@@ -105,7 +101,7 @@ export const Collections = (props) => {
   }
 
   const renderHeader = () => {
-    console.log('recordStatus: ', recordStatus);
+    //console.log('recordStatus: ', recordStatus);
     switch (recordStatus) {
       case 'Closed':
         return (

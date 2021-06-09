@@ -117,7 +117,7 @@ export const Collection = (props) => {
       }
     };
 
-    const cipcStatusOptions = [
+    /*const cipcStatusOptions = [
       { key: 'i', text: 'In Business', value: 'In Business' },
       { key: 'f', text: 'Final Deregistration', value: 'Final Deregistration' },
     ];
@@ -125,40 +125,40 @@ export const Collection = (props) => {
     const idvStatusOptions = [
       { key: 'a', text: 'Alive', value: 'Alive' },
       { key: 'd', text: 'Deceased', value: 'Deceased' },
-    ];
+    ];*/
 
     const cipcIdvStatus = () => {
       if (collection.customerEntity === 'Enterprise') {
         return (
-          <Form.Select
-            onChange={handleSelect}
+          <Form.Input
             defaultValue={collection.regIdStatus}
+            id="form-input-control-regIdStatus"
             label="CIPC Status"
             name="regIdStatus"
-            options={cipcStatusOptions}
+            readOnly
             width="4"
           />
         );
       } else if (collection.customerEntity === 'Consumer') {
         return (
-          <Form.Select
-            onChange={handleSelect}
+          <Form.Input
             defaultValue={collection.regIdStatus}
+            id="form-input-control-regIdStatus"
             label="IDV Status"
             name="regIdStatus"
-            options={idvStatusOptions}
+            readOnly
             width="4"
           />
         );
       }
     };
 
-    const accountStatusList = [
+    /*const accountStatusList = [
       { key: 'a', text: 'Active', value: 'Active' },
       { key: 'c', text: 'Cancelled', value: 'Cancelled' },
       { key: 'o', text: 'Open', value: 'Open' },
       { key: 's', text: 'Suspended', value: 'Suspended' },
-    ];
+    ];*/
 
     const currencyFormatter = (currency) => {
       if (currency !== 0) {
@@ -269,14 +269,13 @@ export const Collection = (props) => {
                   readOnly
                   defaultValue={currencyFormatter(collection.currentBalance)}
                 />
-                <Form.Select
+                <Form.Input
                   defaultValue={collection.accountStatus}
                   fluid
-                  id="form-input-control-account-status-select"
+                  id="form-input-control-account-status"
                   label="Account Status"
                   name="accountStatus"
-                  onChange={handleSelect}
-                  options={accountStatusList}
+                  readOnly
                   value={state.accountStatus}
                 />
               </Form.Group>

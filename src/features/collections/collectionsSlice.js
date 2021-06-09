@@ -20,7 +20,7 @@ export const fetchCollections = createAsyncThunk(
   'collections/fetchCollections',
   async () => {
     const response = await mysqlLayer.Get('/collections');
-    console.log('fetchCollections response: ', response);
+    //console.log('fetchCollections response: ', response);
     return response;
   }
 );
@@ -28,9 +28,9 @@ export const fetchCollections = createAsyncThunk(
 export const fetchCollection = createAsyncThunk(
   'collections/fetchCollection',
   async (collection_id) => {
-    console.log('collection_id: ', collection_id);
+    //console.log('collection_id: ', collection_id);
     const response = await mysqlLayer.Get(`/collection/${collection_id}`);
-    console.log('fetchCollection response: ', response);
+    //console.log('fetchCollection response: ', response);
     return response;
   }
 );

@@ -49,9 +49,9 @@
   padding: 10px 20px 10px 20px !important;
 }
 
-.ui.list.queues > a.item.queues:nth-child(even) {
+/*.ui.list.queues > a.item.queues:nth-child(even) {
   background-color: var(--BACKGROUND) !important;
-}
+}*/
 
 .column.topTips {
   padding: 0 !important;
@@ -119,10 +119,10 @@
   color: var(--FONT_COLOUR);
 }
 
-.collections.row:nth-child(odd) {
+/*.collections.row:nth-child(odd) {
   background-color: var(--BACKGROUND);
   color: var(--FONT_COLOUR);
-}
+}*/
 
 .ui.form input:read-only {
   background: #ecf0f1;
