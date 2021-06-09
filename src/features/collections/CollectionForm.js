@@ -22,6 +22,7 @@ export const CollectionForm = (props) => {
   const {
     accountNumber,
     caseNotes,
+    caseStatus,
     currentAssignment,
     currentStatus,
     id,
@@ -199,11 +200,14 @@ export const CollectionForm = (props) => {
 
   const cancelUpdate = () => {
     const newStatus = currentStatus === 'Locked' ? 'Open' : currentStatus;
-    //console.log('newStatus', newStatus);
+    console.log('newStatus', newStatus);
     const update = { currentStatus: newStatus, lockedDateTime: null };
 
     mysqlLayer.Put(`/cases/case/${id}`, update);
-    history.push('/collections');
+    history.push({
+      pathname: '/collections',
+      state: { caseStatus: caseStatus },
+    });
   };
 
   const handleSubmit = (e) => {
@@ -774,7 +778,10 @@ export const CollectionForm = (props) => {
       outcomeInsert
     );
     if (outcomeStatus.status === 'Ok') {
-      history.push('/collections');
+      history.push({
+        pathname: '/collections',
+        state: { caseStatus: caseStatus },
+      });
     } else {
       console.log(outcomeStatus);
     }

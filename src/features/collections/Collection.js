@@ -459,6 +459,7 @@ export const Collection = (props) => {
         <CollectionForm
           accountNumber={collection.accountNumber}
           caseNotes={collection.caseNotes}
+          caseStatus={collection.currentStatus}
           currentAssignment={collection.currentAssignment}
           currentStatus={collection.currentStatus}
           id={id}
