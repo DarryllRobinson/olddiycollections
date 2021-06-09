@@ -33,49 +33,7 @@ export const Collection = (props) => {
     }
   }, [dispatch, collectionStatus, id]);
 
-  const [state, setState] = React.useState({
-    fields: {
-      ids: [
-        'currentAssignment',
-        'debitResubmissionAmount',
-        'debitResubmissionDate',
-        'emailUsed',
-        'kamNotes',
-        'nextSteps',
-        'nextVisitDateTime',
-        'numberCalled',
-        'outcomeNotes',
-        'pendReason',
-        'ptpAmount',
-        'ptpDate',
-        'regIdStatus',
-        'resolution',
-        'transactionType',
-      ],
-      entities: {
-        currentAssignment: {
-          error: '',
-          isError: false,
-          rules: [],
-          value: '',
-        },
-        emailUsed: {
-          error: '',
-          isError: false,
-          rules: [],
-          value: '',
-        },
-      },
-    },
-  });
-
   // Handlers
-  const handleSelect = (evt, data) => {
-    const { name, value } = data;
-    console.log('name, value', name, value);
-    setState({ ...state, [name]: value });
-  };
-
   let content;
 
   //console.log('outcomeNotesBundle: ', outcomeNotesBundle);
@@ -270,13 +228,12 @@ export const Collection = (props) => {
                   defaultValue={currencyFormatter(collection.currentBalance)}
                 />
                 <Form.Input
-                  defaultValue={collection.accountStatus}
                   fluid
                   id="form-input-control-account-status"
                   label="Account Status"
                   name="accountStatus"
                   readOnly
-                  value={state.accountStatus}
+                  value={collection.accountStatus}
                 />
               </Form.Group>
 

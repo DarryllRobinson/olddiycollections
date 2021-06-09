@@ -27,7 +27,8 @@ export const fetchContacts = createAsyncThunk(
 export const editContact = createAsyncThunk(
   '/contacts/editContact',
   async (contact) => {
-    const response = await mysqlLayer.Put(`/contacts/contact`, {
+    const { id } = contact;
+    const response = await mysqlLayer.Put(`/contacts/contact/${id}`, {
       contact: contact,
     });
     console.log('editContact: ', response);

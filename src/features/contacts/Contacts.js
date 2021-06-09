@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Accordion, Button, Card, Form } from 'semantic-ui-react';
 import moment from 'moment';
 
-import { fetchContacts, selectAllContacts } from './contactsSlice';
+import { editContact, fetchContacts, selectAllContacts } from './contactsSlice';
 
 export const Contacts = (props) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
@@ -52,7 +52,7 @@ export const Contacts = (props) => {
     contact.updatedDate = moment(new Date()).format('YYYY-MM-DD');
     contact.updatedBy = user;
     console.log('dispatching: ', contact);
-    //dispatch(editContact(contact));
+    dispatch(editContact(contact));
 
     // Display successful update
     //PopUp();
