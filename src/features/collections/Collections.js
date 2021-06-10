@@ -14,8 +14,16 @@ import moment from 'moment';
 import { fetchCollections, selectAllCollections } from './collectionsSlice';
 
 export const Collections = (props) => {
+  // Scroll to top
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   //console.log('Collections props', props);
-  const { caseStatus } = props.location.state ? props.location.state : 'Open';
+  const caseStatus =
+    props.location.state !== undefined
+      ? props.location.state.caseStatus
+      : 'Open';
   const [recordStatus, setRecordStatus] = React.useState('Open');
   //console.log('caseStatus: ', caseStatus);
   //console.log('props.location.state: ', props.location.state);

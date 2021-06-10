@@ -22,6 +22,7 @@ const initialState = usersAdapter.getInitialState({
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await mysqlLayer.Get('/users');
+  console.log('fetchUsers response: ', response);
   return response;
 });
 
@@ -74,6 +75,7 @@ const usersSlice = createSlice({
     },
     [fetchUsers.fulfilled]: (state, { payload }) => {
       state.status = 'succeeded';
+      console.log('fetchUsers payload', payload);
       // Add any fetched users to the array
       usersAdapter.upsertMany(state, payload);
     },
@@ -104,6 +106,7 @@ const usersSlice = createSlice({
       if (payload.ok) {
         state.status = 'succeeded';
         state.refreshTime = payload.refreshTime;
+        console.log('loginUser payload', payload);
         // Return user array
         //console.log('usersSlice payload: ', payload);
         usersAdapter.upsertMany(state, payload.user);

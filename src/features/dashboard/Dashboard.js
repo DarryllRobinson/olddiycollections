@@ -15,6 +15,11 @@ export const Dashboard = (props) => {
     timerMsg = `Time to logout: ${timer}`;
   }
 
+  // Scroll to top
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Container fluid>
       <div style={{ color: 'red' }}>{timerMsg}</div>

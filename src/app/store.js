@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+//import adminReducer from '../features/admin/adminSlice';
 import collectionsReducer from '../features/collections/collectionsSlice';
 import contactsReducer from '../features/contacts/contactsSlice';
 import outcomesReducer from '../features/outcomes/outcomesSlice';
@@ -9,6 +10,7 @@ import workzoneReducer from '../features/workzone/workzoneSlice';
 
 export const store = configureStore({
   reducer: {
+    //admin: adminReducer,
     collections: collectionsReducer,
     contacts: contactsReducer,
     outcomes: outcomesReducer,

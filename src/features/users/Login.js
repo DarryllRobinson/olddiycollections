@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button, Form, Grid, Header, Icon, Segment } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
 
 import { loginUser } from './usersSlice';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-
-  const userStatus = useSelector((state) => state.users.status);
-  const error = useSelector((state) => state.users.error);
 
   // Email methods
   const [email, setEmail] = useState('');
@@ -33,17 +29,6 @@ const LoginForm = () => {
     };
 
     dispatch(loginUser(user));
-
-    let content;
-
-    if (userStatus === 'loading') {
-      content = <div>Loading...</div>;
-    } else if (userStatus === 'succeeded') {
-      console.log('yay');
-    } else if (userStatus === 'error') {
-      content = <div>{error}</div>;
-      console.log(content.props.children);
-    }
   };
 
   return (
@@ -77,15 +62,6 @@ const LoginForm = () => {
             </Button>
           </Segment>
         </Form>
-
-        <Segment stacked>
-          New to us?
-          <br />
-          <br />
-          <Button as={Link} to="/signup" color="teal" fluid size="large">
-            Sign Up
-          </Button>
-        </Segment>
       </Grid.Column>
     </Grid>
   );

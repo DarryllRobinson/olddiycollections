@@ -11,6 +11,10 @@ import { CollectionForm } from './CollectionForm';
 import MysqlLayer from '../../services/MysqlLayer';
 
 export const Collection = (props) => {
+  // Scroll to top
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   //console.log('props', props);
 
   //const [prevStatus, setPrevStatus] = React.useState('Open');

@@ -103,6 +103,7 @@ class Reports extends React.Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0);
     this.loadData();
     this.interval = setInterval(() => this.loadData(), 30 * 60 * 1000);
   }

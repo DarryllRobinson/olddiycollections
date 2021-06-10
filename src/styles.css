@@ -37,7 +37,7 @@
 .ui.label.queues {
   background-color: var(--HEADER);
   color: var(--FONT_COLOUR);
-  font-size: 20px;
+  font-size: 18px;
   width: 100%;
 }
 

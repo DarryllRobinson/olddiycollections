@@ -16,6 +16,10 @@ import { UsersList } from '../users/UsersList';
 //import { ProgressBar } from '../../utils/ProgressBar';
 
 export const CollectionForm = (props) => {
+  // Scroll to top
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   //console.log('CollectionForm props', props);
   const mysqlLayer = new MysqlLayer();
 
@@ -927,7 +931,6 @@ export const CollectionForm = (props) => {
             id="form-input-control-pendReason"
             onChange={handleSelect}
           />
-          <Button content="Submit" onClick={handleSubmit} />
         </Form.Group>
         <Form.Group widths="equal">
           <Form.TextArea

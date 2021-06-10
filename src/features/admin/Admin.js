@@ -1,5 +1,16 @@
 import React from 'react';
 
+import { EditUsersForm } from '../users/EditUsersForm';
+
 export const Admin = () => {
-  return <div>Admin </div>;
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div>
+      Admin
+      <EditUsersForm />
+    </div>
+  );
 };
