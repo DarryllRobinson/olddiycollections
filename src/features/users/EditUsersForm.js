@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Table } from 'semantic-ui-react';
 
 import { fetchUsers, selectAllUsers } from './usersSlice';
+import MysqlLayer from '../../services/MysqlLayer';
+const mysqlLayer = new MysqlLayer();
 
 export const EditUsersForm = () => {
   const dispatch = useDispatch();
@@ -17,6 +19,28 @@ export const EditUsersForm = () => {
       dispatch(fetchUsers());
     }
   }, [userStatus, dispatch]);
+
+  const deactivateUser = async (userId) => {
+    await mysqlLayer.Put(`/users/deactivate/${userId}`).then((response) => {
+      if (response.affectedRows === 1) {
+        console.log('success', response);
+        dispatch(fetchUsers());
+      } else {
+        console.log('error', response);
+      }
+    });
+  };
+
+  const reactivateUser = async (userId) => {
+    await mysqlLayer.Put(`/users/reactivate/${userId}`).then((response) => {
+      if (response.affectedRows === 1) {
+        console.log('success', response);
+        dispatch(fetchUsers());
+      } else {
+        console.log('error', response);
+      }
+    });
+  };
 
   let content;
 
@@ -38,12 +62,16 @@ export const EditUsersForm = () => {
 
           {user.active === 1 && (
             <Table.Cell key={idx + 5}>
-              <Button>Deactivate</Button>
+              <Button negative onClick={() => deactivateUser(userId)}>
+                Deactivate
+              </Button>
             </Table.Cell>
           )}
           {user.active === 0 && (
             <Table.Cell key={idx + 5}>
-              <Button>Reactivate</Button>
+              <Button positive onClick={() => reactivateUser(userId)}>
+                Reactivate
+              </Button>
             </Table.Cell>
           )}
         </Table.Row>
