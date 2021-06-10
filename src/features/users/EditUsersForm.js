@@ -61,14 +61,14 @@ export const EditUsersForm = () => {
           <Table.Cell key={idx + 4}>{user.role}</Table.Cell>
 
           {user.active === 1 && (
-            <Table.Cell key={idx + 5}>
+            <Table.Cell key={idx + 5} textAlign="center">
               <Button negative onClick={() => deactivateUser(userId)}>
                 Deactivate
               </Button>
             </Table.Cell>
           )}
           {user.active === 0 && (
-            <Table.Cell key={idx + 5}>
+            <Table.Cell key={idx + 5} textAlign="center">
               <Button positive onClick={() => reactivateUser(userId)}>
                 Reactivate
               </Button>
@@ -83,14 +83,14 @@ export const EditUsersForm = () => {
 
   return (
     <Container>
-      <Table celled selectable>
+      <Table className="userAdmin" celled fixed selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Username</Table.HeaderCell>
             <Table.HeaderCell>First Name</Table.HeaderCell>
             <Table.HeaderCell>Surname</Table.HeaderCell>
             <Table.HeaderCell>Role</Table.HeaderCell>
-            <Table.HeaderCell>Action</Table.HeaderCell>
+            <Table.HeaderCell textAlign="center">Action</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>{content}</Table.Body>

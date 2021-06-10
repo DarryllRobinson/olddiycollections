@@ -1,5 +1,7 @@
 import React from 'react';
+import { Container, Header } from 'semantic-ui-react';
 
+import { AddUserForm } from '../users/AddUserForm';
 import { EditUsersForm } from '../users/EditUsersForm';
 
 export const Admin = () => {
@@ -8,9 +10,10 @@ export const Admin = () => {
   }, []);
 
   return (
-    <div>
-      Admin
+    <Container>
+      <Header>User Admininistration</Header>
+      <AddUserForm />
       <EditUsersForm />
-    </div>
+    </Container>
   );
 };
