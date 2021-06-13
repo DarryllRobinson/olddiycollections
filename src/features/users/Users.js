@@ -6,12 +6,8 @@ import { AddUserForm } from '../users/AddUserForm';
 import { EditUsersForm } from '../users/EditUsersForm';
 import { fetchUsers, selectAllUsers } from '../users/usersSlice';
 
-import { AddClientForm } from '../clients/AddClientForm';
-import { EditClientsForm } from '../clients/EditClientsForm';
-import { fetchClients, selectAllClients } from '../clients/clientsSlice';
-
-export const Admin = (props) => {
-  console.log('Admin props: ', props);
+export const Users = (props) => {
+  console.log('Users props: ', props);
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -50,44 +46,5 @@ export const Admin = (props) => {
   } else if (userStatus === 'error') {
     userContent = <Container>{userError}</Container>;
   }
-
-  // User section
-  const clients = useSelector(selectAllClients);
-  console.log('clients: ', clients);
-
-  const clientStatus = useSelector((state) => state.clients.status);
-  const error = useSelector((state) => state.clients.error);
-
-  const loadClients = () => {
-    dispatch(fetchClients());
-  };
-
-  React.useEffect(() => {
-    if (clientStatus === 'idle') {
-      dispatch(fetchClients());
-    }
-  }, [clientStatus, dispatch]);
-
-  let clientContent;
-
-  if (clientStatus === 'loading') {
-    clientContent = <Container className="loader">Loading...</Container>;
-  } else if (clientStatus === 'succeeded') {
-    clientContent = (
-      <Container>
-        <Header>Client Admininistration</Header>
-        <AddClientForm loadClients={loadClients} />
-        <EditClientsForm clients={clients} loadClients={loadClients} />
-      </Container>
-    );
-  } else if (clientStatus === 'error') {
-    clientContent = <Container>{error}</Container>;
-  }
-
-  return (
-    <Container>
-      {userContent}
-      {clientContent}
-    </Container>
-  );
+  return <Container>{userContent}</Container>;
 };

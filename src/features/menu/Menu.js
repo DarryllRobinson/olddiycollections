@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Dropdown, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import history from '../../history';
@@ -16,6 +16,8 @@ export const MenuBar = () => {
   }, []);
 
   const handleItemClick = (e, { name }) => {
+    //console.log('menu name: ' + name);
+    //console.log('menu e: ' + JSON.stringify(e));
     setActiveItem(name);
     history.push(`/${name}`);
   };
@@ -83,13 +85,24 @@ export const MenuBar = () => {
         Upload
       </Menu.Item>
 
-      <Menu.Item
-        name="admin"
-        active={activeItem === 'admin'}
-        onClick={handleItemClick}
-      >
-        Admin
-      </Menu.Item>
+      <Dropdown item text="Admin">
+        <Dropdown.Menu>
+          <Dropdown.Item
+            name="clients"
+            active={activeItem === 'clients'}
+            onClick={handleItemClick}
+          >
+            Clients
+          </Dropdown.Item>
+          <Dropdown.Item
+            name="users"
+            active={activeItem === 'users'}
+            onClick={handleItemClick}
+          >
+            Users
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
 
       <Menu.Menu position="right">{logButton}</Menu.Menu>
     </Menu>

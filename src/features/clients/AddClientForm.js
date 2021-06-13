@@ -1,62 +1,29 @@
 import React from 'react';
 import { Button, Container, Form } from 'semantic-ui-react';
-import bcrypt from 'bcryptjs';
 import moment from 'moment';
 
 import MysqlLayer from '../../services/MysqlLayer';
 const mysqlLayer = new MysqlLayer();
 
-export const AddUserForm = (props) => {
-  const { loadUsers } = props;
+export const AddClientForm = (props) => {
+  const { loadClients } = props;
   const [state, setState] = React.useState({
     fields: {
-      ids: [
-        'firstName',
-        'surname',
-        'email',
-        'phone',
-        'password',
-        'role',
-        'f_clientId',
-      ],
+      ids: ['name', 'regNum', 'email', 'phone', 'mainContact'],
       entities: {
-        firstName: { error: null, value: '' },
-        surname: { error: null, value: '' },
+        name: { error: null, value: '' },
+        regNum: { error: null, value: '' },
         email: { error: null, value: '' },
         phone: { error: null, value: '' },
-        password: { error: null, value: '' },
-        role: { error: null, value: '' },
-        f_clientId: { error: null, value: '1' },
+        mainContact: { error: null, value: '' },
       },
     },
   });
-
-  const roles = [
-    { key: 1, text: 'Agent', value: 'agent' },
-    { key: 2, text: 'KAM', value: 'kam' },
-  ];
 
   // Handlers
   const handleChange = (evt) => {
     const name = evt.target.name;
     const value = evt.target.value;
-    setState((prevState) => ({
-      fields: {
-        ...prevState.fields,
-        entities: {
-          ...prevState.fields.entities,
-          [name]: {
-            ...prevState.fields.entities[name],
-            value: value,
-          },
-        },
-      },
-    }));
-  };
-
-  const handleSelect = (evt, data) => {
-    const { name, value } = data;
-    //console.log('name, value', name, value);
     setState((prevState) => ({
       fields: {
         ...prevState.fields,
@@ -110,8 +77,8 @@ export const AddUserForm = (props) => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     clearErrorMessages();
     if (checkFields()) updateDatabase();
   };
@@ -119,13 +86,13 @@ export const AddUserForm = (props) => {
   const checkFields = () => {
     let cont = true;
 
-    if (!state.fields.entities['firstName'].value) {
-      setErrorMsg('Please provide a first name', 'firstName');
+    if (!state.fields.entities['name'].value) {
+      setErrorMsg('Please provide a company name', 'firstName');
       cont = false;
     }
 
-    if (!state.fields.entities['surname'].value) {
-      setErrorMsg('Please provide a surname', 'surname');
+    if (!state.fields.entities['regNum'].value) {
+      setErrorMsg('Please provide a registration number', 'regNum');
       cont = false;
     }
 
@@ -133,14 +100,6 @@ export const AddUserForm = (props) => {
 
     if (!filter.test(state.fields.entities['email'].value)) {
       setErrorMsg('Please provide a valid email address', 'email');
-      cont = false;
-    }
-
-    if (state.fields.entities['password'].value.length < 8) {
-      setErrorMsg(
-        'Please provide a password of at least 8 characters',
-        'password'
-      );
       cont = false;
     }
 
@@ -155,8 +114,8 @@ export const AddUserForm = (props) => {
       cont = false;
     }
 
-    if (!state.fields.entities['role'].value) {
-      setErrorMsg('Please provide a role', 'role');
+    if (!state.fields.entities['mainContact'].value) {
+      setErrorMsg('Please provide a main contact', 'mainContact');
       cont = false;
     }
 
@@ -182,43 +141,40 @@ export const AddUserForm = (props) => {
   const updateDatabase = async () => {
     const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
-    const salt = bcrypt.genSaltSync(10);
-    bcrypt.hash(state.fields.entities['password'].value, salt, (err, hash) => {
-      const user = {
-        firstName: state.fields.entities['firstName'].value,
-        surname: state.fields.entities['surname'].value,
-        email: state.fields.entities['email'].value,
-        password: hash,
-        phone: state.fields.entities['phone'].value,
-        role: state.fields.entities['role'].value,
-        f_clientId: state.fields.entities['f_clientId'].value,
-        active: 1,
-        createdDate: createdDate,
-      };
+    const client = {
+      name: state.fields.entities['name'].value,
+      regNum: state.fields.entities['regNum'].value,
+      email: state.fields.entities['email'].value,
+      phone: state.fields.entities['phone'].value,
+      mainContact: state.fields.entities['mainContact'].value,
+      active: 1,
+      hasPaid: 1,
+      createdBy: 'user',
+      createdDate: createdDate,
+    };
 
-      mysqlLayer
-        .Post('/users/user', user)
-        .then((response) => {
-          console.log('response: ', response);
-          if (response === 'user exists') {
-            let message =
-              'User already exists. Please create a new username (email).';
-            //this.handleFailedReg(message);
-            console.log('duplicated user message: ', message);
-          } else if (response.affectedRows === 1) {
-            //this.handleSuccessfulAuth();
-            clearState();
-            let message = 'Created!';
-            console.log('success message: ', message);
-            loadUsers();
-          } else {
-            console.log('Log error to registrationErrors');
-          }
-        })
-        .catch((error) => {
-          console.log('Registration error: ', error);
-        });
-    });
+    mysqlLayer
+      .Post('/clients/client', client)
+      .then((response) => {
+        console.log('response: ', response);
+        if (response === 'client exists') {
+          let message =
+            'Client already exists. Please check the registration number.';
+          //this.handleFailedReg(message);
+          console.log('duplicated client message: ', message);
+        } else if (response.affectedRows === 1) {
+          //this.handleSuccessfulAuth();
+          clearState();
+          let message = 'Created!';
+          console.log('success message: ', message);
+          loadClients();
+        } else {
+          console.log('Log error to registrationErrors');
+        }
+      })
+      .catch((error) => {
+        console.log('Registration error: ', error);
+      });
   };
 
   return (
@@ -226,28 +182,28 @@ export const AddUserForm = (props) => {
       <Form>
         <Form.Group widths="equal">
           <Form.Input
-            error={state.fields.entities['firstName'].error}
-            id="form-input-control-firstName"
-            name="firstName"
-            label="First Name"
+            error={state.fields.entities['name'].error}
+            id="form-input-control-client-name"
+            name="name"
+            label="Company Name"
             onChange={handleChange}
             required
             type="text"
-            value={state.fields.entities['firstName'].value}
+            value={state.fields.entities['name'].value}
           />
           <Form.Input
-            error={state.fields.entities['surname'].error}
-            id="form-input-control-surname"
-            name="surname"
-            label="Surname"
+            error={state.fields.entities['regNum'].error}
+            id="form-input-control-client-regNum"
+            name="regNum"
+            label="Registration Number"
             onChange={handleChange}
             required
             type="text"
-            value={state.fields.entities['surname'].value}
+            value={state.fields.entities['regNum'].value}
           />
           <Form.Input
             error={state.fields.entities['email'].error}
-            id="form-input-control-email"
+            id="form-input-control-client-email"
             name="email"
             label="Email"
             onChange={handleChange}
@@ -259,34 +215,24 @@ export const AddUserForm = (props) => {
 
         <Form.Group widths="equal">
           <Form.Input
-            error={state.fields.entities['password'].error}
-            id="form-input-control-password"
-            name="password"
-            label="Password"
+            error={state.fields.entities['mainContact'].error}
+            id="form-input-control-client-mainContact"
+            name="mainContact"
+            label="Main Contact"
             onChange={handleChange}
             required
-            type="password"
-            value={state.fields.entities['password'].value}
+            type="text"
+            value={state.fields.entities['mainContact'].value}
           />
           <Form.Input
             error={state.fields.entities['phone'].error}
-            id="form-input-control-phone"
+            id="form-input-control-client-phone"
             name="phone"
             label="Phone"
             onChange={handleChange}
             required
             type="text"
             value={state.fields.entities['phone'].value}
-          />
-          <Form.Select
-            error={state.fields.entities['role'].error}
-            id="form-select-control-role"
-            name="role"
-            label="Role"
-            onChange={handleSelect}
-            options={roles}
-            required
-            value={state.fields.entities['role'].value}
           />
         </Form.Group>
         <Button.Group size="large">
