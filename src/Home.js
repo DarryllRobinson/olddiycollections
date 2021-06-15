@@ -20,6 +20,8 @@ import {
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
+import collections_demo from './assets/img/collections_demo.png';
+
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
     mobile: 0,
@@ -36,7 +38,7 @@ const HomepageHeading = ({ mobile }) => (
   <Container text>
     <Header
       as="h1"
-      content="Imagine-a-Company"
+      content="The System"
       inverted
       style={{
         fontSize: mobile ? '2em' : '4em',
@@ -47,7 +49,7 @@ const HomepageHeading = ({ mobile }) => (
     />
     <Header
       as="h2"
-      content="Do whatever you want when you want to."
+      content="We are here to make your collections easier"
       inverted
       style={{
         fontSize: mobile ? '1.5em' : '1.7em',
@@ -104,21 +106,16 @@ class DesktopContainer extends Component {
                 <Menu.Item as="a" active>
                   Home
                 </Menu.Item>
-                <Menu.Item as="a">Work</Menu.Item>
                 <Menu.Item as="a">Company</Menu.Item>
-                <Menu.Item as="a">Careers</Menu.Item>
                 <Menu.Item position="right">
-                  <Button as={Link} to="/login" inverted={!fixed}>
-                    Log in
-                  </Button>
                   <Button
                     as={Link}
-                    to="/signup"
+                    to="/login"
                     inverted={!fixed}
                     primary={fixed}
                     style={{ marginLeft: '0.5em' }}
                   >
-                    Sign Up
+                    Log in
                   </Button>
                 </Menu.Item>
               </Container>
@@ -162,9 +159,7 @@ class MobileContainer extends Component {
             <Menu.Item as="a" active>
               Home
             </Menu.Item>
-            <Menu.Item as="a">Work</Menu.Item>
             <Menu.Item as="a">Company</Menu.Item>
-            <Menu.Item as="a">Careers</Menu.Item>
             <Menu.Item as="a">Log in</Menu.Item>
             <Menu.Item as="a">Sign Up</Menu.Item>
           </Sidebar>
@@ -233,97 +228,68 @@ const HomepageLayout = () => (
         <Grid.Row>
           <Grid.Column width={8}>
             <Header as="h3" style={{ fontSize: '2em' }}>
-              We Help Companies and Companions
+              We help companies collect their debt
             </Header>
             <p style={{ fontSize: '1.33em' }}>
-              We can give your company superpowers to do things that they never
-              thought possible. Let us delight your customers and empower your
-              needs... through pure data analytics.
-            </p>
-            <Header as="h3" style={{ fontSize: '2em' }}>
-              We Make Bananas That Can Dance
-            </Header>
-            <p style={{ fontSize: '1.33em' }}>
-              Yes that's right, you thought it was the stuff of dreams, but even
-              bananas can be bioengineered.
+              We know how much your customers mean to you, even the ones who
+              struggle to pay on time. Let us take care of the stress of
+              collecting what is owed to you so you can focus on your business.
             </p>
           </Grid.Column>
           <Grid.Column floated="right" width={6}>
-            <Image
-              bordered
-              rounded
-              size="large"
-              src="/images/wireframe/white-image.png"
-            />
+            <Image bordered rounded size="large" src={collections_demo} />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
           <Grid.Column textAlign="center">
-            <Button size="huge">Check Them Out</Button>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Segment>
-
-    <Segment style={{ padding: '0em' }} vertical>
-      <Grid celled="internally" columns="equal" stackable>
-        <Grid.Row textAlign="center">
-          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
-            <Header as="h3" style={{ fontSize: '2em' }}>
-              "What a Company"
-            </Header>
-            <p style={{ fontSize: '1.33em' }}>
-              That is what they all say about us
-            </p>
-          </Grid.Column>
-          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
-            <Header as="h3" style={{ fontSize: '2em' }}>
-              "I shouldn't have gone with their competitor."
-            </Header>
-            <p style={{ fontSize: '1.33em' }}>
-              <Image avatar src="/images/avatar/large/nan.jpg" />
-              <b>Nan</b> Chief Fun Officer Acme Toys
-            </p>
+            <Button size="huge">Screenshots</Button>
           </Grid.Column>
         </Grid.Row>
       </Grid>
     </Segment>
 
     <Segment style={{ padding: '8em 0em' }} vertical>
-      <Container text>
+      <Container textAlign="center">
         <Header as="h3" style={{ fontSize: '2em' }}>
-          Breaking The Grid, Grabs Your Attention
+          How can we help you?
         </Header>
         <p style={{ fontSize: '1.33em' }}>
-          Instead of focusing on content creation and hard work, we have learned
-          how to master the art of doing nothing by providing massive amounts of
-          whitespace and generic content that can seem massive, monolithic and
-          worth your attention.
+          Our aim is to provide a service that reduces stress in your business
+          life. Few things are more stressful than having to collect money. We
+          have designed a system to make this as simple as possible for you. Or,
+          if you want us to help even further, allow our call centre team to
+          handle the entire process.
         </p>
-        <Button as="a" size="large">
-          Read More
-        </Button>
-
-        <Divider
-          as="h4"
-          className="header"
-          horizontal
-          style={{ margin: '3em 0em', textTransform: 'uppercase' }}
-        >
-          <a href="/">Case Studies</a>
-        </Divider>
-
-        <Header as="h3" style={{ fontSize: '2em' }}>
-          Did We Tell You About Our Bananas?
-        </Header>
-        <p style={{ fontSize: '1.33em' }}>
-          Yes I know you probably disregarded the earlier boasts as non-sequitur
-          filler content, but it's really true. It took years of gene splicing
-          and combinatory DNA research, but our bananas can really dance.
-        </p>
-        <Button as="a" size="large">
-          I'm Still Quite Interested
-        </Button>
+        <Grid divided stackable>
+          <Grid.Row>
+            <Grid.Column width={5}>
+              <Header as="h4">The System</Header>
+              <Icon color="grey" name="desktop" size="huge" />
+              <p>
+                Use The System to handle all your collections activites. This
+                includes uploading existing accounts, taking each account
+                through the workflow engine and drawing reports.
+              </p>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <Header as="h4">Call Centre</Header>
+              <Icon color="grey" name="phone" size="huge" />
+              <p>
+                Our professional call centre agents will follow up on your
+                outstanding accounts for you. With daily updates and your own
+                client dashboard (coming soon) you are always in control.
+              </p>
+            </Grid.Column>
+            <Grid.Column width={5}>
+              <Header as="h4">Best of Both Worlds</Header>
+              <Icon color="grey" name="smile outline" size="huge" />
+              <p>
+                Any accounts that you don't want to handle yourself can be
+                assigned to our call centre team instead (coming soon).
+              </p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </Container>
     </Segment>
 
@@ -336,17 +302,12 @@ const HomepageLayout = () => (
               <List link inverted>
                 <List.Item as="a">Sitemap</List.Item>
                 <List.Item as="a">Contact Us</List.Item>
-                <List.Item as="a">Religious Ceremonies</List.Item>
-                <List.Item as="a">Gazebo Plans</List.Item>
               </List>
             </Grid.Column>
             <Grid.Column width={3}>
               <Header inverted as="h4" content="Services" />
               <List link inverted>
-                <List.Item as="a">Banana Pre-Order</List.Item>
-                <List.Item as="a">DNA FAQ</List.Item>
-                <List.Item as="a">How To Access</List.Item>
-                <List.Item as="a">Favorite X-Men</List.Item>
+                <List.Item as="a">Debt Collection</List.Item>
               </List>
             </Grid.Column>
             <Grid.Column width={7}>
