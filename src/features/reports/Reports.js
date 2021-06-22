@@ -1,5 +1,14 @@
 import React from 'react';
-import { Container, Grid } from 'semantic-ui-react';
+import {
+  Button,
+  Checkbox,
+  Container,
+  Grid,
+  Header,
+  Message,
+  Segment,
+  Sidebar,
+} from 'semantic-ui-react';
 
 import CustomBar from './CustomBar';
 import CustomLine from './CustomLine';
@@ -97,6 +106,7 @@ class Reports extends React.Component {
           },*/
         },
       },
+      visible: true,
     };
 
     this.mysqlLayer = new MysqlLayer();
@@ -165,27 +175,33 @@ class Reports extends React.Component {
       if (reports.entities[report].type === 'bar') {
         return (
           <div key={idx}>
-            <Grid.Column width={4} style={{ padding: 0 }}>
-              {reports.entities[report].data && (
-                <CustomBar
-                  chartNumber={idx}
-                  data={reports.entities[report].data}
-                  description={reports.entities[report].description}
-                  styleType={styleType}
-                  title={reports.entities[report].title}
-                />
-              )}
-              {!reports.entities[report].data && (
-                <div key={idx}>
-                  <Grid.Column width={4} style={{ padding: 0 }}>
-                    <div className="ui active inverted dimmer">
-                      <div className="ui text loader">Loading</div>
-                    </div>
-                    <p></p>
-                  </Grid.Column>
-                </div>
-              )}
-            </Grid.Column>
+            <Button
+              onClick={() => {
+                this.selectedChartRender(report);
+              }}
+            >
+              <Grid.Column width={4} style={{ padding: 0 }}>
+                {reports.entities[report].data && (
+                  <CustomBar
+                    chartNumber={idx}
+                    data={reports.entities[report].data}
+                    description={reports.entities[report].description}
+                    styleType={styleType}
+                    title={reports.entities[report].title}
+                  />
+                )}
+                {!reports.entities[report].data && (
+                  <div key={idx}>
+                    <Grid.Column width={4} style={{ padding: 0 }}>
+                      <div className="ui active inverted dimmer">
+                        <div className="ui text loader">Loading</div>
+                      </div>
+                      <p></p>
+                    </Grid.Column>
+                  </div>
+                )}
+              </Grid.Column>
+            </Button>
           </div>
         );
       } else if (reports.entities[report].type === 'line') {
@@ -224,25 +240,83 @@ class Reports extends React.Component {
 
   refreshButtonRender() {
     return (
-      <div className="ui  message">
+      <Message>
         Auto-refresh every 30 minutes or{' '}
-        <button
-          className="ui button primary"
+        <Button
           onClick={() => {
             this.loadData();
           }}
+          primary
         >
           Reload
-        </button>
-      </div>
+        </Button>
+        <Checkbox
+          checked={this.state.visible}
+          label={{ children: <p>Show report selection</p> }}
+          onChange={(e, data) => this.setVisible(data.checked)}
+        />
+      </Message>
     );
+  }
+
+  selectedChartRender(selection) {
+    const reports = this.state.reports;
+
+    if (!selection) {
+      console.log('I am here! ', selection);
+      return (
+        <Segment style={{ height: '350px' }}>
+          Please select a report from the menu on the left
+        </Segment>
+      );
+    } else {
+      console.log('I am here with a selection! ', selection);
+      this.setState({ selected: selection });
+      return (
+        reports.entities[selection].data && (
+          <>
+            <p>still trying</p>
+            <CustomBar
+              chartNumber={null}
+              data={reports.entities[selection].data}
+              description={reports.entities[selection].description}
+              styleType="dash"
+              title={reports.entities[selection].title}
+            />
+          </>
+        )
+      );
+    }
+  }
+
+  setVisible(event) {
+    this.setState({ visible: event });
   }
 
   render() {
     return (
       <Container fluid>
-        <Grid stackable textAlign="center">
-          <Grid.Row>{this.customChartRender()}</Grid.Row>
+        <Grid columns={1} divided stackable textAlign="center">
+          <Grid.Column>{this.refreshButtonRender()}</Grid.Column>
+          <Grid.Column>
+            <Sidebar.Pushable as={Segment}>
+              <Sidebar
+                as={Segment}
+                animation="overlay"
+                color="grey"
+                icon="labeled"
+                inverted
+                onHide={() => this.setVisible(false)}
+                vertical
+                visible={this.state.visible}
+                width="very wide"
+              >
+                <Header as="h2">Report Selection</Header>
+                {this.customChartRender()}
+              </Sidebar>
+              <Sidebar.Pusher>{this.selectedChartRender()}</Sidebar.Pusher>
+            </Sidebar.Pushable>
+          </Grid.Column>
         </Grid>
       </Container>
     );

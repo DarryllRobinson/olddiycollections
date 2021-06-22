@@ -14,14 +14,6 @@ class CustomBar extends React.Component {
     const PURPLE_COLOR = '#2062ae';
 
     return {
-      oldparent: {
-        background: '#a8abac',
-        boxSizing: 'border-box',
-        display: 'inline',
-        height: '275',
-        margin: '15px 3px',
-        fontFamily: "'Fira Sans', sans-serif",
-      },
       parent: {
         background: '#ffffff',
         border: '1px solid #000000',
@@ -93,6 +85,80 @@ class CustomBar extends React.Component {
   }
 
   getStylesDashboard() {
+    const BLUE_COLOR = '#00a3de';
+    const PURPLE_COLOR = '#422590';
+
+    return {
+      parent: {
+        background: '#0F5A99',
+        boxSizing: 'border-box',
+        display: 'inline',
+        height: '200',
+        padding: 0,
+        fontFamily: "'Fira Sans', sans-serif",
+      },
+      title: {
+        textAnchor: 'start',
+        verticalAnchor: 'end',
+        fill: '#000000',
+        fontFamily: 'inherit',
+        fontSize: '20px',
+        fontWeight: 'bold',
+      },
+      labelNumber: {
+        textAnchor: 'middle',
+        fill: '#ffffff',
+        fontFamily: 'inherit',
+        fontSize: '14px',
+      },
+
+      // INDEPENDENT AXIS
+      axisX: {
+        axis: { stroke: 'black', strokeWidth: 1 },
+        domainPadding: { x: 20, y: 5 },
+        tickLabels: {
+          fill: 'black',
+          fontFamily: 'inherit',
+          fontSize: 10,
+        },
+      },
+
+      // DATA SET
+      axisOne: {
+        grid: {
+          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#ffffff'),
+          strokeWidth: 2,
+        },
+        axis: { stroke: BLUE_COLOR, strokeWidth: 0 },
+        ticks: { strokeWidth: 0 },
+        tickLabels: {
+          fill: BLUE_COLOR,
+          fontFamily: 'inherit',
+          fontSize: 10,
+          padding: 3,
+        },
+      },
+      labelOne: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontSize: 18,
+        fontStyle: 'italic',
+      },
+      barOne: {
+        data: { fill: PURPLE_COLOR },
+      },
+
+      // Tooltip
+      axisOneCustomLabel: {
+        fill: BLUE_COLOR,
+        fontFamily: 'inherit',
+        fontWeight: 300,
+        fontSize: 21,
+      },
+    };
+  }
+
+  getStylesSidebar() {
     const BLUE_COLOR = '#00a3de';
     const PURPLE_COLOR = '#422590';
 
