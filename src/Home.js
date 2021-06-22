@@ -7,7 +7,6 @@ import React, { Component } from 'react';
 import {
   Button,
   Container,
-  Divider,
   Grid,
   Header,
   Icon,
@@ -223,7 +222,7 @@ ResponsiveContainer.propTypes = {
 
 const HomepageLayout = () => (
   <ResponsiveContainer>
-    <Segment style={{ padding: '8em 0em' }} vertical>
+    <Segment id="#more" style={{ padding: '8em 0em' }} vertical>
       <Grid container stackable verticalAlign="middle">
         <Grid.Row>
           <Grid.Column width={8}>

@@ -43,10 +43,15 @@
 
 .ui.list.queues > a.item.queues {
   background-color: white;
-  border: 1px solid var(--HEADER) !important;
   color: var(--FONT_COLOUR);
   height: 38px;
   padding: 10px 20px 10px 20px !important;
+}
+
+.ui.ribbon.label.queue.label {
+  background-color: #2062ae;
+  color: white;
+  margin-bottom: 10px;
 }
 
 /*.ui.list.queues > a.item.queues:nth-child(even) {

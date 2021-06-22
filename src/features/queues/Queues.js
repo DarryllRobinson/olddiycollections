@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import jwtDecode from 'jwt-decode';
-import { Label, List, Segment } from 'semantic-ui-react';
+import { Grid, Label, List, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import { fetchQueues, selectAllQueues } from './queuesSlice';
+//import LabelExample from './LabelExample';
 
 export const Queues = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ export const Queues = () => {
     // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
       <List.Item
-        className="queues"
         key={idx}
         as={Link}
         to={{
@@ -40,8 +40,10 @@ export const Queues = () => {
           },
         }}
       >
-        <List.Content floated="left">{item.item}</List.Content>
-        <List.Content floated="right">
+        <List.Content floated="left" verticalAlign="middle">
+          {item.item}
+        </List.Content>
+        <List.Content floated="right" verticalAlign="middle">
           <Label circular>{item.count}</Label>
         </List.Content>
       </List.Item>
@@ -60,11 +62,12 @@ export const Queues = () => {
       currentAssignment
     );
 
-    // Must remember to convert to Links list/#types-link
     const item = listWithCount.map((item, idx) => (
-      <List.Item className="queues" key={idx} as={Link} to="/collections">
-        <List.Content floated="left">{item.item}</List.Content>
-        <List.Content floated="right">
+      <List.Item key={idx} as={Link} to="/collections">
+        <List.Content floated="left" verticalAlign="middle">
+          {item.item}
+        </List.Content>
+        <List.Content floated="right" verticalAlign="middle">
           <Label circular>{item.count}</Label>
         </List.Content>
       </List.Item>
@@ -132,12 +135,22 @@ export const Queues = () => {
     userQueues = PrepareUserQueues(queues, user);
   }
   return (
-    <Segment className="queues">
-      <List className="queues" selection divided link>
-        <Label className="queues">Queues by status</Label>
-        {mainQueues}
-        {userQueues}
-      </List>
-    </Segment>
+    <Grid container>
+      <Grid.Column textAlign="left">
+        <Segment raised>
+          <List animated divided link selection>
+            <Label as="a" className="queue label" ribbon>
+              Department Queues
+            </Label>
+            {mainQueues}
+            <br />
+            <Label as="a" className="queue label" ribbon>
+              User Queues
+            </Label>
+            {userQueues}
+          </List>
+        </Segment>
+      </Grid.Column>
+    </Grid>
   );
 };

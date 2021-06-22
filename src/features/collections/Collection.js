@@ -377,6 +377,7 @@ export const Collection = (props) => {
                 />
                 <Form.Field
                   control={Input}
+                  id="form-input-control-representativeNumber"
                   label="Representative Number"
                   readOnly
                   defaultValue={collection.representativeNumber}
@@ -391,6 +392,7 @@ export const Collection = (props) => {
                       display: 'block',
                       fontSize: '0.9375rem',
                       fontWeight: '400',
+                      height: '2.5rem',
                       lineHeight: '1.5',
                       margin: '0',
                       padding: '0.375rem 0.75rem',
