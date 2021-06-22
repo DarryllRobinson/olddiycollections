@@ -10,6 +10,7 @@ import {
   Sidebar,
 } from 'semantic-ui-react';
 
+import { Report } from './Report';
 import CustomBar from './CustomBar';
 import CustomLine from './CustomLine';
 import MysqlLayer from '../../services/MysqlLayer';
@@ -106,6 +107,7 @@ class Reports extends React.Component {
           },*/
         },
       },
+      selected: null,
       visible: true,
     };
 
@@ -177,7 +179,7 @@ class Reports extends React.Component {
           <div key={idx}>
             <Button
               onClick={() => {
-                this.selectedChartRender(report);
+                this.setState({ selected: report });
               }}
             >
               <Grid.Column width={4} style={{ padding: 0 }}>
@@ -260,7 +262,8 @@ class Reports extends React.Component {
   }
 
   selectedChartRender(selection) {
-    const reports = this.state.reports;
+    return <Report report={selection} />;
+    /*const reports = this.state.reports;
 
     if (!selection) {
       console.log('I am here! ', selection);
@@ -286,7 +289,7 @@ class Reports extends React.Component {
           </>
         )
       );
-    }
+    }*/
   }
 
   setVisible(event) {
@@ -314,7 +317,9 @@ class Reports extends React.Component {
                 <Header as="h2">Report Selection</Header>
                 {this.customChartRender()}
               </Sidebar>
-              <Sidebar.Pusher>{this.selectedChartRender()}</Sidebar.Pusher>
+              <Sidebar.Pusher style={{ height: '350px' }}>
+                <Report report={this.state.selected} />
+              </Sidebar.Pusher>
             </Sidebar.Pushable>
           </Grid.Column>
         </Grid>
