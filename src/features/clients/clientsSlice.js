@@ -19,7 +19,7 @@ export const fetchClients = createAsyncThunk(
   'clients/fetchClients',
   async () => {
     const response = await mysqlLayer.Get('/clients');
-    console.log('fetchUsers response: ', response);
+    //console.log('fetchClients response: ', response);
     return response;
   }
 );
@@ -28,7 +28,7 @@ export const addNewClient = createAsyncThunk(
   'clients/addNewClient',
   async (client) => {
     const response = await mysqlLayer.Post('/clients', { client: client });
-    console.log('addNewClient response: ', response);
+    //console.log('addNewClient response: ', response);
     return response.client;
   }
 );

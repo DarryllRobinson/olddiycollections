@@ -79,13 +79,23 @@ export const AddUserForm = (props) => {
   const clearState = () => {
     setState({
       fields: {
-        ids: ['name', 'regNum', 'email', 'phone', 'mainContact'],
+        ids: [
+          'firstName',
+          'surname',
+          'email',
+          'phone',
+          'password',
+          'role',
+          'f_clientId',
+        ],
         entities: {
-          name: { error: null, value: '' },
-          regNum: { error: null, value: '' },
+          firstName: { error: null, value: '' },
+          surname: { error: null, value: '' },
           email: { error: null, value: '' },
           phone: { error: null, value: '' },
-          mainContact: { error: null, value: '' },
+          password: { error: null, value: '' },
+          role: { error: null, value: '' },
+          f_clientId: { error: null, value: '1' },
         },
       },
     });

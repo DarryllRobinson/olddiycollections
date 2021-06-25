@@ -85,21 +85,29 @@ export const MenuBar = () => {
         Upload
       </Menu.Item>
 
-      <Dropdown item text="Admin">
+      <Menu.Item
+        name="users"
+        active={activeItem === 'users'}
+        onClick={handleItemClick}
+      >
+        User Admin
+      </Menu.Item>
+
+      <Dropdown item text="Client Admin">
         <Dropdown.Menu>
           <Dropdown.Item
-            name="clients"
+            name="addclient"
             active={activeItem === 'clients'}
             onClick={handleItemClick}
           >
-            Clients
+            Add Client
           </Dropdown.Item>
           <Dropdown.Item
-            name="users"
-            active={activeItem === 'users'}
+            name="editclient"
+            active={activeItem === 'clients'}
             onClick={handleItemClick}
           >
-            Users
+            Edit Client
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

@@ -14,7 +14,7 @@ export default class Security {
   }
 
   validateSession(component) {
-    //console.log(component + ' is calling validateSession');
+    console.log(component + ' is calling validateSession');
     let refreshToken = sessionStorage.getItem('refreshToken');
     //console.log('refreshToken for validateSession: ', refreshToken);
 
@@ -26,10 +26,14 @@ export default class Security {
         this.terminateSession();
         return false;
       } else if (
-        decodedToken.exp - 300000 <
+        decodedToken.exp - 3000 <
         Math.floor(new Date().getTime() / 1000)
       ) {
-        //console.log('Need to extend session');
+        /*console.log(
+          'Need to extend session: ',
+          decodedToken.exp,
+          Math.floor(new Date().getTime() / 1000)
+        );*/
         this.extendSession();
       } /*else {
         console.log(
@@ -42,7 +46,8 @@ export default class Security {
     } else {
       // There is no token so session is automatically invalid
       this.terminateSession();
-      return { safe: false, role: '', user: '' };
+      const returnObj = { safe: false, role: '', user: '' };
+      return returnObj;
     }
   }
 
@@ -76,5 +81,10 @@ export default class Security {
     //console.log('token for refreshTime: ', token);
     let decodedToken = token ? jwtDecode(token) : 0;
     return decodedToken.exp - 100 - Math.floor(new Date().getTime() / 1000);
+  }
+
+  getRole() {
+    let decodedToken = jwtDecode(sessionStorage.getItem('refreshToken'));
+    return decodedToken.role;
   }
 }

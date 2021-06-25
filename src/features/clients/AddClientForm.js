@@ -1,21 +1,41 @@
 import React from 'react';
-import { Button, Container, Form } from 'semantic-ui-react';
+import { Button, Container, Form, Image } from 'semantic-ui-react';
 import moment from 'moment';
+import axios from 'axios';
 
 import MysqlLayer from '../../services/MysqlLayer';
 const mysqlLayer = new MysqlLayer();
+const img = '../../../../../assets/img/mie_logo.png';
 
 export const AddClientForm = (props) => {
   const { loadClients } = props;
   const [state, setState] = React.useState({
     fields: {
-      ids: ['name', 'regNum', 'email', 'phone', 'mainContact'],
+      ids: [
+        'name',
+        'regNum',
+        'email',
+        'phone',
+        'mainContact',
+        'logo',
+        'colour1',
+        'colour2',
+        'colour3',
+      ],
       entities: {
         name: { error: null, value: '' },
         regNum: { error: null, value: '' },
         email: { error: null, value: '' },
         phone: { error: null, value: '' },
         mainContact: { error: null, value: '' },
+        logo: {
+          error: null,
+          selectedFile: 'https://react.semantic-ui.com/logo.png',
+          value: '',
+        },
+        colour1: { error: null, value: '' },
+        colour2: { error: null, value: '' },
+        colour3: { error: null, value: '' },
       },
     },
   });
@@ -38,6 +58,67 @@ export const AddClientForm = (props) => {
     }));
   };
 
+  const handleLogoChange = (evt) => {
+    console.log('handleLogoChange evt.target: ', evt.target);
+    console.log('handleLogoChange evt.target.files: ', evt.target.files);
+    console.log(
+      'URL.createObjectURL(evt.target.files[0]): ',
+      URL.createObjectURL(evt.target.files[0])
+    );
+    const name = evt.target.name;
+    const value = evt.target.value;
+
+    const logoObj = state.fields.entities['logo'];
+    logoObj.selectedFile = URL.createObjectURL(evt.target.files[0]);
+    logoObj.value = evt.target.value;
+    setState({ ...state, logoObj });
+    console.log('logo: ', state.fields.entities['logo']);
+    /*setState(
+      (prevState) => ({
+        fields: {
+          ...prevState.fields,
+          entities: {
+            ...prevState.fields.entities,
+            [name]: {
+              ...prevState.fields.entities[name],
+              selectedFile: evt.target.files,
+              value: value,
+            },
+          },
+        },
+      }),
+      console.log('logo: ', state.fields.entities['logo'])
+    );*/
+  };
+
+  const onClickHandler = () => {
+    const data = new FormData();
+    const companyName = state.fields.entities['name'].value;
+    if (state.fields.entities['logo'].selectedFile) {
+      for (
+        let i = 0;
+        i < state.fields.entities['logo'].selectedFile.length;
+        i++
+      ) {
+        data.append('file', state.fields.entities['logo'].selectedFile[i]);
+      }
+
+      axios
+        .post(`http://localhost:8080/api/uploads/${companyName}`, data)
+        .then((response) => {
+          console.log(response); //console.log(response.config.url);
+          const serverLocation = response.config.url + response.data.filename;
+          console.log('serverLocation: ', serverLocation);
+          //(state.fields.entities['logo'].selectedFile);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log('No file');
+    }
+  };
+
   const handleCancel = (e) => {
     e.preventDefault();
     clearState();
@@ -46,13 +127,27 @@ export const AddClientForm = (props) => {
   const clearState = () => {
     setState({
       fields: {
-        ids: ['name', 'regNum', 'email', 'phone', 'mainContact'],
+        ids: [
+          'name',
+          'regNum',
+          'email',
+          'phone',
+          'mainContact',
+          'logo',
+          'colour1',
+          'colour2',
+          'colour3',
+        ],
         entities: {
           name: { error: null, value: '' },
           regNum: { error: null, value: '' },
           email: { error: null, value: '' },
           phone: { error: null, value: '' },
           mainContact: { error: null, value: '' },
+          logo: { error: null, selectedFile: null, value: '' },
+          colour1: { error: null, value: '' },
+          colour2: { error: null, value: '' },
+          colour3: { error: null, value: '' },
         },
       },
     });
@@ -235,6 +330,55 @@ export const AddClientForm = (props) => {
             value={state.fields.entities['phone'].value}
           />
         </Form.Group>
+
+        <Form.Group>
+          <Form.Input
+            error={state.fields.entities['logo'].error}
+            id="form-input-control-client-logo"
+            name="logo"
+            label="Logo"
+            onChange={handleLogoChange}
+            type="file"
+            value={state.fields.entities['logo'].value}
+            width={10}
+          />
+          <Button onClick={onClickHandler}>Upload</Button>
+          <Form.Input
+            error={state.fields.entities['colour1'].error}
+            id="form-input-control-client-colour1"
+            name="colour1"
+            label="colour1"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['colour1'].value}
+            width={2}
+          />
+          <Form.Input
+            error={state.fields.entities['colour2'].error}
+            id="form-input-control-client-colour2"
+            name="colour2"
+            label="colour2"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['colour2'].value}
+            width={2}
+          />
+          <Form.Input
+            error={state.fields.entities['colour3'].error}
+            id="form-input-control-client-colour3"
+            name="colour3"
+            label="colour3"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['colour3'].value}
+            width={2}
+          />
+        </Form.Group>
+        <Image
+          src={state.fields.entities['logo'].selectedFile}
+          alt="client logo"
+        />
+
         <Button.Group size="large">
           <Button content="Submit" onClick={handleSubmit} />
           <Button.Or />

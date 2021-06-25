@@ -1,16 +1,14 @@
 import {
   createSlice,
   createAsyncThunk,
-  //createSelector,
   createEntityAdapter,
 } from '@reduxjs/toolkit';
 import history from '../../history';
+import jwtDecode from 'jwt-decode';
 
 import Security from '../../services/Security';
 import MysqlLayer from '../../services/MysqlLayer';
 const mysqlLayer = new MysqlLayer();
-
-//import { client } from '../../api/client';
 
 const security = new Security();
 const usersAdapter = createEntityAdapter();
@@ -22,7 +20,7 @@ const initialState = usersAdapter.getInitialState({
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await mysqlLayer.Get('/users');
-  console.log('fetchUsers response: ', response);
+  //console.log('fetchUsers response: ', response);
   return response;
 });
 
@@ -75,7 +73,7 @@ const usersSlice = createSlice({
     },
     [fetchUsers.fulfilled]: (state, { payload }) => {
       state.status = 'succeeded';
-      console.log('fetchUsers payload', payload);
+      //console.log('fetchUsers payload', payload);
       // Add any fetched users to the array
       usersAdapter.upsertMany(state, payload);
     },
@@ -105,10 +103,9 @@ const usersSlice = createSlice({
     [loginUser.fulfilled]: (state, { payload }) => {
       if (payload.ok) {
         state.status = 'succeeded';
-        state.refreshTime = payload.refreshTime;
-        console.log('loginUser payload', payload);
-        // Return user array
-        //console.log('usersSlice payload: ', payload);
+        state.refreshTime = payload.user[0].refreshToken;
+        let decodedToken = jwtDecode(payload.user[0].refreshToken);
+        state.role = decodedToken.role;
         usersAdapter.upsertMany(state, payload.user);
       } else {
         console.log('not logged in');

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import { Container, Header } from 'semantic-ui-react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,8 +7,6 @@ import { EditClientsForm } from '../clients/EditClientsForm';
 import { fetchClients, selectAllClients } from '../clients/clientsSlice';
 
 export const Clients = (props) => {
-  const { role } = props;
-
   console.log('Clients props: ', props);
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,7 +29,7 @@ export const Clients = (props) => {
     if (clientStatus === 'idle') {
       dispatch(fetchClients());
     }
-  }, [clientStatus, dispatch, role]);
+  }, [clientStatus, dispatch]);
 
   let clientContent;
 
@@ -49,10 +46,5 @@ export const Clients = (props) => {
   } else if (clientStatus === 'error') {
     clientContent = <Container>{clientError}</Container>;
   }
-
-  if (role !== 'admin') {
-    return <Redirect to={{ pathname: '/unauthorised' }} />;
-  }
-
   return <Container>{clientContent}</Container>;
 };

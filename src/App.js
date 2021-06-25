@@ -3,7 +3,7 @@ import { Redirect, Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
 import { PrivateRoute } from './services/PrivateRoute';
-import { AgentWorkspace } from './services/AgentWorkspace';
+import { RouteDetermination } from './services/RouteDetermination';
 
 import history from './history';
 import Home from './Home';
@@ -22,8 +22,8 @@ const App = () => {
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={SignUp} />
 
-            {/* Agent workspace routes */}
-            <PrivateRoute component={AgentWorkspace} />
+            {/* All routes assigned according to role */}
+            <PrivateRoute component={RouteDetermination} />
 
             <Redirect to="/" />
           </Switch>

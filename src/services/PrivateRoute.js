@@ -5,24 +5,37 @@ import PropTypes from 'prop-types';
 import Security from './Security';
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
+  //const { path } = rest;
   const [safe, setSafe] = React.useState(true);
   const [timer, setTimer] = React.useState(100); // setting to 100 so it doesn't show on the Dashboard
   const [role, setRole] = React.useState('');
   const [user, setUser] = React.useState('');
+  //console.log('rest: ', rest);
+  //console.log('role from ComponentRoutes: ', role);
+
+  const startTimer = React.useCallback(() => {
+    const interval = setInterval(() => {
+      const security = new Security();
+      security.validateSession('PrivateRoute');
+    }, 600000);
+    return () => clearInterval(interval);
+  }, []);
 
   React.useEffect(() => {
-    //console.log('refreshTime: ', refreshTime);
-    //const interval = setInterval(() => {
+    //  const interval = setInterval(() => {
     const security = new Security();
     // Checking it is still safe
     const { role, safe, user } = security.validateSession('PrivateRoute');
+    //const vsec = security.validateSession('PrivateRoute');
+    //console.log('PrivateRoute vsec: ', vsec);
     setSafe(safe);
     setRole(role);
     setUser(user);
     setTimer(security.refreshTime());
-    //}, 600000);
-    //return () => clearInterval(interval);
-  }, []);
+    startTimer();
+    //    }, 600000);
+    //    return () => clearInterval(interval);
+  }, [role, safe, startTimer, user]);
 
   return (
     <Route
@@ -30,6 +43,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
       render={(props) => {
         PrivateRoute.propTypes = {
           component: PropTypes.any,
+          role: PropTypes.string,
         };
 
         if (!safe) {
