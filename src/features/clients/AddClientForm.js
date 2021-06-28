@@ -1,14 +1,15 @@
 import React from 'react';
-import { Button, Container, Form, Image } from 'semantic-ui-react';
+import { Button, Container, Form, Icon, Image, Modal } from 'semantic-ui-react';
 import moment from 'moment';
 import axios from 'axios';
 
 import MysqlLayer from '../../services/MysqlLayer';
 const mysqlLayer = new MysqlLayer();
-const img = '../../../../../assets/img/mie_logo.png';
+//const img = '../../../../../assets/img/mie_logo.png';
 
 export const AddClientForm = (props) => {
-  const { loadClients } = props;
+  //const { loadClients } = props;
+  const [uploading, setUploading] = React.useState(false);
   const [state, setState] = React.useState({
     fields: {
       ids: [
@@ -59,20 +60,20 @@ export const AddClientForm = (props) => {
   };
 
   const handleLogoChange = (evt) => {
-    console.log('handleLogoChange evt.target: ', evt.target);
+    /*console.log('handleLogoChange evt.target: ', evt.target);
     console.log('handleLogoChange evt.target.files: ', evt.target.files);
     console.log(
       'URL.createObjectURL(evt.target.files[0]): ',
       URL.createObjectURL(evt.target.files[0])
     );
     const name = evt.target.name;
-    const value = evt.target.value;
+    const value = evt.target.value;*/
 
     const logoObj = state.fields.entities['logo'];
     logoObj.selectedFile = URL.createObjectURL(evt.target.files[0]);
     logoObj.value = evt.target.value;
     setState({ ...state, logoObj });
-    console.log('logo: ', state.fields.entities['logo']);
+    //console.log('logo: ', state.fields.entities['logo']);
     /*setState(
       (prevState) => ({
         fields: {
@@ -144,7 +145,11 @@ export const AddClientForm = (props) => {
           email: { error: null, value: '' },
           phone: { error: null, value: '' },
           mainContact: { error: null, value: '' },
-          logo: { error: null, selectedFile: null, value: '' },
+          logo: {
+            error: null,
+            selectedFile: 'https://react.semantic-ui.com/logo.png',
+            value: '',
+          },
           colour1: { error: null, value: '' },
           colour2: { error: null, value: '' },
           colour3: { error: null, value: '' },
@@ -234,6 +239,7 @@ export const AddClientForm = (props) => {
   };
 
   const updateDatabase = async () => {
+    setUploading(true);
     const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
     const client = {
@@ -257,12 +263,13 @@ export const AddClientForm = (props) => {
             'Client already exists. Please check the registration number.';
           //this.handleFailedReg(message);
           console.log('duplicated client message: ', message);
-        } else if (response.affectedRows === 1) {
+        } else if (response === 'success') {
           //this.handleSuccessfulAuth();
           clearState();
+          setUploading(false);
           let message = 'Created!';
           console.log('success message: ', message);
-          loadClients();
+          //loadClients();
         } else {
           console.log('Log error to registrationErrors');
         }
@@ -274,6 +281,10 @@ export const AddClientForm = (props) => {
 
   return (
     <Container>
+      <Modal dimmer="blurring" open={uploading}>
+        <Modal.Header>Creating a new client...</Modal.Header>
+        <Modal.Content>Please wait...</Modal.Content>
+      </Modal>
       <Form>
         <Form.Group widths="equal">
           <Form.Input
@@ -342,7 +353,10 @@ export const AddClientForm = (props) => {
             value={state.fields.entities['logo'].value}
             width={10}
           />
-          <Button onClick={onClickHandler}>Upload</Button>
+          <Button icon onClick={onClickHandler} labelPosition="left">
+            <Icon name="upload" />
+            Upload your logo
+          </Button>
           <Form.Input
             error={state.fields.entities['colour1'].error}
             id="form-input-control-client-colour1"
@@ -375,8 +389,11 @@ export const AddClientForm = (props) => {
           />
         </Form.Group>
         <Image
-          src={state.fields.entities['logo'].selectedFile}
+          className="demo logo"
           alt="client logo"
+          disabled
+          size="medium"
+          src={state.fields.entities['logo'].selectedFile}
         />
 
         <Button.Group size="large">

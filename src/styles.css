@@ -109,6 +109,12 @@
   color: var(--FONT_COLOUR);
 }
 
+/* Client Admin */
+.ui.demo.logo {
+  border: 2px solid var(--HEADER);
+  padding: 0.5em;
+}
+
 /* General styling */
 
 .ui.form input:read-only {

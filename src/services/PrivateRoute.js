@@ -14,11 +14,14 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
   //console.log('role from ComponentRoutes: ', role);
 
   const startTimer = React.useCallback(() => {
-    const interval = setInterval(() => {
-      const security = new Security();
-      security.validateSession('PrivateRoute');
-    }, 600000);
-    return () => clearInterval(interval);
+    // don't want timer running if user is logged out
+    if (sessionStorage.getItem('refreshToken')) {
+      const interval = setInterval(() => {
+        const security = new Security();
+        security.validateSession('PrivateRoute');
+      }, 600000);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   React.useEffect(() => {
