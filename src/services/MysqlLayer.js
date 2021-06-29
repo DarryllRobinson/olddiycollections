@@ -50,6 +50,7 @@ export default class MysqlLayer {
 
   // Post route
   async Post(path, object) {
+    //console.log('object: ', object);
     //this.security.validateSession();
 
     try {

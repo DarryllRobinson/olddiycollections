@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button, Container, Form, Icon, Image, Modal } from 'semantic-ui-react';
 import moment from 'moment';
-import axios from 'axios';
 
+import img from '../../assets/img/upload_logo.png';
 import MysqlLayer from '../../services/MysqlLayer';
 const mysqlLayer = new MysqlLayer();
-//const img = '../../../../../assets/img/mie_logo.png';
 
 export const AddClientForm = (props) => {
   //const { loadClients } = props;
@@ -31,8 +30,8 @@ export const AddClientForm = (props) => {
         mainContact: { error: null, value: '' },
         logo: {
           error: null,
-          selectedFile: 'https://react.semantic-ui.com/logo.png',
-          value: '',
+          location: img,
+          selectedFile: null,
         },
         colour1: { error: null, value: '' },
         colour2: { error: null, value: '' },
@@ -60,41 +59,15 @@ export const AddClientForm = (props) => {
   };
 
   const handleLogoChange = (evt) => {
-    /*console.log('handleLogoChange evt.target: ', evt.target);
-    console.log('handleLogoChange evt.target.files: ', evt.target.files);
-    console.log(
-      'URL.createObjectURL(evt.target.files[0]): ',
-      URL.createObjectURL(evt.target.files[0])
-    );
-    const name = evt.target.name;
-    const value = evt.target.value;*/
-
     const logoObj = state.fields.entities['logo'];
-    logoObj.selectedFile = URL.createObjectURL(evt.target.files[0]);
-    logoObj.value = evt.target.value;
+    logoObj.location = URL.createObjectURL(evt.target.files[0]);
+    logoObj.selectedFile = evt.target.files;
     setState({ ...state, logoObj });
-    //console.log('logo: ', state.fields.entities['logo']);
-    /*setState(
-      (prevState) => ({
-        fields: {
-          ...prevState.fields,
-          entities: {
-            ...prevState.fields.entities,
-            [name]: {
-              ...prevState.fields.entities[name],
-              selectedFile: evt.target.files,
-              value: value,
-            },
-          },
-        },
-      }),
-      console.log('logo: ', state.fields.entities['logo'])
-    );*/
   };
 
   const onClickHandler = () => {
     const data = new FormData();
-    const companyName = state.fields.entities['name'].value;
+
     if (state.fields.entities['logo'].selectedFile) {
       for (
         let i = 0;
@@ -103,14 +76,12 @@ export const AddClientForm = (props) => {
       ) {
         data.append('file', state.fields.entities['logo'].selectedFile[i]);
       }
+      data.append('name', state.fields.entities['name'].value);
 
-      axios
-        .post(`http://localhost:8080/api/uploads/${companyName}`, data)
+      mysqlLayer
+        .Post(`/uploads`, data)
         .then((response) => {
-          console.log(response); //console.log(response.config.url);
-          const serverLocation = response.config.url + response.data.filename;
-          console.log('serverLocation: ', serverLocation);
-          //(state.fields.entities['logo'].selectedFile);
+          console.log('Location on server: ', response.path);
         })
         .catch((err) => {
           console.log(err);
@@ -353,10 +324,10 @@ export const AddClientForm = (props) => {
             value={state.fields.entities['logo'].value}
             width={10}
           />
-          <Button icon onClick={onClickHandler} labelPosition="left">
+          {/*<Button icon onClick={onClickHandler} labelPosition="left">
             <Icon name="upload" />
             Upload your logo
-          </Button>
+          </Button>*/}
           <Form.Input
             error={state.fields.entities['colour1'].error}
             id="form-input-control-client-colour1"
@@ -393,7 +364,7 @@ export const AddClientForm = (props) => {
           alt="client logo"
           disabled
           size="medium"
-          src={state.fields.entities['logo'].selectedFile}
+          src={state.fields.entities['logo'].location}
         />
 
         <Button.Group size="large">
