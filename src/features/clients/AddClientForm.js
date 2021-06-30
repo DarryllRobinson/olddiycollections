@@ -8,8 +8,37 @@ const mysqlLayer = new MysqlLayer();
 
 export const AddClientForm = (props) => {
   //const { loadClients } = props;
+
+  // Scroll window to top on load
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const [uploading, setUploading] = React.useState(false);
+  const [checkName, setCheckName] = React.useState(false);
+  const [client, setClient] = React.useState({
+    name: 'Disney',
+    regNum: '1234',
+    email: 'darryllrobinson@icloud.com',
+    phone: '0123456789',
+    mainContact: 'Mickeymouse',
+    active: 1,
+    hasPaid: 1,
+    createdBy: 'user',
+  });
+  const [insertClient, setInsertClient] = React.useState(false);
+
   const [state, setState] = React.useState({
+    databases: {
+      ids: ['accounts', 'cases', 'contacts', 'customers', 'outcomes'],
+      entities: {
+        accounts: { created: false, response: null },
+        cases: { created: false, response: null },
+        contacts: { created: false, response: null },
+        customers: { created: false, response: null },
+        outcomes: { created: false, response: null },
+      },
+    },
     fields: {
       ids: [
         'name',
@@ -65,8 +94,9 @@ export const AddClientForm = (props) => {
     setState({ ...state, logoObj });
   };
 
-  const onClickHandler = () => {
+  const sendConfig = async () => {
     const data = new FormData();
+    let logoLocation;
 
     if (state.fields.entities['logo'].selectedFile) {
       for (
@@ -78,10 +108,11 @@ export const AddClientForm = (props) => {
       }
       data.append('name', state.fields.entities['name'].value);
 
-      mysqlLayer
+      await mysqlLayer
         .Post(`/uploads`, data)
         .then((response) => {
-          console.log('Location on server: ', response.path);
+          console.log('Location on server: ', response);
+          logoLocation = response.path;
         })
         .catch((err) => {
           console.log(err);
@@ -89,6 +120,15 @@ export const AddClientForm = (props) => {
     } else {
       console.log('No file');
     }
+
+    const configPackage = {
+      logoLocation,
+    };
+
+    // Send logo location to database
+    await mysqlLayer.Post(`/config`, configPackage).then((response) => {
+      console.log('Config response: ', response);
+    });
   };
 
   const handleCancel = (e) => {
@@ -118,8 +158,8 @@ export const AddClientForm = (props) => {
           mainContact: { error: null, value: '' },
           logo: {
             error: null,
-            selectedFile: 'https://react.semantic-ui.com/logo.png',
-            value: '',
+            location: img,
+            selectedFile: null,
           },
           colour1: { error: null, value: '' },
           colour2: { error: null, value: '' },
@@ -210,10 +250,10 @@ export const AddClientForm = (props) => {
   };
 
   const updateDatabase = async () => {
-    setUploading(true);
+    //setUploading(true);
     const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
-    const client = {
+    setClient({
       name: state.fields.entities['name'].value,
       regNum: state.fields.entities['regNum'].value,
       email: state.fields.entities['email'].value,
@@ -223,11 +263,11 @@ export const AddClientForm = (props) => {
       hasPaid: 1,
       createdBy: 'user',
       createdDate: createdDate,
-    };
+    });
 
     mysqlLayer
       .Post('/clients/client', client)
-      .then((response) => {
+      .then(async (response) => {
         console.log('response: ', response);
         if (response === 'client exists') {
           let message =
@@ -236,10 +276,13 @@ export const AddClientForm = (props) => {
           console.log('duplicated client message: ', message);
         } else if (response === 'success') {
           //this.handleSuccessfulAuth();
-          clearState();
-          setUploading(false);
+          //clearState();
           let message = 'Created!';
           console.log('success message: ', message);
+
+          // Call config set up for logo and colours
+          await sendConfig();
+          setUploading(false);
           //loadClients();
         } else {
           console.log('Log error to registrationErrors');
@@ -248,6 +291,18 @@ export const AddClientForm = (props) => {
       .catch((error) => {
         console.log('Registration error: ', error);
       });
+  };
+
+  const createTables = () => {
+    state.databases.ids.forEach(async (database) => {
+      console.log('database: ', database);
+
+      await mysqlLayer
+        .Post(`/clients/client/${database}`, client)
+        .then((response) => {
+          console.log(`${database} response: `, response);
+        });
+    });
   };
 
   return (
@@ -324,10 +379,10 @@ export const AddClientForm = (props) => {
             value={state.fields.entities['logo'].value}
             width={10}
           />
-          {/*<Button icon onClick={onClickHandler} labelPosition="left">
+          <Button icon onClick={createTables} labelPosition="left">
             <Icon name="upload" />
             Upload your logo
-          </Button>*/}
+          </Button>
           <Form.Input
             error={state.fields.entities['colour1'].error}
             id="form-input-control-client-colour1"

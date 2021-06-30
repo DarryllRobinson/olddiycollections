@@ -58,6 +58,15 @@ export default class MysqlLayer {
       let response = await axios.post(
         `${AppSettings.serverEndpoint}${path}`,
         object,
+        {
+          onUploadProgress: (progressEvent) => {
+            console.log(
+              'Upload progress: ' +
+                Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+                '%'
+            );
+          },
+        },
         this.setHeaders()
       );
       //console.log('response: ', response);
