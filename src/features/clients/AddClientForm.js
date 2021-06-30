@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Container, Form, Icon, Image, Modal } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Form,
+  Icon,
+  Image,
+  Modal,
+  Segment,
+} from 'semantic-ui-react';
 import moment from 'moment';
 
 import img from '../../assets/img/upload_logo.png';
@@ -15,7 +23,9 @@ export const AddClientForm = (props) => {
   }, []);
 
   const [uploading, setUploading] = React.useState(false);
-  const [checkName, setCheckName] = React.useState(false);
+  const [warning, setWarning] = React.useState(false);
+  const [warningMessage, setWarningMessage] = React.useState('');
+
   const [client, setClient] = React.useState({
     name: 'Disney',
     regNum: '1234',
@@ -26,7 +36,9 @@ export const AddClientForm = (props) => {
     hasPaid: 1,
     createdBy: 'user',
   });
-  const [insertClient, setInsertClient] = React.useState(false);
+  const [insertClientResult, setInsertClientResult] = React.useState(false);
+
+  const [completed, setCompleted] = React.useState('');
 
   const [state, setState] = React.useState({
     databases: {
@@ -190,8 +202,15 @@ export const AddClientForm = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    clearErrorMessages();
-    if (checkFields()) updateDatabase();
+    setUploading(true);
+    //clearErrorMessages();
+    /*if (checkFields())*/ const created = createClient();
+    if (!created) {
+      flagWarning('default warning', 'Default warning message');
+    } else {
+      console.log('A client was successfully created');
+    }
+    //setUploading(false);
   };
 
   const checkFields = () => {
@@ -249,9 +268,44 @@ export const AddClientForm = (props) => {
     }));
   };
 
-  const updateDatabase = async () => {
-    //setUploading(true);
-    const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+  const createClient = async () => {
+    const checked = await checkName();
+    //console.log('checked: ', checked);
+    if (checked === 'Unique') {
+      const inserted = await insertClient();
+      console.log('inserted: ', inserted);
+      if (inserted) {
+        const created = await createTables();
+        console.log('created: ', created);
+      }
+    } else {
+      flagWarning(
+        checked,
+        'The client is already on the books. Please check the company name.'
+      );
+    }
+  };
+
+  const flagWarning = (serverMessage, guiMessage) => {
+    setUploading(false);
+    setWarning(true);
+    setWarningMessage(`${serverMessage}: ${guiMessage}`);
+  };
+
+  const checkName = async () => {
+    let checkedResponse;
+
+    await mysqlLayer
+      .Post('/clients/clientCheck', { name: client.name })
+      .then((response) => {
+        setCompleted(`${completed}\n Name checks out\n`);
+        checkedResponse = response;
+      });
+    return checkedResponse;
+  };
+
+  const insertClient = async () => {
+    /*const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
     setClient({
       name: state.fields.entities['name'].value,
@@ -263,53 +317,74 @@ export const AddClientForm = (props) => {
       hasPaid: 1,
       createdBy: 'user',
       createdDate: createdDate,
-    });
+    });*/
 
-    mysqlLayer
+    await mysqlLayer
       .Post('/clients/client', client)
-      .then(async (response) => {
+      .then((response) => {
         console.log('response: ', response);
-        if (response === 'client exists') {
-          let message =
-            'Client already exists. Please check the registration number.';
-          //this.handleFailedReg(message);
-          console.log('duplicated client message: ', message);
-        } else if (response === 'success') {
-          //this.handleSuccessfulAuth();
-          //clearState();
-          let message = 'Created!';
-          console.log('success message: ', message);
-
-          // Call config set up for logo and colours
-          await sendConfig();
-          setUploading(false);
-          //loadClients();
+        if (response.affectedRows === 1) {
+          setCompleted(`${completed}\n Created client record\n`);
         } else {
-          console.log('Log error to registrationErrors');
+          flagWarning(
+            'Insert client record',
+            'The client record could not be inserted.'
+          );
+          return false;
         }
       })
       .catch((error) => {
         console.log('Registration error: ', error);
+        flagWarning('Registration error', error);
+        return false;
       });
+    return true;
   };
 
   const createTables = () => {
+    let dbObject;
+
     state.databases.ids.forEach(async (database) => {
-      console.log('database: ', database);
+      dbObject = state.databases.entities[database];
 
       await mysqlLayer
         .Post(`/clients/client/${database}`, client)
         .then((response) => {
           console.log(`${database} response: `, response);
+          if (response.warningCount === 0) {
+            setCompleted(`${completed} ${database} has been created\n`);
+            dbObject.created = true;
+            dbObject.response = `${database} has been created`;
+            setState({ ...state, dbObject });
+          } else {
+            flagWarning('Create table problem', `Create table ${database}`);
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.log('Create table error: ', error);
+          flagWarning('Create table error', error);
+          return false;
         });
     });
+    return true;
   };
 
   return (
     <Container>
       <Modal dimmer="blurring" open={uploading}>
         <Modal.Header>Creating a new client...</Modal.Header>
-        <Modal.Content>Please wait...</Modal.Content>
+        <Modal.Content>{completed}</Modal.Content>
+      </Modal>
+      <Modal dimmer="blurring" open={warning}>
+        <Modal.Header>We ran into a problem</Modal.Header>
+        <Modal.Content>{warningMessage}</Modal.Content>
+        <Modal.Actions>
+          <Button color="red" onClick={() => setWarning(false)}>
+            <Icon name="warning" />
+            Okay
+          </Button>
+        </Modal.Actions>
       </Modal>
       <Form>
         <Form.Group widths="equal">
