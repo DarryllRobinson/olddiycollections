@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Container,
-  Form,
-  Icon,
-  Image,
-  Modal,
-  Segment,
-} from 'semantic-ui-react';
+import { Button, Container, Form, Icon, Image, Modal } from 'semantic-ui-react';
 import moment from 'moment';
 
 import img from '../../assets/img/upload_logo.png';
@@ -25,8 +17,11 @@ export const AddClientForm = (props) => {
   const [uploading, setUploading] = React.useState(false);
   const [warning, setWarning] = React.useState(false);
   const [warningMessage, setWarningMessage] = React.useState('');
+  const [success, setSuccess] = React.useState(false);
 
-  const [client, setClient] = React.useState({
+  const [ready, setReady] = React.useState(false);
+
+  /*const [client, setClient] = React.useState({
     name: 'Disney',
     regNum: '1234',
     email: 'darryllrobinson@icloud.com',
@@ -35,8 +30,9 @@ export const AddClientForm = (props) => {
     active: 1,
     hasPaid: 1,
     createdBy: 'user',
-  });
-  const [insertClientResult, setInsertClientResult] = React.useState(false);
+  });*/
+
+  const [client, setClient] = React.useState('');
 
   const [completed, setCompleted] = React.useState('');
 
@@ -74,18 +70,25 @@ export const AddClientForm = (props) => {
           location: img,
           selectedFile: null,
         },
-        colour1: { error: null, value: '' },
-        colour2: { error: null, value: '' },
-        colour3: { error: null, value: '' },
+        colour1: { error: null, value: '#123321' },
+        colour2: { error: null, value: '#000000' },
+        colour3: { error: null, value: '#ffffff' },
       },
     },
   });
+
+  // Make sure the state fields for the client object are populated
+  React.useEffect(() => {
+    console.log('client state: ', client);
+    setReady(true);
+  }, [client]);
 
   // Handlers
   const handleChange = (evt) => {
     const name = evt.target.name;
     const value = evt.target.value;
     setState((prevState) => ({
+      databases: { ...prevState.databases },
       fields: {
         ...prevState.fields,
         entities: {
@@ -97,6 +100,22 @@ export const AddClientForm = (props) => {
         },
       },
     }));
+
+    // Get state ready for upload
+    const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+
+    setClient({
+      name: state.fields.entities['name'].value,
+      regNum: state.fields.entities['regNum'].value,
+      email: state.fields.entities['email'].value,
+      phone: state.fields.entities['phone'].value,
+      mainContact: state.fields.entities['mainContact'].value,
+      active: 1,
+      hasPaid: 1,
+      createdBy: 'user',
+      createdDate: createdDate,
+    });
+    console.log('Changed state: ', state);
   };
 
   const handleLogoChange = (evt) => {
@@ -106,43 +125,6 @@ export const AddClientForm = (props) => {
     setState({ ...state, logoObj });
   };
 
-  const sendConfig = async () => {
-    const data = new FormData();
-    let logoLocation;
-
-    if (state.fields.entities['logo'].selectedFile) {
-      for (
-        let i = 0;
-        i < state.fields.entities['logo'].selectedFile.length;
-        i++
-      ) {
-        data.append('file', state.fields.entities['logo'].selectedFile[i]);
-      }
-      data.append('name', state.fields.entities['name'].value);
-
-      await mysqlLayer
-        .Post(`/uploads`, data)
-        .then((response) => {
-          console.log('Location on server: ', response);
-          logoLocation = response.path;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      console.log('No file');
-    }
-
-    const configPackage = {
-      logoLocation,
-    };
-
-    // Send logo location to database
-    await mysqlLayer.Post(`/config`, configPackage).then((response) => {
-      console.log('Config response: ', response);
-    });
-  };
-
   const handleCancel = (e) => {
     e.preventDefault();
     clearState();
@@ -150,6 +132,16 @@ export const AddClientForm = (props) => {
 
   const clearState = () => {
     setState({
+      databases: {
+        ids: ['accounts', 'cases', 'contacts', 'customers', 'outcomes'],
+        entities: {
+          accounts: { created: false, response: null },
+          cases: { created: false, response: null },
+          contacts: { created: false, response: null },
+          customers: { created: false, response: null },
+          outcomes: { created: false, response: null },
+        },
+      },
       fields: {
         ids: [
           'name',
@@ -173,9 +165,9 @@ export const AddClientForm = (props) => {
             location: img,
             selectedFile: null,
           },
-          colour1: { error: null, value: '' },
-          colour2: { error: null, value: '' },
-          colour3: { error: null, value: '' },
+          colour1: { error: null, value: '#123321' },
+          colour2: { error: null, value: '#000000' },
+          colour3: { error: null, value: '#ffffff' },
         },
       },
     });
@@ -186,6 +178,7 @@ export const AddClientForm = (props) => {
 
     fields.forEach((field) => {
       setState((prevState) => ({
+        databases: { ...prevState.databases },
         fields: {
           ...prevState.fields,
           entities: {
@@ -200,24 +193,33 @@ export const AddClientForm = (props) => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     setUploading(true);
-    //clearErrorMessages();
-    /*if (checkFields())*/ const created = createClient();
-    if (!created) {
-      flagWarning('default warning', 'Default warning message');
-    } else {
-      console.log('A client was successfully created');
+    clearErrorMessages();
+
+    if (checkFields() && ready) {
+      try {
+        const created = await createClient();
+        if (created) {
+          //console.log('A client was successfully created');
+          setCompleted(`${completed}\n The client was successfully created.`);
+          setUploading(false);
+          setSuccess(true);
+        }
+      } catch (error) {
+        flagWarning('Major error', error);
+      }
     }
-    //setUploading(false);
   };
 
   const checkFields = () => {
+    //console.log('Checking fields...');
     let cont = true;
 
     if (!state.fields.entities['name'].value) {
-      setErrorMsg('Please provide a company name', 'firstName');
+      setErrorMsg('Please provide a company name', 'name');
       cont = false;
     }
 
@@ -249,6 +251,7 @@ export const AddClientForm = (props) => {
       cont = false;
     }
 
+    if (!cont) setUploading(false);
     return cont;
   };
 
@@ -270,19 +273,29 @@ export const AddClientForm = (props) => {
 
   const createClient = async () => {
     const checked = await checkName();
-    //console.log('checked: ', checked);
+    console.log('checked: ', checked);
     if (checked === 'Unique') {
       const inserted = await insertClient();
       console.log('inserted: ', inserted);
       if (inserted) {
         const created = await createTables();
         console.log('created: ', created);
+        if (created) {
+          // Upload logo and styling
+          // If no logo or styling provided, defaults will be used
+          const configed = await createConfig();
+          if (configed) return true;
+        }
       }
-    } else {
+    } else if (checked === 'Duplicate') {
       flagWarning(
         checked,
         'The client is already on the books. Please check the company name.'
       );
+      return false;
+    } else {
+      flagWarning(checked.code, checked.sqlMessage);
+      return false;
     }
   };
 
@@ -305,9 +318,7 @@ export const AddClientForm = (props) => {
   };
 
   const insertClient = async () => {
-    /*const createdDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-
-    setClient({
+    /*const clientPackage = {
       name: state.fields.entities['name'].value,
       regNum: state.fields.entities['regNum'].value,
       email: state.fields.entities['email'].value,
@@ -317,14 +328,16 @@ export const AddClientForm = (props) => {
       hasPaid: 1,
       createdBy: 'user',
       createdDate: createdDate,
-    });*/
+    };*/
 
     await mysqlLayer
       .Post('/clients/client', client)
       .then((response) => {
-        console.log('response: ', response);
+        //console.log('insertClient response: ', response);
         if (response.affectedRows === 1) {
           setCompleted(`${completed}\n Created client record\n`);
+          client.id = response.insertId;
+          setClient(client);
         } else {
           flagWarning(
             'Insert client record',
@@ -343,14 +356,16 @@ export const AddClientForm = (props) => {
 
   const createTables = () => {
     let dbObject;
+    console.log('about to create tables: ', state);
 
     state.databases.ids.forEach(async (database) => {
       dbObject = state.databases.entities[database];
+      console.log(`${database} creation`);
 
       await mysqlLayer
         .Post(`/clients/client/${database}`, client)
         .then((response) => {
-          console.log(`${database} response: `, response);
+          //console.log(`${database} response: `, response);
           if (response.warningCount === 0) {
             setCompleted(`${completed} ${database} has been created\n`);
             dbObject.created = true;
@@ -370,12 +385,81 @@ export const AddClientForm = (props) => {
     return true;
   };
 
+  const createConfig = async () => {
+    const data = new FormData();
+
+    // Logo stuff
+    let logoLocation;
+
+    if (state.fields.entities['logo'].selectedFile) {
+      for (
+        let i = 0;
+        i < state.fields.entities['logo'].selectedFile.length;
+        i++
+      ) {
+        data.append('file', state.fields.entities['logo'].selectedFile[i]);
+      }
+      data.append('name', state.fields.entities['name'].value);
+
+      await mysqlLayer
+        .Post(`/uploads`, data)
+        .then((response) => {
+          console.log('Location on server: ', response);
+          logoLocation = response.path;
+        })
+        .catch((error) => {
+          console.log('Create config error: ', error);
+          flagWarning('Create config error', error);
+          return false;
+        });
+    } else {
+      console.log('No file - will use default logo');
+      logoLocation = 'default';
+    }
+
+    // Styling stuff
+    const colour1 = state.fields.entities['colour1'].value;
+    const colour2 = state.fields.entities['colour2'].value;
+    const colour3 = state.fields.entities['colour3'].value;
+
+    const configPackage = {
+      logoLocation,
+      colour1,
+      colour2,
+      colour3,
+      f_clientId: client.id,
+    };
+
+    // Send config to database
+    await mysqlLayer
+      .Post(`/clients/client/config`, configPackage)
+      .then((response) => {
+        //console.log('createConfig response: ', response);
+        if (response.affectedRows === 1) {
+          setCompleted(`${completed}\n Created config record\n`);
+        } else {
+          flagWarning(
+            'Insert config record',
+            'The config record could not be inserted.'
+          );
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.log('Config error: ', error);
+        flagWarning('Config error', error);
+        return false;
+      });
+    return true;
+  };
+
   return (
     <Container>
       <Modal dimmer="blurring" open={uploading}>
         <Modal.Header>Creating a new client...</Modal.Header>
         <Modal.Content>{completed}</Modal.Content>
       </Modal>
+
       <Modal dimmer="blurring" open={warning}>
         <Modal.Header>We ran into a problem</Modal.Header>
         <Modal.Content>{warningMessage}</Modal.Content>
@@ -386,6 +470,17 @@ export const AddClientForm = (props) => {
           </Button>
         </Modal.Actions>
       </Modal>
+
+      <Modal dimmer="blurring" open={success}>
+        <Modal.Header>Success!</Modal.Header>
+        <Modal.Content>{client.name} was created</Modal.Content>
+        <Modal.Actions>
+          <Button color="green" onClick={() => setSuccess(false)} positive>
+            Okay
+          </Button>
+        </Modal.Actions>
+      </Modal>
+
       <Form>
         <Form.Group widths="equal">
           <Form.Input
