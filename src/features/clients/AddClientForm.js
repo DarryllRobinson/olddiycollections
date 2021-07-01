@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Container, Form, Icon, Image, Modal } from 'semantic-ui-react';
+import {
+  Button,
+  Container,
+  Form,
+  Grid,
+  Icon,
+  Image,
+  Modal,
+} from 'semantic-ui-react';
 import moment from 'moment';
 
 import img from '../../assets/img/upload_logo.png';
@@ -18,8 +26,6 @@ export const AddClientForm = (props) => {
   const [warning, setWarning] = React.useState(false);
   const [warningMessage, setWarningMessage] = React.useState('');
   const [success, setSuccess] = React.useState(false);
-
-  const [ready, setReady] = React.useState(false);
 
   /*const [client, setClient] = React.useState({
     name: 'Disney',
@@ -55,9 +61,12 @@ export const AddClientForm = (props) => {
         'phone',
         'mainContact',
         'logo',
-        'colour1',
-        'colour2',
-        'colour3',
+        'background',
+        'font',
+        'header',
+        'axisOne',
+        'labelOne',
+        'barOne',
       ],
       entities: {
         name: { error: null, value: '' },
@@ -70,18 +79,15 @@ export const AddClientForm = (props) => {
           location: img,
           selectedFile: null,
         },
-        colour1: { error: null, value: '#123321' },
-        colour2: { error: null, value: '#000000' },
-        colour3: { error: null, value: '#ffffff' },
+        background: { error: null, value: '#a8abac' },
+        font: { error: null, value: '#333740' },
+        header: { error: null, value: '#787c82' },
+        axisOne: { error: null, value: '#003d6a' },
+        labelOne: { error: null, value: '#003d6a' },
+        barOne: { error: null, value: '#2062ae' },
       },
     },
   });
-
-  // Make sure the state fields for the client object are populated
-  React.useEffect(() => {
-    console.log('client state: ', client);
-    setReady(true);
-  }, [client]);
 
   // Handlers
   const handleChange = (evt) => {
@@ -115,7 +121,6 @@ export const AddClientForm = (props) => {
       createdBy: 'user',
       createdDate: createdDate,
     });
-    console.log('Changed state: ', state);
   };
 
   const handleLogoChange = (evt) => {
@@ -150,9 +155,12 @@ export const AddClientForm = (props) => {
           'phone',
           'mainContact',
           'logo',
-          'colour1',
-          'colour2',
-          'colour3',
+          'background',
+          'font',
+          'header',
+          'axisOne',
+          'labelOne',
+          'barOne',
         ],
         entities: {
           name: { error: null, value: '' },
@@ -165,9 +173,12 @@ export const AddClientForm = (props) => {
             location: img,
             selectedFile: null,
           },
-          colour1: { error: null, value: '#123321' },
-          colour2: { error: null, value: '#000000' },
-          colour3: { error: null, value: '#ffffff' },
+          background: { error: null, value: '#a8abac' },
+          font: { error: null, value: '#333740' },
+          header: { error: null, value: '#787c82' },
+          axisOne: { error: null, value: '#003d6a' },
+          labelOne: { error: null, value: '#003d6a' },
+          barOne: { error: null, value: '#2062ae' },
         },
       },
     });
@@ -199,11 +210,12 @@ export const AddClientForm = (props) => {
     setUploading(true);
     clearErrorMessages();
 
-    if (checkFields() && ready) {
+    if (checkFields()) {
       try {
         const created = await createClient();
         if (created) {
           //console.log('A client was successfully created');
+          clearState();
           setCompleted(`${completed}\n The client was successfully created.`);
           setUploading(false);
           setSuccess(true);
@@ -251,6 +263,36 @@ export const AddClientForm = (props) => {
       cont = false;
     }
 
+    if (!state.fields.entities['background'].value.length !== 7) {
+      setErrorMsg('Please provide a 7 digit code', 'background');
+      cont = false;
+    }
+
+    if (!state.fields.entities['font'].value) {
+      setErrorMsg('Please provide a 7 digit code', 'font');
+      cont = false;
+    }
+
+    if (!state.fields.entities['header'].value) {
+      setErrorMsg('Please provide a 7 digit code', 'header');
+      cont = false;
+    }
+
+    if (!state.fields.entities['axisOne'].value) {
+      setErrorMsg('Please provide a 7 digit code', 'axisOne');
+      cont = false;
+    }
+
+    if (!state.fields.entities['labelOne'].value) {
+      setErrorMsg('Please provide a 7 digit code', 'labelOne');
+      cont = false;
+    }
+
+    if (!state.fields.entities['barOne'].value) {
+      setErrorMsg('Please provide a 7 digit code', 'barOne');
+      cont = false;
+    }
+
     if (!cont) setUploading(false);
     return cont;
   };
@@ -273,13 +315,13 @@ export const AddClientForm = (props) => {
 
   const createClient = async () => {
     const checked = await checkName();
-    console.log('checked: ', checked);
+    //console.log('checked: ', checked);
     if (checked === 'Unique') {
       const inserted = await insertClient();
-      console.log('inserted: ', inserted);
+      //console.log('inserted: ', inserted);
       if (inserted) {
         const created = await createTables();
-        console.log('created: ', created);
+        //console.log('created: ', created);
         if (created) {
           // Upload logo and styling
           // If no logo or styling provided, defaults will be used
@@ -356,11 +398,11 @@ export const AddClientForm = (props) => {
 
   const createTables = () => {
     let dbObject;
-    console.log('about to create tables: ', state);
+    //console.log('about to create tables: ', state);
 
     state.databases.ids.forEach(async (database) => {
       dbObject = state.databases.entities[database];
-      console.log(`${database} creation`);
+      //console.log(`${database} creation`);
 
       await mysqlLayer
         .Post(`/clients/client/${database}`, client)
@@ -377,7 +419,7 @@ export const AddClientForm = (props) => {
           }
         })
         .catch((error) => {
-          console.log('Create table error: ', error);
+          //console.log('Create table error: ', error);
           flagWarning('Create table error', error);
           return false;
         });
@@ -418,15 +460,21 @@ export const AddClientForm = (props) => {
     }
 
     // Styling stuff
-    const colour1 = state.fields.entities['colour1'].value;
-    const colour2 = state.fields.entities['colour2'].value;
-    const colour3 = state.fields.entities['colour3'].value;
+    const background = state.fields.entities['background'].value;
+    const font = state.fields.entities['font'].value;
+    const header = state.fields.entities['header'].value;
+    const axisOne = state.fields.entities['axisOne'].value;
+    const labelOne = state.fields.entities['labelOne'].value;
+    const barOne = state.fields.entities['barOne'].value;
 
     const configPackage = {
       logoLocation,
-      colour1,
-      colour2,
-      colour3,
+      background,
+      font,
+      header,
+      axisOne,
+      labelOne,
+      barOne,
       f_clientId: client.id,
     };
 
@@ -446,11 +494,77 @@ export const AddClientForm = (props) => {
         }
       })
       .catch((error) => {
-        console.log('Config error: ', error);
+        //console.log('Config error: ', error);
         flagWarning('Config error', error);
         return false;
       });
     return true;
+  };
+
+  const colours = () => {
+    const background = state.fields.entities['background'].value;
+    const font = state.fields.entities['font'].value;
+    const header = state.fields.entities['header'].value;
+    const axisOne = state.fields.entities['axisOne'].value;
+    const labelOne = state.fields.entities['labelOne'].value;
+    const barOne = state.fields.entities['barOne'].value;
+
+    return (
+      <>
+        <Grid.Column width="3">
+          <h1
+            style={{
+              backgroundColor: background,
+              height: '25px',
+              width: '190px',
+            }}
+          >
+            {' '}
+          </h1>
+        </Grid.Column>
+        <Grid.Column width="3">
+          <h1 style={{ backgroundColor: font, height: '25px', width: '190px' }}>
+            {' '}
+          </h1>
+        </Grid.Column>
+        <Grid.Column width="3">
+          <h1
+            style={{ backgroundColor: header, height: '25px', width: '190px' }}
+          >
+            {' '}
+          </h1>
+        </Grid.Column>
+        <Grid.Column width="3">
+          <h1
+            style={{
+              backgroundColor: axisOne,
+              height: '25px',
+              width: '190px',
+            }}
+          >
+            {' '}
+          </h1>
+        </Grid.Column>
+        <Grid.Column width="3">
+          <h1
+            style={{
+              backgroundColor: labelOne,
+              height: '25px',
+              width: '190px',
+            }}
+          >
+            {' '}
+          </h1>
+        </Grid.Column>
+        <Grid.Column width="3">
+          <h1
+            style={{ backgroundColor: barOne, height: '25px', width: '190px' }}
+          >
+            {' '}
+          </h1>
+        </Grid.Column>
+      </>
+    );
   };
 
   return (
@@ -547,50 +661,89 @@ export const AddClientForm = (props) => {
             onChange={handleLogoChange}
             type="file"
             value={state.fields.entities['logo'].value}
-            width={10}
+            width={7}
           />
-          <Button icon onClick={createTables} labelPosition="left">
+          {/*<Button icon onClick={clearState} labelPosition="left">
             <Icon name="upload" />
             Upload your logo
-          </Button>
+          </Button>*/}
           <Form.Input
-            error={state.fields.entities['colour1'].error}
-            id="form-input-control-client-colour1"
-            name="colour1"
-            label="colour1"
+            error={state.fields.entities['background'].error}
+            id="form-input-control-client-background"
+            name="background"
+            label="background"
             onChange={handleChange}
             type="text"
-            value={state.fields.entities['colour1'].value}
-            width={2}
+            value={state.fields.entities['background'].value}
+            width={3}
           />
           <Form.Input
-            error={state.fields.entities['colour2'].error}
-            id="form-input-control-client-colour2"
-            name="colour2"
-            label="colour2"
+            error={state.fields.entities['font'].error}
+            id="form-input-control-client-font"
+            name="font"
+            label="font"
             onChange={handleChange}
             type="text"
-            value={state.fields.entities['colour2'].value}
-            width={2}
+            value={state.fields.entities['font'].value}
+            width={3}
           />
           <Form.Input
-            error={state.fields.entities['colour3'].error}
-            id="form-input-control-client-colour3"
-            name="colour3"
-            label="colour3"
+            error={state.fields.entities['header'].error}
+            id="form-input-control-client-header"
+            name="header"
+            label="header"
             onChange={handleChange}
             type="text"
-            value={state.fields.entities['colour3'].value}
-            width={2}
+            value={state.fields.entities['header'].value}
+            width={3}
           />
         </Form.Group>
-        <Image
-          className="demo logo"
-          alt="client logo"
-          disabled
-          size="medium"
-          src={state.fields.entities['logo'].location}
-        />
+        <Form.Group>
+          <Form.Input
+            error={state.fields.entities['axisOne'].error}
+            id="form-input-control-client-axisOne"
+            name="axisOne"
+            label="axisOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['axisOne'].value}
+            width={3}
+          />
+          <Form.Input
+            error={state.fields.entities['labelOne'].error}
+            id="form-input-control-client-labelOne"
+            name="labelOne"
+            label="labelOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['labelOne'].value}
+            width={3}
+          />
+          <Form.Input
+            error={state.fields.entities['barOne'].error}
+            id="form-input-control-client-barOne"
+            name="barOne"
+            label="barOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['barOne'].value}
+            width={3}
+          />
+        </Form.Group>
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width="7">
+              <Image
+                className="demo logo"
+                alt="client logo"
+                disabled
+                size="medium"
+                src={state.fields.entities['logo'].location}
+              />
+            </Grid.Column>
+            {colours()}
+          </Grid.Row>
+        </Grid>
 
         <Button.Group size="large">
           <Button content="Submit" onClick={handleSubmit} />
