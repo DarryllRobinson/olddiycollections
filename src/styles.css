@@ -115,6 +115,16 @@
   padding: 0.5em;
 }
 
+.colourDiv {
+  padding-right: 10px;
+  width: 180px;
+}
+
+.colourBox {
+  height: 25px;
+  width: 170px;
+}
+
 /* General styling */
 
 .ui.form input:read-only {

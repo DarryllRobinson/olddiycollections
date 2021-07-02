@@ -510,60 +510,226 @@ export const AddClientForm = (props) => {
     const barOne = state.fields.entities['barOne'].value;
 
     return (
-      <>
-        <Grid.Column width="3">
-          <h1
+      <Grid container stackable>
+        <Grid.Row>
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['background'].error}
+              id="form-input-control-client-background"
+              name="background"
+              label="background"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['background'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: background,
+              }}
+            ></div>
+          </div>
+
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['font'].error}
+              id="form-input-control-client-font"
+              name="font"
+              label="font"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['font'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: font,
+              }}
+            ></div>
+          </div>
+
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['header'].error}
+              id="form-input-control-client-header"
+              name="header"
+              label="header"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['header'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: header,
+              }}
+            ></div>
+          </div>
+        </Grid.Row>
+
+        <Grid.Row>
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['axisOne'].error}
+              id="form-input-control-client-axisOne"
+              name="axisOne"
+              label="axisOne"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['axisOne'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: axisOne,
+              }}
+            ></div>
+          </div>
+
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['labelOne'].error}
+              id="form-input-control-client-labelOne"
+              name="labelOne"
+              label="labelOne"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['labelOne'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: labelOne,
+              }}
+            ></div>
+          </div>
+
+          <div className="colourDiv">
+            <Form.Input
+              error={state.fields.entities['barOne'].error}
+              id="form-input-control-client-barOne"
+              name="barOne"
+              label="barOne"
+              onChange={handleChange}
+              type="text"
+              value={state.fields.entities['barOne'].value}
+            />
+            <div
+              className="colourBox"
+              style={{
+                backgroundColor: barOne,
+              }}
+            ></div>
+          </div>
+        </Grid.Row>
+      </Grid>
+      /*<>
+        <p>
+          <Form.Input
+            error={state.fields.entities['background'].error}
+            id="form-input-control-client-background"
+            name="background"
+            label="background"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['background'].value}
+          />
+          <div
             style={{
               backgroundColor: background,
               height: '25px',
               width: '190px',
             }}
-          >
-            {' '}
-          </h1>
-        </Grid.Column>
-        <Grid.Column width="3">
-          <h1 style={{ backgroundColor: font, height: '25px', width: '190px' }}>
-            {' '}
-          </h1>
-        </Grid.Column>
-        <Grid.Column width="3">
-          <h1
-            style={{ backgroundColor: header, height: '25px', width: '190px' }}
-          >
-            {' '}
-          </h1>
-        </Grid.Column>
-        <Grid.Column width="3">
-          <h1
+          ></div>
+
+          <Form.Input
+            error={state.fields.entities['font'].error}
+            id="form-input-control-client-font"
+            name="font"
+            label="font"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['font'].value}
+          />
+          <div
+            style={{
+              backgroundColor: font,
+              height: '25px',
+              width: '190px',
+            }}
+          ></div>
+
+          <Form.Input
+            error={state.fields.entities['header'].error}
+            id="form-input-control-client-header"
+            name="header"
+            label="header"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['header'].value}
+          />
+          <div
+            style={{
+              backgroundColor: header,
+              height: '25px',
+              width: '190px',
+            }}
+          ></div>
+        </p>
+
+        <p>
+          <Form.Input
+            error={state.fields.entities['axisOne'].error}
+            id="form-input-control-client-axisOne"
+            name="axisOne"
+            label="axisOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['axisOne'].value}
+          />
+          <div
             style={{
               backgroundColor: axisOne,
               height: '25px',
               width: '190px',
             }}
-          >
-            {' '}
-          </h1>
-        </Grid.Column>
-        <Grid.Column width="3">
-          <h1
+          ></div>
+
+          <Form.Input
+            error={state.fields.entities['labelOne'].error}
+            id="form-input-control-client-labelOne"
+            name="labelOne"
+            label="labelOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['labelOne'].value}
+          />
+          <div
             style={{
               backgroundColor: labelOne,
               height: '25px',
               width: '190px',
             }}
-          >
-            {' '}
-          </h1>
-        </Grid.Column>
-        <Grid.Column width="3">
-          <h1
-            style={{ backgroundColor: barOne, height: '25px', width: '190px' }}
-          >
-            {' '}
-          </h1>
-        </Grid.Column>
-      </>
+          ></div>
+
+          <Form.Input
+            error={state.fields.entities['barOne'].error}
+            id="form-input-control-client-barOne"
+            name="barOne"
+            label="barOne"
+            onChange={handleChange}
+            type="text"
+            value={state.fields.entities['barOne'].value}
+          />
+          <div
+            style={{
+              backgroundColor: barOne,
+              height: '25px',
+              width: '190px',
+            }}
+          ></div>
+        </p>
+      </>*/
     );
   };
 
@@ -652,87 +818,18 @@ export const AddClientForm = (props) => {
           />
         </Form.Group>
 
-        <Form.Group>
-          <Form.Input
-            error={state.fields.entities['logo'].error}
-            id="form-input-control-client-logo"
-            name="logo"
-            label="Logo"
-            onChange={handleLogoChange}
-            type="file"
-            value={state.fields.entities['logo'].value}
-            width={7}
-          />
-          {/*<Button icon onClick={clearState} labelPosition="left">
-            <Icon name="upload" />
-            Upload your logo
-          </Button>*/}
-          <Form.Input
-            error={state.fields.entities['background'].error}
-            id="form-input-control-client-background"
-            name="background"
-            label="background"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['background'].value}
-            width={3}
-          />
-          <Form.Input
-            error={state.fields.entities['font'].error}
-            id="form-input-control-client-font"
-            name="font"
-            label="font"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['font'].value}
-            width={3}
-          />
-          <Form.Input
-            error={state.fields.entities['header'].error}
-            id="form-input-control-client-header"
-            name="header"
-            label="header"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['header'].value}
-            width={3}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Input
-            error={state.fields.entities['axisOne'].error}
-            id="form-input-control-client-axisOne"
-            name="axisOne"
-            label="axisOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['axisOne'].value}
-            width={3}
-          />
-          <Form.Input
-            error={state.fields.entities['labelOne'].error}
-            id="form-input-control-client-labelOne"
-            name="labelOne"
-            label="labelOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['labelOne'].value}
-            width={3}
-          />
-          <Form.Input
-            error={state.fields.entities['barOne'].error}
-            id="form-input-control-client-barOne"
-            name="barOne"
-            label="barOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['barOne'].value}
-            width={3}
-          />
-        </Form.Group>
-        <Grid>
+        <Grid columns={2} stackable>
           <Grid.Row>
-            <Grid.Column width="7">
+            <Grid.Column>
+              <Form.Input
+                error={state.fields.entities['logo'].error}
+                id="form-input-control-client-logo"
+                name="logo"
+                label="Logo"
+                onChange={handleLogoChange}
+                type="file"
+                value={state.fields.entities['logo'].value}
+              />
               <Image
                 className="demo logo"
                 alt="client logo"
@@ -741,9 +838,32 @@ export const AddClientForm = (props) => {
                 src={state.fields.entities['logo'].location}
               />
             </Grid.Column>
-            {colours()}
+            <Grid.Column>{colours()}</Grid.Column>
           </Grid.Row>
         </Grid>
+
+        {/*<Grid.Row>
+            <Grid.Column width={6}>
+              <Form.Input
+                error={state.fields.entities['logo'].error}
+                id="form-input-control-client-logo"
+                name="logo"
+                label="Logo"
+                onChange={handleLogoChange}
+                type="file"
+                value={state.fields.entities['logo'].value}
+              />
+              <Image
+                className="demo logo"
+                alt="client logo"
+                disabled
+                size="medium"
+                src={state.fields.entities['logo'].location}
+              />
+            </Grid.Column>
+            <Grid.Column width={10}>{colours()}</Grid.Column>
+          </Grid.Row>
+        </Grid>*/}
 
         <Button.Group size="large">
           <Button content="Submit" onClick={handleSubmit} />
