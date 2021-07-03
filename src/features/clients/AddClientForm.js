@@ -130,7 +130,7 @@ export const AddClientForm = (props) => {
     setState({ ...state, logoObj });
   };
 
-  const handleCancel = (e) => {
+  const handleReset = (e) => {
     e.preventDefault();
     clearState();
   };
@@ -623,113 +623,6 @@ export const AddClientForm = (props) => {
           </div>
         </Grid.Row>
       </Grid>
-      /*<>
-        <p>
-          <Form.Input
-            error={state.fields.entities['background'].error}
-            id="form-input-control-client-background"
-            name="background"
-            label="background"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['background'].value}
-          />
-          <div
-            style={{
-              backgroundColor: background,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-
-          <Form.Input
-            error={state.fields.entities['font'].error}
-            id="form-input-control-client-font"
-            name="font"
-            label="font"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['font'].value}
-          />
-          <div
-            style={{
-              backgroundColor: font,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-
-          <Form.Input
-            error={state.fields.entities['header'].error}
-            id="form-input-control-client-header"
-            name="header"
-            label="header"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['header'].value}
-          />
-          <div
-            style={{
-              backgroundColor: header,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-        </p>
-
-        <p>
-          <Form.Input
-            error={state.fields.entities['axisOne'].error}
-            id="form-input-control-client-axisOne"
-            name="axisOne"
-            label="axisOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['axisOne'].value}
-          />
-          <div
-            style={{
-              backgroundColor: axisOne,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-
-          <Form.Input
-            error={state.fields.entities['labelOne'].error}
-            id="form-input-control-client-labelOne"
-            name="labelOne"
-            label="labelOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['labelOne'].value}
-          />
-          <div
-            style={{
-              backgroundColor: labelOne,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-
-          <Form.Input
-            error={state.fields.entities['barOne'].error}
-            id="form-input-control-client-barOne"
-            name="barOne"
-            label="barOne"
-            onChange={handleChange}
-            type="text"
-            value={state.fields.entities['barOne'].value}
-          />
-          <div
-            style={{
-              backgroundColor: barOne,
-              height: '25px',
-              width: '190px',
-            }}
-          ></div>
-        </p>
-      </>*/
     );
   };
 
@@ -868,7 +761,7 @@ export const AddClientForm = (props) => {
         <Button.Group size="large">
           <Button content="Submit" onClick={handleSubmit} />
           <Button.Or />
-          <Button content="Cancel" onClick={handleCancel} />
+          <Button content="Reset" onClick={handleReset} />
         </Button.Group>
       </Form>
     </Container>
