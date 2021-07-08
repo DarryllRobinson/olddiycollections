@@ -21,43 +21,9 @@ class Reports extends React.Component {
     this.state = {
       reports: {
         ids: ['aging', 'agentPTP', 'datePTP'],
-        //  ids: ['aging', 'penetrationRate'],
         entities: {
           aging: {
-            data: null /*[
-              {
-                name: '30',
-                value: 314882.58,
-              },
-              {
-                name: '60',
-                value: 994234.76,
-              },
-              {
-                name: '90',
-                value: 1242800.2,
-              },
-              {
-                name: '120',
-                value: 945464.55,
-              },
-              {
-                name: '150',
-                value: 231865.32,
-              },
-              {
-                name: '180',
-                value: 815360.12,
-              },
-              {
-                name: 'Current',
-                value: 828551.51,
-              },
-              {
-                name: '>180',
-                value: 829422.3,
-              },
-            ],*/,
+            data: null,
             description: 'Amount owed per period',
             title: 'Aging',
             type: 'bar',
@@ -74,37 +40,6 @@ class Reports extends React.Component {
             title: 'PTP by Date',
             type: 'bar',
           },
-          /*penetrationRate: {
-            data: [
-              {
-                name: 'Dec 20',
-                value: 32,
-              },
-              {
-                name: 'Jan 21',
-                value: 36,
-              },
-              {
-                name: 'Feb 21',
-                value: 42,
-              },
-              {
-                name: 'Mar 21',
-                value: 36,
-              },
-              {
-                name: 'Apr 21',
-                value: 70,
-              },
-              {
-                name: 'May 21',
-                value: 64,
-              },
-            ],
-            description: 'Contacts made per account per month',
-            title: 'Penetration rate',
-            type: 'line',
-          },*/
         },
       },
       selected: null,
@@ -261,35 +196,23 @@ class Reports extends React.Component {
     );
   }
 
-  selectedChartRender(selection) {
-    return <Report report={selection} />;
-    /*const reports = this.state.reports;
+  selectedChartRender() {
+    if (this.state.selected) {
+      const reportObject = this.state.reports.entities[this.state.selected];
+      const { data, description, title } = reportObject;
+      //console.log('reportObject: ', reportObject);
 
-    if (!selection) {
-      console.log('I am here! ', selection);
       return (
-        <Segment style={{ height: '350px' }}>
-          Please select a report from the menu on the left
-        </Segment>
+        <Report
+          data={data}
+          description={description}
+          report={this.state.selected}
+          title={title}
+        />
       );
     } else {
-      console.log('I am here with a selection! ', selection);
-      this.setState({ selected: selection });
-      return (
-        reports.entities[selection].data && (
-          <>
-            <p>still trying</p>
-            <CustomBar
-              chartNumber={null}
-              data={reports.entities[selection].data}
-              description={reports.entities[selection].description}
-              styleType="dash"
-              title={reports.entities[selection].title}
-            />
-          </>
-        )
-      );
-    }*/
+      return <div>Please select a report</div>;
+    }
   }
 
   setVisible(event) {
@@ -317,8 +240,8 @@ class Reports extends React.Component {
                 <Header as="h2">Report Selection</Header>
                 {this.customChartRender()}
               </Sidebar>
-              <Sidebar.Pusher style={{ height: '350px' }}>
-                <Report report={this.state.selected} />
+              <Sidebar.Pusher style={{ height: '750px' }}>
+                {this.selectedChartRender()}
               </Sidebar.Pusher>
             </Sidebar.Pushable>
           </Grid.Column>

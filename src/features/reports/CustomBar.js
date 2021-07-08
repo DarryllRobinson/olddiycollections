@@ -19,7 +19,7 @@ class CustomBar extends React.Component {
         border: '1px solid #000000',
         boxSizing: 'border-box',
         display: 'inline',
-        height: '350',
+        height: '275',
         margin: '15px 3px',
         fontFamily: "'Fira Sans', sans-serif",
       },
