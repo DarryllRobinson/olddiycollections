@@ -24,7 +24,6 @@ export const MenuBar = () => {
 
   const handleLogout = () => {
     security.terminateSession();
-    history.push('/');
   };
 
   const logButton = isLoggedIn ? (

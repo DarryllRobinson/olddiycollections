@@ -8,9 +8,11 @@ import jwtDecode from 'jwt-decode';
 
 import Security from '../../services/Security';
 import MysqlLayer from '../../services/MysqlLayer';
-const mysqlLayer = new MysqlLayer();
+import { accountService } from '../../services/account.service';
 
+const mysqlLayer = new MysqlLayer();
 const security = new Security();
+
 const usersAdapter = createEntityAdapter();
 
 const initialState = usersAdapter.getInitialState({
@@ -39,15 +41,16 @@ export const addNewUser = createAsyncThunk(
   }
 );
 
-export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
+/*export const loginUser = createAsyncThunk('users/loginUser', async (user) => {
   const response = await mysqlLayer.PostLogin('/users/login', user);
-  //console.log(response);
+  console.log(response);
   security.writeLoginSession(response.user[0].refreshToken);
-  security.startTimer('usersSlice loginUser');
+  //security.startTimer('usersSlice loginUser');
+  accountService.loginUser(response.user[0]);
   history.push('/dashboard');
   //console.log(response);
   return response;
-});
+});*/
 
 const usersSlice = createSlice({
   name: 'users',
@@ -98,7 +101,7 @@ const usersSlice = createSlice({
     },
 
     // Login user
-    [loginUser.pending]: (state, { payload }) => {
+    /*[loginUser.pending]: (state, { payload }) => {
       state.status = 'loading';
     },
     [loginUser.fulfilled]: (state, { payload }) => {
@@ -116,7 +119,7 @@ const usersSlice = createSlice({
       console.log('problem loginUser.rejected: ', payload);
       state.status = 'failed';
       state.error = payload;
-    },
+    },*/
 
     [addNewUser.fulfilled]: usersAdapter.addOne,
   },

@@ -73,6 +73,7 @@ export default class Security {
 
   terminateSession() {
     sessionStorage.removeItem('refreshToken');
+    this.stopTimer('terminateSession from Logout on whichever Menu component');
     history.push('/');
   }
 
@@ -86,5 +87,17 @@ export default class Security {
   getRole() {
     let decodedToken = jwtDecode(sessionStorage.getItem('refreshToken'));
     return decodedToken.role;
+  }
+
+  startTimer(component) {
+    console.log('startTimer called by ', component);
+  }
+
+  resetTimer(component) {
+    console.log('resetTimer called by ', component);
+  }
+
+  stopTimer(component) {
+    console.log('stopTimer called by ', component);
   }
 }

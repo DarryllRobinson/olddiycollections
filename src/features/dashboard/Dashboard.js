@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Grid } from 'semantic-ui-react';
 
-import Reports from '../reports/Reports';
+import Reports from '../reports/DashboardReports';
 import mieLogo from '../../assets/img/mie_logo.png';
 //import { Workzone } from '../workzone/Workzone';
 import { Queues } from '../queues/Queues';
@@ -38,7 +38,7 @@ export const Dashboard = (props) => {
             <Queues />
           </Grid.Column>
           <Grid.Column className="workzone" width={12}>
-            <Reports />
+            <Reports styleType="main" />
           </Grid.Column>
         </Grid.Row>
       </Grid>

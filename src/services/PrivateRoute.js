@@ -52,7 +52,9 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
         if (!safe) {
           //console.log('not safe');
           //security.terminateSession();
-          return <Redirect to={{ pathname: '/' }} />;
+          return (
+            <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+          );
         }
 
         return <Component role={role} timer={timer} user={user} {...props} />;
