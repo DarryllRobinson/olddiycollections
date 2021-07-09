@@ -106,15 +106,25 @@ class Reports extends React.Component {
 
   customChartRender() {
     const reports = this.state.reports;
-    const { styleType } = this.props;
+    //const { styleType } = this.props;
 
     const reportsDisplay = reports.ids.map((report, idx) => {
       if (reports.entities[report].type === 'bar') {
         return (
-          <div key={idx}>
+          <div
+            key={idx}
+            style={{
+              paddingBottom: '15px',
+            }}
+          >
             <Button
               onClick={() => {
-                this.setState({ selected: report });
+                this.setState({ selected: report, visible: false });
+              }}
+              style={{
+                backgroundColor: 'white',
+                border: '1px solid black',
+                paddingBottom: '15px',
               }}
             >
               <Grid.Column width={4} style={{ padding: 0 }}>
@@ -123,7 +133,7 @@ class Reports extends React.Component {
                     chartNumber={idx}
                     data={reports.entities[report].data}
                     description={reports.entities[report].description}
-                    styleType={styleType}
+                    styleType="sidebar"
                     title={reports.entities[report].title}
                   />
                 )}
@@ -150,7 +160,7 @@ class Reports extends React.Component {
                   chartNumber={idx}
                   data={reports.entities[report].data}
                   description={reports.entities[report].description}
-                  styleType={styleType}
+                  styleType="sidebar"
                   title={reports.entities[report].title}
                 />
               )}
@@ -207,6 +217,7 @@ class Reports extends React.Component {
           data={data}
           description={description}
           report={this.state.selected}
+          styleType="main"
           title={title}
         />
       );
@@ -231,16 +242,15 @@ class Reports extends React.Component {
                 animation="overlay"
                 color="grey"
                 icon="labeled"
-                inverted
                 onHide={() => this.setVisible(false)}
                 vertical
                 visible={this.state.visible}
-                width="very wide"
+                width="wide"
               >
                 <Header as="h2">Report Selection</Header>
                 {this.customChartRender()}
               </Sidebar>
-              <Sidebar.Pusher style={{ height: '750px' }}>
+              <Sidebar.Pusher style={{ height: '100vh' }}>
                 {this.selectedChartRender()}
               </Sidebar.Pusher>
             </Sidebar.Pushable>

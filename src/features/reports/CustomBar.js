@@ -9,7 +9,7 @@ import {
 } from 'victory';
 
 class CustomBar extends React.Component {
-  getStylesMain() {
+  getStylesDashboard() {
     const BLUE_COLOR = '#003d6a';
     const PURPLE_COLOR = '#2062ae';
 
@@ -84,25 +84,26 @@ class CustomBar extends React.Component {
     };
   }
 
-  getStylesDashboard() {
-    const BLUE_COLOR = '#00a3de';
-    const PURPLE_COLOR = '#422590';
+  getStylesMain() {
+    const BLUE_COLOR = '#003d6a';
+    const PURPLE_COLOR = '#2062ae';
 
     return {
       parent: {
-        background: '#0F5A99',
+        background: '#ffffff',
+        border: '1px solid #000000',
         boxSizing: 'border-box',
         display: 'inline',
-        height: '200',
-        padding: 0,
+        height: '80vh',
+        margin: '15px 3px',
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
         textAnchor: 'start',
         verticalAnchor: 'end',
-        fill: '#000000',
+        fill: '#333740',
         fontFamily: 'inherit',
-        fontSize: '20px',
+        fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
@@ -117,7 +118,7 @@ class CustomBar extends React.Component {
         axis: { stroke: 'black', strokeWidth: 1 },
         domainPadding: { x: 20, y: 5 },
         tickLabels: {
-          fill: 'black',
+          fill: '#333740',
           fontFamily: 'inherit',
           fontSize: 10,
         },
@@ -126,7 +127,7 @@ class CustomBar extends React.Component {
       // DATA SET
       axisOne: {
         grid: {
-          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#ffffff'),
+          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#a8abac'),
           strokeWidth: 2,
         },
         axis: { stroke: BLUE_COLOR, strokeWidth: 0 },
@@ -141,7 +142,7 @@ class CustomBar extends React.Component {
       labelOne: {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
-        fontSize: 18,
+        fontSize: 12,
         fontStyle: 'italic',
       },
       barOne: {
@@ -159,24 +160,25 @@ class CustomBar extends React.Component {
   }
 
   getStylesSidebar() {
-    const BLUE_COLOR = '#00a3de';
-    const PURPLE_COLOR = '#422590';
+    const BLUE_COLOR = '#003d6a';
+    const PURPLE_COLOR = '#2062ae';
 
     return {
       parent: {
-        background: '#0F5A99',
+        background: '#ffffff',
+        border: '1px solid #000000',
         boxSizing: 'border-box',
         display: 'inline',
         height: '200',
-        padding: 0,
+        margin: '15px 3px',
         fontFamily: "'Fira Sans', sans-serif",
       },
       title: {
         textAnchor: 'start',
         verticalAnchor: 'end',
-        fill: '#000000',
+        fill: '#333740',
         fontFamily: 'inherit',
-        fontSize: '20px',
+        fontSize: '18px',
         fontWeight: 'bold',
       },
       labelNumber: {
@@ -191,7 +193,7 @@ class CustomBar extends React.Component {
         axis: { stroke: 'black', strokeWidth: 1 },
         domainPadding: { x: 20, y: 5 },
         tickLabels: {
-          fill: 'black',
+          fill: '#333740',
           fontFamily: 'inherit',
           fontSize: 10,
         },
@@ -200,7 +202,7 @@ class CustomBar extends React.Component {
       // DATA SET
       axisOne: {
         grid: {
-          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#ffffff'),
+          stroke: ({ tick }) => (tick === -10 ? 'transparent' : '#a8abac'),
           strokeWidth: 2,
         },
         axis: { stroke: BLUE_COLOR, strokeWidth: 0 },
@@ -215,7 +217,7 @@ class CustomBar extends React.Component {
       labelOne: {
         fill: BLUE_COLOR,
         fontFamily: 'inherit',
-        fontSize: 18,
+        fontSize: 12,
         fontStyle: 'italic',
       },
       barOne: {
@@ -236,12 +238,25 @@ class CustomBar extends React.Component {
     return this.props.data;
   }
 
+  whichStyle() {
+    const { styleType } = this.props;
+
+    switch (styleType) {
+      case 'dash':
+        return this.getStylesDashboard();
+      case 'main':
+        return this.getStylesMain();
+      case 'sidebar':
+        return this.getStylesSidebar();
+      default:
+        return this.getStylesMain();
+    }
+  }
+
   render() {
-    const { chartNumber, description, styleType, title } = this.props;
-    const styles =
-      styleType === 'dash' ? this.getStylesDashboard() : this.getStylesMain();
+    const { chartNumber, description, title } = this.props;
+    const styles = this.whichStyle();
     const dataSetOne = this.getDataSetOne();
-    //const tickValues = this.getTickValues();
 
     return (
       <svg style={styles.parent} viewBox="0 0 450 350">

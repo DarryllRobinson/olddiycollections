@@ -99,7 +99,7 @@ class Reports extends React.Component {
     const reportsDisplay = reports.ids.map((report, idx) => {
       if (reports.entities[report].type === 'bar') {
         return (
-          <>
+          <span key={idx}>
             {reports.entities[report].data && (
               <CustomBar
                 chartNumber={idx}
@@ -117,11 +117,11 @@ class Reports extends React.Component {
                 <p></p>
               </div>
             )}
-          </>
+          </span>
         );
       } else if (reports.entities[report].type === 'line') {
         return (
-          <>
+          <span key={idx}>
             {reports.entities[report].data && (
               <CustomLine
                 chartNumber={idx}
@@ -139,7 +139,7 @@ class Reports extends React.Component {
                 <p></p>
               </div>
             )}
-          </>
+          </span>
         );
       } else {
         return <div key={idx}> No report type found</div>;

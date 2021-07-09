@@ -6,20 +6,7 @@ import CustomBar from './CustomBar';
 
 export const Report = (props) => {
   //console.log('Report props: ', props);
-  const { data, description, report, title } = props;
-  /*const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    const loadData = async () => {
-      if (report) {
-        const reportData = await mysqlLayer.Get(`/reports/${report}`);
-        console.log('reportData: ', reportData);
-        setData(reportData);
-      }
-    };
-    window.scrollTo(0, 0);
-    loadData();
-  }, [report]);*/
+  const { data, description, report, styleType, title } = props;
 
   const renderChart = () => {
     if (!report) {
@@ -35,7 +22,7 @@ export const Report = (props) => {
             chartNumber={null}
             data={data}
             description={description}
-            styleType="test"
+            styleType={styleType}
             title={title}
           />
         </div>
