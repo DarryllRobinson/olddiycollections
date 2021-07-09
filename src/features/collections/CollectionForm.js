@@ -291,6 +291,14 @@ export const CollectionForm = (props) => {
 
     // Outcome or KAM Notes
     if (
+      role === 'admin' &&
+      state.fields.entities['outcomeNotes'].value.length < 10
+    ) {
+      setErrorMsg('Please provide more detailed notes', 'outcomeNotes');
+      cont = false;
+    }
+
+    if (
       role === 'agent' &&
       state.fields.entities['outcomeNotes'].value.length < 10
     ) {
