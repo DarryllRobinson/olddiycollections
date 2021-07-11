@@ -786,7 +786,7 @@ export const CollectionForm = (props) => {
     mysqlLayer.Put(`/accounts/account/${accountNumber}`, accountUpdate);
     mysqlLayer.Put(`/cases/case/${id}`, caseUpdate);
     const outcomeStatus = await mysqlLayer.Post(
-      `/outcomes/outcome`,
+      `/outcomes/outcome/${id}`,
       outcomeInsert
     );
     if (outcomeStatus.status === 'Ok') {
